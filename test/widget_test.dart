@@ -1,30 +1,31 @@
-// This is a basic Flutter widget test.
+// Tests for the cart total shown on the Home and Checkout screens.
 //
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// Run with: flutter test
 
-import 'package:flutter/material.dart';
+import 'package:billing_app/features/billing/domain/entities/cart_item.dart';
+import 'package:billing_app/features/billing/presentation/bloc/billing_bloc.dart';
+import 'package:billing_app/features/product/domain/entities/product.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:billing_app/main.dart';
-
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  // Two sample products to put in the cart.
+  const rice = Product(
+      id: '1', name: 'Basmati Rice 1kg', barcode: '111', price: 120.0);
+  const dal =
+      Product(id: '2', name: 'Toor Dal 500g', barcode: '222', price: 85.5);
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  test('cart total is price x quantity, added up for every item', () {
+    const state = BillingState(cartItems: [
+      CartItem(product: rice, quantity: 2), // 2 x 120.00 = 240.00
+      CartItem(product: dal, quantity: 1), // 1 x 85.50 = 85.50
+    ]);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    expect(state.totalAmount, 325.5);
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  test('an empty cart has a total of zero', () {
+    const state = BillingState();
+
+    expect(state.totalAmount, 0);
   });
 }

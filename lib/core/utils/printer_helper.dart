@@ -152,7 +152,7 @@ class PrinterHelper {
 
     // Header (Align Left)
     bytes += EscPos.alignLeft;
-    bytes += _textToBytes('Item            Price   Total');
+    bytes += _textToBytes(_receiptLine('Item', 'Price', 'Total'));
     bytes += EscPos.lineFeed;
     bytes += _textToBytes('--------------------------------');
     bytes += EscPos.lineFeed;
@@ -161,14 +161,10 @@ class PrinterHelper {
     for (var item in items) {
       String name = item['name'].toString();
       String qty = item['qty'].toString();
-      String price = item['price'].toString();
-      String totalItem = item['total'].toString();
+      String price = (item['price'] as num).toStringAsFixed(2);
+      String totalItem = (item['total'] as num).toStringAsFixed(2);
 
-      String prefix = '${qty}x $name';
-      if (prefix.length > 16) prefix = prefix.substring(0, 16);
-
-      String line = prefix.padRight(16) + price.padRight(8) + totalItem;
-      bytes += _textToBytes(line);
+      bytes += _textToBytes(_receiptLine('${qty}x $name', price, totalItem));
       bytes += EscPos.lineFeed;
     }
 
@@ -178,7 +174,7 @@ class PrinterHelper {
     // Total (Align Right)
     bytes += EscPos.alignRight;
     bytes += EscPos.boldOn;
-    bytes += _textToBytes('TOTAL: $total');
+    bytes += _textToBytes('TOTAL: ${total.toStringAsFixed(2)}');
     bytes += EscPos.lineFeed;
     bytes += EscPos.boldOff;
     bytes += EscPos.lineFeed;
@@ -192,6 +188,15 @@ class PrinterHelper {
     bytes += EscPos.lineFeed; // Additional Feed
 
     await PrintBluetoothThermal.writeBytes(bytes);
+  }
+
+  /// Builds one 32-character receipt line: 14 chars of item name,
+  /// a space, then price and total right-aligned in 8 chars each.
+  /// Long names are cut so they never run into the price column.
+  static String _receiptLine(String name, String price, String total) {
+    const nameWidth = 14;
+    if (name.length > nameWidth) name = name.substring(0, nameWidth);
+    return '${name.padRight(nameWidth)} ${price.padLeft(8)} ${total.padLeft(8)}';
   }
 
   List<int> _textToBytes(String text) {
