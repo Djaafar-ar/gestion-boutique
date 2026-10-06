@@ -11,6 +11,8 @@ import '../../features/alerts/presentation/pages/alerts_page.dart';
 import '../../features/alerts/presentation/pages/notification_settings_page.dart';
 import '../../features/billing/presentation/pages/home_page.dart';
 import '../../features/stats/presentation/pages/stats_page.dart';
+import '../../features/sync/presentation/pages/join_page.dart';
+import '../../features/sync/presentation/pages/sync_page.dart';
 import '../../features/customers/domain/entities/customer.dart';
 import '../../features/customers/presentation/pages/customer_detail_page.dart';
 import '../../features/customers/presentation/pages/customer_form_page.dart';
@@ -63,6 +65,10 @@ final router = GoRouter(
     GoRoute(
       path: '/login',
       builder: (context, state) => const LoginPage(),
+    ),
+    GoRoute(
+      path: '/join',
+      builder: (context, state) => const JoinPage(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, shell) => AppShell(shell: shell),
@@ -193,6 +199,11 @@ final router = GoRouter(
                 path: 'profile',
                 parentNavigatorKey: rootNavigatorKey,
                 builder: (context, state) => const ProfilePage(),
+              ),
+              GoRoute(
+                path: 'sync',
+                parentNavigatorKey: rootNavigatorKey,
+                builder: (context, state) => const SyncPage(),
               ),
               GoRoute(
                 path: 'notifications',

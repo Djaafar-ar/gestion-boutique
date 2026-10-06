@@ -18,6 +18,9 @@ class ReceiptData {
   final String phone;
   final String footer;
   final int saleNumber;
+
+  /// The letter of the phone that made the ticket ("B"), or null.
+  final String? ticketPrefix;
   final DateTime date;
   final List<SaleLine> lines;
   final int subtotal;
@@ -41,6 +44,7 @@ class ReceiptData {
     required this.phone,
     required this.footer,
     required this.saleNumber,
+    this.ticketPrefix,
     required this.date,
     required this.lines,
     required this.subtotal,
@@ -60,6 +64,9 @@ class ReceiptData {
         phone: shop.phoneNumber,
         footer: shop.footerText,
         saleNumber: sale.number,
+        ticketPrefix: sale.deviceCode == null || sale.deviceCode == 'A'
+            ? null
+            : sale.deviceCode,
         date: sale.createdAt,
         lines: sale.items,
         subtotal: sale.subtotal,
@@ -90,8 +97,9 @@ List<String> buildReceiptBody(ReceiptData data, {bool asciiOnly = true}) {
   }
   out.addAll(
       _centered(DateFormat('dd/MM/yyyy HH:mm', 'en_US').format(data.date)));
-  out.addAll(
-      _centered(p('Ticket n° ${data.saleNumber.toString().padLeft(4, '0')}')));
+  out.addAll(_centered(
+      p('Ticket n° ${data.ticketPrefix == null ? '' : '${data.ticketPrefix}-'}'
+          '${data.saleNumber.toString().padLeft(4, '0')}')));
 
   out.add(dashes);
   out.add(_leftRight('Article', 'Montant'));

@@ -35,6 +35,12 @@ class SessionCubit extends Cubit<SessionState> {
 
   void logout() => emit(SessionState(hasOwner: state.hasOwner));
 
+  /// This phone joined a shop: its accounts arrived, nobody is logged in.
+  void shopJoined() => emit(const SessionState(hasOwner: true));
+
+  /// This phone was erased: back to the first-launch screens.
+  void shopLeft() => emit(const SessionState(hasOwner: false));
+
   /// Keeps the session up to date after the logged-in user edits
   /// their own name or phone.
   void userUpdated(AppUser user) {

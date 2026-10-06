@@ -33,6 +33,13 @@ import '../../features/stock/domain/repositories/stock_repository.dart';
 import '../../features/settings/domain/repositories/printer_repository.dart';
 import '../../features/settings/presentation/bloc/printer_bloc.dart';
 import '../../features/settings/presentation/cubit/app_preferences_cubit.dart';
+import '../../features/sync/data/hub_keep_alive.dart';
+import '../../features/sync/data/hub_service.dart';
+import '../../features/sync/data/merge_service.dart';
+import '../../features/sync/data/sync_client.dart';
+import '../../features/sync/data/sync_network.dart';
+import '../../features/sync/data/sync_store.dart';
+import '../../features/sync/presentation/sync_cubit.dart';
 import '../../features/users/data/repositories/user_repository_impl.dart';
 import '../../features/users/domain/repositories/user_repository.dart';
 import 'database/app_database.dart';
@@ -149,6 +156,25 @@ Future<void> init() async {
   sl.registerLazySingleton<PrinterRepository>(
     () => PrinterRepositoryImpl(sl()),
   );
+
+  // Features - Wi-Fi sync between the shop's phones
+  final store = SyncStore(db);
+  sl.registerSingleton(store);
+  final hub = HubService(db, store, settings);
+  sl.registerSingleton(hub);
+  sl.registerLazySingleton(() => MergeService(sl(), sl()));
+  sl.registerSingleton(SyncCubit(
+    db: db,
+    store: store,
+    settings: settings,
+    hub: hub,
+    server: HubServer(hub),
+    client: SyncClient(db, store, settings, const HttpSyncTransport(),
+        finder: HubFinder()),
+    keepAlive: ForegroundHubKeepAlive(),
+    session: sl(),
+    locale: () => notificationLocale(settings),
+  ));
 
   // Features - Statistics
   sl.registerLazySingleton(() => StatsRepository(sl()));

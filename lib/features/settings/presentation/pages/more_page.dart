@@ -120,6 +120,16 @@ class _MorePageState extends State<MorePage> {
                 );
               },
             ),
+          _SectionHeader(l10n.syncTitle),
+          _Group(children: [
+            ListTile(
+              leading: const _TileIcon(Icons.wifi_tethering),
+              title: Text(l10n.syncTitle),
+              subtitle: Text(l10n.syncSub),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push('/more/sync'),
+            ),
+          ]),
           _SectionHeader(l10n.creditSection),
           _Group(children: [
             ListTile(

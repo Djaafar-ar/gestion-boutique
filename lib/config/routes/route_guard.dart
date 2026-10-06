@@ -15,9 +15,17 @@ const ownerOnlyPaths = [
 /// - nobody logged in -> the PIN screen,
 /// - a worker asking for an owner page -> back to selling.
 String? guardRoute(SessionState session, String location) {
-  if (!session.hasOwner) return location == '/setup' ? null : '/setup';
+  // Before an owner exists: create the shop, or join one (scanning the
+  // owner's code).
+  if (!session.hasOwner) {
+    return const ['/setup', '/join', '/scanner'].contains(location)
+        ? null
+        : '/setup';
+  }
   if (!session.isLoggedIn) return location == '/login' ? null : '/login';
-  if (location == '/setup' || location == '/login') return '/sell';
+  if (location == '/setup' || location == '/login' || location == '/join') {
+    return '/sell';
+  }
   if (!session.isOwner && ownerOnlyPaths.any(location.startsWith)) {
     return '/sell';
   }

@@ -170,7 +170,7 @@ class _ReturnPageState extends State<ReturnPage> {
         context.read<ProductBloc>().add(LoadProducts());
         final newSale = done.exchangeSale;
         if (newSale != null) {
-          showAppSnack(context, l10n.exchangeSaved(newSale.number),
+          showAppSnack(context, l10n.exchangeSaved(newSale.ticket),
               kind: SnackKind.success);
           // The exchange ticket, ready to print.
           context.pushReplacement('/sell/history/${newSale.id}');
@@ -192,8 +192,8 @@ class _ReturnPageState extends State<ReturnPage> {
       return _exchange ? l10n.noReceiptExchange : l10n.noReceiptReturn;
     }
     return _exchange
-        ? l10n.exchangeTitle(sale.number)
-        : l10n.returnTitle(sale.number);
+        ? l10n.exchangeTitle(sale.ticket)
+        : l10n.returnTitle(sale.ticket);
   }
 
   @override

@@ -9,7 +9,10 @@ import '../../../../core/utils/date_format.dart';
 import '../../../../core/utils/money.dart';
 import '../../../../core/widgets/amount_dialog.dart';
 import '../../../../core/widgets/app_snack.dart';
+import '../../../../core/widgets/confirm_merge.dart';
 import '../../../../core/widgets/empty_state.dart';
+import '../../../sync/data/merge_service.dart';
+import '../widgets/customer_picker.dart';
 import '../../domain/entities/customer.dart';
 import '../../domain/repositories/customer_repository.dart';
 import '../widgets/debt_text.dart';
@@ -68,6 +71,29 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
     if (mounted) _reload();
   }
 
+  /// Owner: the same customer twice (made on two phones): sales, payments
+  /// and debt move to the other one, this one is archived.
+  Future<void> _mergeInto(Customer customer) async {
+    final l10n = AppLocalizations.of(context);
+    final into = await pickCustomer(context);
+    if (into == null || into.id == customer.id || !mounted) return;
+    final ok = await confirmMerge(context,
+        into: into.name,
+        body: l10n.mergeCustomerBody(customer.name, into.name));
+    if (!ok || !mounted) return;
+    final result = await sl<MergeService>()
+        .mergeCustomers(keepId: into.id, dropId: customer.id);
+    if (!mounted) return;
+    result.fold(
+      (failure) => showAppSnack(context, l10n.errorWithDetail(failure.message),
+          kind: SnackKind.error),
+      (_) {
+        showAppSnack(context, l10n.merged, kind: SnackKind.success);
+        context.pop();
+      },
+    );
+  }
+
   Future<void> _archive(Customer customer) async {
     final l10n = AppLocalizations.of(context);
     final ok = await showDialog<bool>(
@@ -116,6 +142,10 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
               if (customer != null && isOwner)
                 PopupMenuButton<void>(
                   itemBuilder: (_) => [
+                    PopupMenuItem(
+                      onTap: () => _mergeInto(customer),
+                      child: Text(l10n.mergeInto),
+                    ),
                     PopupMenuItem(
                       onTap: () => _archive(customer),
                       child: Text(l10n.archive),
@@ -227,12 +257,12 @@ class _EntryTile extends StatelessWidget {
     final (icon, title) = switch (entry.kind) {
       CustomerEntryKind.sale => (
           Icons.shopping_bag_outlined,
-          l10n.entryCreditSale(entry.saleNumber ?? 0)
+          l10n.entryCreditSale(entry.saleTicket ?? '?')
         ),
       CustomerEntryKind.payment => (Icons.payments_outlined, l10n.entryPayment),
       CustomerEntryKind.refund => (
           Icons.assignment_return_outlined,
-          l10n.entryRefund(entry.saleNumber ?? 0)
+          l10n.entryRefund(entry.saleTicket ?? '?')
         ),
     };
     final details = [

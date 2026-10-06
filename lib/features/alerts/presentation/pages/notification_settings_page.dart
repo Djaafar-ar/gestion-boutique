@@ -86,7 +86,10 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
             clipBehavior: Clip.antiAlias,
             child: Column(
               children: [
-                for (final (index, type) in AlertType.values.indexed) ...[
+                for (final (index, type) in AlertType.values
+                    // Both kinds of duplicates share one switch.
+                    .where((t) => t != AlertType.duplicateCustomer)
+                    .indexed) ...[
                   if (index > 0) const Divider(height: 1),
                   SwitchListTile(
                     secondary: Icon(type.ownerOnly

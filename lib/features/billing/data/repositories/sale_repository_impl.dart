@@ -293,7 +293,7 @@ class SaleRepositoryImpl implements SaleRepository {
                   productId: saleLine.productId,
                   quantity: line.quantity,
                   unitCost: saleLine.unitCost,
-                  note: 'Retour ticket n° ${sale.number}',
+                  note: 'Retour ticket n° ${sale.ticket}',
                   returnItemId: itemId,
                   at: at);
             }
@@ -429,8 +429,11 @@ class SaleRepositoryImpl implements SaleRepository {
     final saleId = _uuid.v4();
     final total = subtotal - discount;
 
+    // Each phone counts its own tickets (the letter tells them apart).
     final maxNumber = db.sales.number.max();
-    final lastNumber = await (db.selectOnly(db.sales)..addColumns([maxNumber]))
+    final lastNumber = await (db.selectOnly(db.sales)
+          ..addColumns([maxNumber])
+          ..where(db.sales.deviceId.equals(deviceId)))
         .map((row) => row.read(maxNumber))
         .getSingle();
 
@@ -532,6 +535,7 @@ class SaleRepositoryImpl implements SaleRepository {
     };
 
     final names = await userNames(db, sales.map((s) => s.userId));
+    final codes = await deviceCodes(db);
     final customerIds = sales.map((s) => s.customerId).whereType<String>();
     final customers = customerIds.isEmpty
         ? <String, String>{}
@@ -543,8 +547,15 @@ class SaleRepositoryImpl implements SaleRepository {
           };
     return [
       for (final sale in sales)
-        _toSale(sale, linesBySale[sale.id] ?? [], names, returned,
-            refunded[sale.id] ?? 0, customers, exchangeCredit[sale.id] ?? 0),
+        _toSale(
+            sale,
+            linesBySale[sale.id] ?? [],
+            names,
+            returned,
+            refunded[sale.id] ?? 0,
+            customers,
+            exchangeCredit[sale.id] ?? 0,
+            codes[sale.deviceId]),
     ];
   }
 
@@ -555,7 +566,8 @@ class SaleRepositoryImpl implements SaleRepository {
       Map<String, int> returned,
       int refunded,
       Map<String, String> customers,
-      int exchangeCredit) {
+      int exchangeCredit,
+      String? deviceCode) {
     // Keep the order in which items were added to the cart.
     lines.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     return Sale(
@@ -572,6 +584,7 @@ class SaleRepositoryImpl implements SaleRepository {
       customerId: sale.customerId,
       customerName: customers[sale.customerId],
       exchangeCredit: exchangeCredit,
+      deviceCode: deviceCode,
       items: lines
           .map((l) => SaleLine(
                 id: l.id,

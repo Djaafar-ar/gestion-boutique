@@ -284,13 +284,13 @@ abstract class AppLocalizations {
   ///
   /// In fr, this message translates to:
   /// **'Vente n°{number} enregistrée'**
-  String saleSaved(int number);
+  String saleSaved(String number);
 
   /// No description provided for @saleSavedAndPrinted.
   ///
   /// In fr, this message translates to:
   /// **'Vente n°{number} enregistrée et imprimée'**
-  String saleSavedAndPrinted(int number);
+  String saleSavedAndPrinted(String number);
 
   /// No description provided for @saleSaveFailed.
   ///
@@ -344,7 +344,7 @@ abstract class AppLocalizations {
   ///
   /// In fr, this message translates to:
   /// **'Vente n°{number}'**
-  String saleTitle(int number);
+  String saleTitle(String number);
 
   /// No description provided for @salesCount.
   ///
@@ -1790,7 +1790,7 @@ abstract class AppLocalizations {
   ///
   /// In fr, this message translates to:
   /// **'Retour du ticket n°{number}'**
-  String returnTitle(int number);
+  String returnTitle(String number);
 
   /// No description provided for @returnIntro.
   ///
@@ -2036,7 +2036,7 @@ abstract class AppLocalizations {
   ///
   /// In fr, this message translates to:
   /// **'Vente à crédit n°{number}'**
-  String entryCreditSale(int number);
+  String entryCreditSale(String number);
 
   /// No description provided for @entryPayment.
   ///
@@ -2048,7 +2048,7 @@ abstract class AppLocalizations {
   ///
   /// In fr, this message translates to:
   /// **'Retour du ticket n°{number}'**
-  String entryRefund(int number);
+  String entryRefund(String number);
 
   /// No description provided for @entrySaleDetail.
   ///
@@ -2174,7 +2174,7 @@ abstract class AppLocalizations {
   ///
   /// In fr, this message translates to:
   /// **'Vente n°{number} enregistrée · {amount} sur le compte de {name}'**
-  String saleSavedCredit(int number, String amount, String name);
+  String saleSavedCredit(String number, String amount, String name);
 
   /// No description provided for @customerLabel.
   ///
@@ -2594,7 +2594,7 @@ abstract class AppLocalizations {
   ///
   /// In fr, this message translates to:
   /// **'{by} a fait un retour sur le ticket n°{number} : {amount}.'**
-  String alertReturnBody(String by, int number, String amount);
+  String alertReturnBody(String by, String number, String amount);
 
   /// No description provided for @alertsSummaryTitle.
   ///
@@ -2912,7 +2912,7 @@ abstract class AppLocalizations {
   ///
   /// In fr, this message translates to:
   /// **'Échange du ticket n°{number}'**
-  String exchangeTitle(int number);
+  String exchangeTitle(String number);
 
   /// No description provided for @exchangeSwitch.
   ///
@@ -3002,7 +3002,7 @@ abstract class AppLocalizations {
   ///
   /// In fr, this message translates to:
   /// **'Échange enregistré : ticket n°{number}.'**
-  String exchangeSaved(int number);
+  String exchangeSaved(String number);
 
   /// No description provided for @ownerApprovalTitle.
   ///
@@ -3051,6 +3051,366 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'{by} a fait un échange : rendu {amount}, pris {taken}.'**
   String alertExchangeBody(String by, String amount, String taken);
+
+  /// No description provided for @syncTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Synchronisation Wi-Fi'**
+  String get syncTitle;
+
+  /// No description provided for @syncSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Relier les téléphones de la boutique'**
+  String get syncSub;
+
+  /// No description provided for @syncStandaloneTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce téléphone n\'est relié à aucun autre.'**
+  String get syncStandaloneTitle;
+
+  /// No description provided for @syncStandaloneBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur le téléphone du patron, activez le hub : les téléphones des employés s\'y relient par le Wi-Fi de la boutique, sans internet.'**
+  String get syncStandaloneBody;
+
+  /// No description provided for @becomeHub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Faire de ce téléphone le téléphone principal'**
+  String get becomeHub;
+
+  /// No description provided for @hubActive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hub actif'**
+  String get hubActive;
+
+  /// No description provided for @hubStopped.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hub arrêté'**
+  String get hubStopped;
+
+  /// No description provided for @hubAddress.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse : {address}'**
+  String hubAddress(String address);
+
+  /// No description provided for @hubNoWifi.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas de Wi-Fi : connectez ce téléphone au Wi-Fi de la boutique.'**
+  String get hubNoWifi;
+
+  /// No description provided for @hubKeepOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gardez l\'application ouverte ou en arrière-plan sur ce téléphone (ne la fermez pas) pour que les autres puissent se synchroniser.'**
+  String get hubKeepOpen;
+
+  /// No description provided for @pairTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Relier un téléphone'**
+  String get pairTitle;
+
+  /// No description provided for @pairBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur le téléphone de l\'employé, choisissez « Rejoindre une boutique » et scannez ce code. Ne le montrez à personne d\'autre : il donne accès à la boutique.'**
+  String get pairBody;
+
+  /// No description provided for @showPairingCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher le code'**
+  String get showPairingCode;
+
+  /// No description provided for @linkedPhones.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphones reliés'**
+  String get linkedPhones;
+
+  /// No description provided for @noLinkedPhones.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun autre téléphone pour l\'instant.'**
+  String get noLinkedPhones;
+
+  /// No description provided for @devicePhoneLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone {code} · {name}'**
+  String devicePhoneLabel(String code, String name);
+
+  /// No description provided for @thisPhone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce téléphone'**
+  String get thisPhone;
+
+  /// No description provided for @lastSyncAt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernière synchro : {time}'**
+  String lastSyncAt(String time);
+
+  /// No description provided for @neverSynced.
+  ///
+  /// In fr, this message translates to:
+  /// **'Jamais synchronisé'**
+  String get neverSynced;
+
+  /// No description provided for @removePhone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer ce téléphone'**
+  String get removePhone;
+
+  /// No description provided for @removePhoneBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'{name} ne pourra plus se synchroniser. Ce qu\'il a déjà envoyé est gardé.'**
+  String removePhoneBody(String name);
+
+  /// No description provided for @phoneRemoved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone retiré'**
+  String get phoneRemoved;
+
+  /// No description provided for @linkedTo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Relié à {shop} · téléphone {code}'**
+  String linkedTo(String shop, String code);
+
+  /// No description provided for @syncNow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Synchroniser maintenant'**
+  String get syncNow;
+
+  /// No description provided for @syncing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Synchronisation…'**
+  String get syncing;
+
+  /// No description provided for @syncDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Synchronisé : {sent} envoyé(s), {received} reçu(s)'**
+  String syncDone(int sent, int received);
+
+  /// No description provided for @syncAuto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Synchronisation automatique toutes les 2 minutes et après chaque vente.'**
+  String get syncAuto;
+
+  /// No description provided for @syncErrUnreachable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hub introuvable. Le téléphone du patron est-il allumé, sur le même Wi-Fi, avec l\'application ouverte ?'**
+  String get syncErrUnreachable;
+
+  /// No description provided for @syncErrSignature.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code de la boutique refusé. Reliez ce téléphone à nouveau avec le code du patron.'**
+  String get syncErrSignature;
+
+  /// No description provided for @syncErrVersion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versions différentes : installez la même version de l\'application sur les deux téléphones.'**
+  String get syncErrVersion;
+
+  /// No description provided for @syncErrRemoved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce téléphone a été retiré de la boutique par le patron.'**
+  String get syncErrRemoved;
+
+  /// No description provided for @syncErrOther.
+  ///
+  /// In fr, this message translates to:
+  /// **'La synchronisation a échoué. Réessayez.'**
+  String get syncErrOther;
+
+  /// No description provided for @pendingChanges.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} changement(s) à envoyer'**
+  String pendingChanges(int count);
+
+  /// No description provided for @joinShop.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rejoindre une boutique existante'**
+  String get joinShop;
+
+  /// No description provided for @joinTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rejoindre une boutique'**
+  String get joinTitle;
+
+  /// No description provided for @joinIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur le téléphone du patron : Plus → Synchronisation Wi-Fi → activez le hub et affichez le code. Puis scannez-le ici. Les deux téléphones doivent être sur le même Wi-Fi.'**
+  String get joinIntro;
+
+  /// No description provided for @scanPairingCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scanner le code du patron'**
+  String get scanPairingCode;
+
+  /// No description provided for @notPairingCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce n\'est pas un code de la boutique.'**
+  String get notPairingCode;
+
+  /// No description provided for @deviceNameLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom de ce téléphone'**
+  String get deviceNameLabel;
+
+  /// No description provided for @deviceNameHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : Caisse 2'**
+  String get deviceNameHint;
+
+  /// No description provided for @joinButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rejoindre {shop}'**
+  String joinButton(String shop);
+
+  /// No description provided for @joining.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléchargement de la boutique…'**
+  String get joining;
+
+  /// No description provided for @joined.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone relié (téléphone {code}). Connectez-vous avec votre code PIN.'**
+  String joined(String code);
+
+  /// No description provided for @leaveShop.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rejoindre une autre boutique'**
+  String get leaveShop;
+
+  /// No description provided for @leaveShopSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pour un téléphone d\'employé : efface ce téléphone'**
+  String get leaveShopSub;
+
+  /// No description provided for @leaveShopBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les données de ce téléphone (produits, ventes, comptes…) seront effacées. Ensuite, il pourra rejoindre la boutique du patron. À faire seulement sur un téléphone d\'employé.'**
+  String get leaveShopBody;
+
+  /// No description provided for @leaveShopConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Effacer ce téléphone'**
+  String get leaveShopConfirm;
+
+  /// No description provided for @alertDuplicateBarcodeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code-barres en double : {barcode}'**
+  String alertDuplicateBarcodeTitle(String barcode);
+
+  /// No description provided for @alertDuplicateBarcodeBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits : {names}. Fusionnez-les ou changez un code-barres.'**
+  String alertDuplicateBarcodeBody(String names);
+
+  /// No description provided for @alertDuplicateCustomerTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client en double : {phone}'**
+  String alertDuplicateCustomerTitle(String phone);
+
+  /// No description provided for @alertDuplicateCustomerBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clients : {names}. Fusionnez-les depuis la fiche client.'**
+  String alertDuplicateCustomerBody(String names);
+
+  /// No description provided for @typeDuplicates.
+  ///
+  /// In fr, this message translates to:
+  /// **'Doublons (produits, clients)'**
+  String get typeDuplicates;
+
+  /// No description provided for @mergeInto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fusionner avec…'**
+  String get mergeInto;
+
+  /// No description provided for @mergeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fusionner dans {name} ?'**
+  String mergeTitle(String name);
+
+  /// No description provided for @mergeCustomerBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les ventes, paiements et la dette de {from} passent à {into}, puis {from} est archivé.'**
+  String mergeCustomerBody(String from, String into);
+
+  /// No description provided for @mergeProductBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les ventes, le stock et les pertes de {from} passent à {into}, puis {from} est archivé.'**
+  String mergeProductBody(String from, String into);
+
+  /// No description provided for @merge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fusionner'**
+  String get merge;
+
+  /// No description provided for @merged.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fusionné'**
+  String get merged;
+
+  /// No description provided for @hubServiceTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hub de la boutique actif'**
+  String get hubServiceTitle;
+
+  /// No description provided for @hubServiceText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les autres téléphones peuvent se synchroniser.'**
+  String get hubServiceText;
 }
 
 class _AppLocalizationsDelegate

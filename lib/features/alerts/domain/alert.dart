@@ -23,14 +23,23 @@ enum AlertType {
   failedLogins,
 
   /// A worker took back items from a customer.
-  returnMade;
+  returnMade,
+
+  /// Two products with the same barcode (made on two phones before they
+  /// synced).
+  duplicateBarcode,
+
+  /// Two customers with the same phone number.
+  duplicateCustomer;
 
   /// Workers only see the stock alerts; everything else is for the owner.
   bool get ownerOnly =>
       this != lowStock && this != expiringSoon && this != expired;
 
   /// The settings key that turns this type of phone notification on/off.
-  String get settingsKey => 'notify_$name';
+  /// Both kinds of duplicates share one switch.
+  String get settingsKey =>
+      'notify_${this == duplicateCustomer ? duplicateBarcode.name : name}';
 }
 
 /// One alert, as shown in the Alertes tab.

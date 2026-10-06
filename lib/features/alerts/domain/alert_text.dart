@@ -36,6 +36,20 @@ AlertText describeAlert(
 
   final productRoute = '/stock/product/${text('productId')}';
   switch (type) {
+    case AlertType.duplicateBarcode:
+      return AlertText(
+          l10n.alertDuplicateBarcodeTitle(text('barcode')),
+          l10n.alertDuplicateBarcodeBody(text('names')),
+          productRoute,
+          Icons.qr_code_2,
+          AlertLevel.warning);
+    case AlertType.duplicateCustomer:
+      return AlertText(
+          l10n.alertDuplicateCustomerTitle(text('phone')),
+          l10n.alertDuplicateCustomerBody(text('names')),
+          '/customers/${text('customerId')}',
+          Icons.people_outline,
+          AlertLevel.warning);
     case AlertType.lowStock:
       final quantity = number('quantity');
       if (quantity < 0) {
@@ -123,8 +137,7 @@ AlertText describeAlert(
             AlertLevel.warning),
         _ => AlertText(
             l10n.alertReturnTitle,
-            l10n.alertReturnBody(
-                text('by'), number('number'), amount('amount')),
+            l10n.alertReturnBody(text('by'), text('ticket'), amount('amount')),
             route,
             Icons.assignment_return_outlined,
             AlertLevel.info),
@@ -142,4 +155,7 @@ String alertTypeName(AppLocalizations l10n, AlertType type) => switch (type) {
       AlertType.overCreditLimit => l10n.typeOverCreditLimit,
       AlertType.failedLogins => l10n.alertPinTitle,
       AlertType.returnMade => l10n.typeReturnMade,
+      AlertType.duplicateBarcode ||
+      AlertType.duplicateCustomer =>
+        l10n.typeDuplicates,
     };

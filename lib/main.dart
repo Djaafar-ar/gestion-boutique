@@ -6,7 +6,11 @@ import 'core/l10n/app_localizations.dart';
 import 'core/service_locator.dart' as di;
 import 'core/session/session_cubit.dart';
 import 'core/theme/app_theme.dart';
+import 'dart:async';
+
 import 'features/alerts/presentation/alerts_cubit.dart';
+import 'features/sync/data/sync_store.dart';
+import 'features/sync/presentation/sync_cubit.dart';
 import 'features/billing/presentation/bloc/billing_bloc.dart';
 import 'features/product/presentation/bloc/product_bloc.dart';
 import 'features/shop/presentation/bloc/shop_bloc.dart';
@@ -19,6 +23,8 @@ void main() async {
   await di.init();
   // Alerts are checked from the start, even on the PIN screen.
   di.sl<AlertsCubit>().start();
+  // The hub (owner's phone) or the automatic syncs (worker's phone).
+  unawaited(di.sl<SyncCubit>().start());
   runApp(const MyApp());
 }
 
@@ -41,8 +47,10 @@ class MyApp extends StatelessWidget {
         // One session for the whole app; the router listens to it too.
         BlocProvider<SessionCubit>.value(value: di.sl<SessionCubit>()),
         BlocProvider<AlertsCubit>.value(value: di.sl<AlertsCubit>()),
+        BlocProvider<SyncCubit>.value(value: di.sl<SyncCubit>()),
       ],
-      child: BlocBuilder<AppPreferencesCubit, AppPreferences>(
+      child: _ReloadAfterSync(
+          child: BlocBuilder<AppPreferencesCubit, AppPreferences>(
         builder: (context, prefs) {
           return MaterialApp.router(
             onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
@@ -62,7 +70,45 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
           );
         },
-      ),
+      )),
     );
   }
+}
+
+/// Reloads the product list and the shop after rows arrived from another
+/// phone, so new prices and stock show at once.
+class _ReloadAfterSync extends StatefulWidget {
+  final Widget child;
+  const _ReloadAfterSync({required this.child});
+
+  @override
+  State<_ReloadAfterSync> createState() => _ReloadAfterSyncState();
+}
+
+class _ReloadAfterSyncState extends State<_ReloadAfterSync> {
+  StreamSubscription<void>? _subscription;
+  Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    _subscription = di.sl<SyncStore>().received.listen((_) {
+      _debounce?.cancel();
+      _debounce = Timer(const Duration(milliseconds: 500), () {
+        if (!mounted) return;
+        context.read<ProductBloc>().add(LoadProducts());
+        context.read<ShopBloc>().add(LoadShopEvent());
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

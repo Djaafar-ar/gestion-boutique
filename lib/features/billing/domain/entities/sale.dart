@@ -35,6 +35,12 @@ class SaleLine extends Equatable {
       [id, productId, productName, sellPrice, unitCost, quantity, returned];
 }
 
+/// How a ticket number is shown: "42" on the owner's phone (or when the
+/// shop has one phone), "B-42" for a ticket made on phone B. Every phone
+/// counts its own tickets, so the letter keeps them apart.
+String ticketLabel(int number, String? deviceCode) =>
+    deviceCode == null || deviceCode == 'A' ? '$number' : '$deviceCode-$number';
+
 class Sale extends Equatable {
   final String id;
   final int number;
@@ -60,6 +66,9 @@ class Sale extends Equatable {
   /// of this ticket (centimes).
   final int exchangeCredit;
 
+  /// The letter of the phone that made it (null with one phone).
+  final String? deviceCode;
+
   const Sale({
     required this.id,
     required this.number,
@@ -75,7 +84,11 @@ class Sale extends Equatable {
     this.customerId,
     this.customerName,
     this.exchangeCredit = 0,
+    this.deviceCode,
   });
+
+  /// The ticket as people see it: "42" or "B-42".
+  String get ticket => ticketLabel(number, deviceCode);
 
   /// A sale put (partly) on a customer's account.
   bool get isCredit => customerId != null;
@@ -107,7 +120,8 @@ class Sale extends Equatable {
         refunded,
         customerId,
         customerName,
-        exchangeCredit
+        exchangeCredit,
+        deviceCode
       ];
 }
 

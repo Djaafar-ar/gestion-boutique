@@ -55,7 +55,7 @@
   "@saleSaved": {
     "placeholders": {
       "number": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -63,7 +63,7 @@
   "@saleSavedAndPrinted": {
     "placeholders": {
       "number": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -79,7 +79,7 @@
   "@saleTitle": {
     "placeholders": {
       "number": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -538,7 +538,7 @@
   "@returnTitle": {
     "placeholders": {
       "number": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -628,7 +628,7 @@
   "@entryCreditSale": {
     "placeholders": {
       "number": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -637,7 +637,7 @@
   "@entryRefund": {
     "placeholders": {
       "number": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -723,7 +723,7 @@
   "@saleSavedCredit": {
     "placeholders": {
       "number": {
-        "type": "int"
+        "type": "String"
       },
       "amount": {
         "type": "String"
@@ -1010,7 +1010,7 @@
         "type": "String"
       },
       "number": {
-        "type": "int"
+        "type": "String"
       },
       "amount": {
         "type": "String"
@@ -1114,7 +1114,7 @@
   "@exchangeTitle": {
     "placeholders": {
       "number": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -1157,7 +1157,7 @@
   "@exchangeSaved": {
     "placeholders": {
       "number": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -1198,5 +1198,192 @@
         "type": "String"
       }
     }
-  }
+  },
+  "syncTitle": "Synchronisation Wi-Fi",
+  "syncSub": "Relier les téléphones de la boutique",
+  "syncStandaloneTitle": "Ce téléphone n'est relié à aucun autre.",
+  "syncStandaloneBody": "Sur le téléphone du patron, activez le hub : les téléphones des employés s'y relient par le Wi-Fi de la boutique, sans internet.",
+  "becomeHub": "Faire de ce téléphone le téléphone principal",
+  "hubActive": "Hub actif",
+  "hubStopped": "Hub arrêté",
+  "hubAddress": "Adresse : {address}",
+  "@hubAddress": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      }
+    }
+  },
+  "hubNoWifi": "Pas de Wi-Fi : connectez ce téléphone au Wi-Fi de la boutique.",
+  "hubKeepOpen": "Gardez l'application ouverte ou en arrière-plan sur ce téléphone (ne la fermez pas) pour que les autres puissent se synchroniser.",
+  "pairTitle": "Relier un téléphone",
+  "pairBody": "Sur le téléphone de l'employé, choisissez « Rejoindre une boutique » et scannez ce code. Ne le montrez à personne d'autre : il donne accès à la boutique.",
+  "showPairingCode": "Afficher le code",
+  "linkedPhones": "Téléphones reliés",
+  "noLinkedPhones": "Aucun autre téléphone pour l'instant.",
+  "devicePhoneLabel": "Téléphone {code} · {name}",
+  "@devicePhoneLabel": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "thisPhone": "Ce téléphone",
+  "lastSyncAt": "Dernière synchro : {time}",
+  "@lastSyncAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "neverSynced": "Jamais synchronisé",
+  "removePhone": "Retirer ce téléphone",
+  "removePhoneBody": "{name} ne pourra plus se synchroniser. Ce qu'il a déjà envoyé est gardé.",
+  "@removePhoneBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "phoneRemoved": "Téléphone retiré",
+  "linkedTo": "Relié à {shop} · téléphone {code}",
+  "@linkedTo": {
+    "placeholders": {
+      "shop": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "syncNow": "Synchroniser maintenant",
+  "syncing": "Synchronisation…",
+  "syncDone": "Synchronisé : {sent} envoyé(s), {received} reçu(s)",
+  "@syncDone": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "received": {
+        "type": "int"
+      }
+    }
+  },
+  "syncAuto": "Synchronisation automatique toutes les 2 minutes et après chaque vente.",
+  "syncErrUnreachable": "Hub introuvable. Le téléphone du patron est-il allumé, sur le même Wi-Fi, avec l'application ouverte ?",
+  "syncErrSignature": "Code de la boutique refusé. Reliez ce téléphone à nouveau avec le code du patron.",
+  "syncErrVersion": "Versions différentes : installez la même version de l'application sur les deux téléphones.",
+  "syncErrRemoved": "Ce téléphone a été retiré de la boutique par le patron.",
+  "syncErrOther": "La synchronisation a échoué. Réessayez.",
+  "pendingChanges": "{count} changement(s) à envoyer",
+  "@pendingChanges": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "joinShop": "Rejoindre une boutique existante",
+  "joinTitle": "Rejoindre une boutique",
+  "joinIntro": "Sur le téléphone du patron : Plus → Synchronisation Wi-Fi → activez le hub et affichez le code. Puis scannez-le ici. Les deux téléphones doivent être sur le même Wi-Fi.",
+  "scanPairingCode": "Scanner le code du patron",
+  "notPairingCode": "Ce n'est pas un code de la boutique.",
+  "deviceNameLabel": "Nom de ce téléphone",
+  "deviceNameHint": "ex : Caisse 2",
+  "joinButton": "Rejoindre {shop}",
+  "@joinButton": {
+    "placeholders": {
+      "shop": {
+        "type": "String"
+      }
+    }
+  },
+  "joining": "Téléchargement de la boutique…",
+  "joined": "Téléphone relié (téléphone {code}). Connectez-vous avec votre code PIN.",
+  "@joined": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "leaveShop": "Rejoindre une autre boutique",
+  "leaveShopSub": "Pour un téléphone d'employé : efface ce téléphone",
+  "leaveShopBody": "Toutes les données de ce téléphone (produits, ventes, comptes…) seront effacées. Ensuite, il pourra rejoindre la boutique du patron. À faire seulement sur un téléphone d'employé.",
+  "leaveShopConfirm": "Effacer ce téléphone",
+  "alertDuplicateBarcodeTitle": "Code-barres en double : {barcode}",
+  "@alertDuplicateBarcodeTitle": {
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      }
+    }
+  },
+  "alertDuplicateBarcodeBody": "Produits : {names}. Fusionnez-les ou changez un code-barres.",
+  "@alertDuplicateBarcodeBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "alertDuplicateCustomerTitle": "Client en double : {phone}",
+  "@alertDuplicateCustomerTitle": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "alertDuplicateCustomerBody": "Clients : {names}. Fusionnez-les depuis la fiche client.",
+  "@alertDuplicateCustomerBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "typeDuplicates": "Doublons (produits, clients)",
+  "mergeInto": "Fusionner avec…",
+  "mergeTitle": "Fusionner dans {name} ?",
+  "@mergeTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mergeCustomerBody": "Les ventes, paiements et la dette de {from} passent à {into}, puis {from} est archivé.",
+  "@mergeCustomerBody": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "into": {
+        "type": "String"
+      }
+    }
+  },
+  "mergeProductBody": "Les ventes, le stock et les pertes de {from} passent à {into}, puis {from} est archivé.",
+  "@mergeProductBody": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "into": {
+        "type": "String"
+      }
+    }
+  },
+  "merge": "Fusionner",
+  "merged": "Fusionné",
+  "hubServiceTitle": "Hub de la boutique actif",
+  "hubServiceText": "Les autres téléphones peuvent se synchroniser."
 }

@@ -58,7 +58,7 @@ class CustomerEntry extends Equatable {
 
   /// For sales and refunds: the ticket.
   final String? saleId;
-  final int? saleNumber;
+  final String? saleTicket;
 
   /// For sales: ticket total and what was paid at the counter.
   final int? saleTotal;
@@ -71,7 +71,7 @@ class CustomerEntry extends Equatable {
     required this.amount,
     this.byName,
     this.saleId,
-    this.saleNumber,
+    this.saleTicket,
     this.saleTotal,
     this.paidNow,
     this.note,
@@ -79,7 +79,7 @@ class CustomerEntry extends Equatable {
 
   @override
   List<Object?> get props =>
-      [kind, at, amount, byName, saleId, saleNumber, saleTotal, paidNow, note];
+      [kind, at, amount, byName, saleId, saleTicket, saleTotal, paidNow, note];
 }
 
 /// A credit sale would take the customer over their credit limit.

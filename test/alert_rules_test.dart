@@ -265,7 +265,7 @@ void main() {
     expect(delivery.data, containsPair('quantity', 12));
     expect(delivery.data, containsPair('by', 'Amine'));
     final ret = owner.singleWhere((a) => a.type == AlertType.returnMade);
-    expect(ret.data, containsPair('number', sale.number));
+    expect(ret.data, containsPair('ticket', sale.ticket));
     expect(await visible(amine), isEmpty);
   });
 

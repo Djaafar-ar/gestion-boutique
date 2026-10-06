@@ -114,12 +114,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get confirmAndPrint => 'Valider et imprimer';
 
   @override
-  String saleSaved(int number) {
+  String saleSaved(String number) {
     return 'Vente n°$number enregistrée';
   }
 
   @override
-  String saleSavedAndPrinted(int number) {
+  String saleSavedAndPrinted(String number) {
     return 'Vente n°$number enregistrée et imprimée';
   }
 
@@ -151,7 +151,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get historyEmptyBody => 'Les ventes validées apparaîtront ici.';
 
   @override
-  String saleTitle(int number) {
+  String saleTitle(String number) {
     return 'Vente n°$number';
   }
 
@@ -974,7 +974,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String returnTitle(int number) {
+  String returnTitle(String number) {
     return 'Retour du ticket n°$number';
   }
 
@@ -1112,7 +1112,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get customerHistory => 'Historique du compte';
 
   @override
-  String entryCreditSale(int number) {
+  String entryCreditSale(String number) {
     return 'Vente à crédit n°$number';
   }
 
@@ -1120,7 +1120,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get entryPayment => 'Paiement reçu';
 
   @override
-  String entryRefund(int number) {
+  String entryRefund(String number) {
     return 'Retour du ticket n°$number';
   }
 
@@ -1201,7 +1201,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get allowAnyway => 'Autoriser';
 
   @override
-  String saleSavedCredit(int number, String amount, String name) {
+  String saleSavedCredit(String number, String amount, String name) {
     return 'Vente n°$number enregistrée · $amount sur le compte de $name';
   }
 
@@ -1464,7 +1464,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get alertReturnTitle => 'Retour client';
 
   @override
-  String alertReturnBody(String by, int number, String amount) {
+  String alertReturnBody(String by, String number, String amount) {
     return '$by a fait un retour sur le ticket n°$number : $amount.';
   }
 
@@ -1638,7 +1638,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get exchangeButton => 'Échange';
 
   @override
-  String exchangeTitle(int number) {
+  String exchangeTitle(String number) {
     return 'Échange du ticket n°$number';
   }
 
@@ -1692,7 +1692,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get exchangeNothingTaken => 'Ajoutez les articles pris par le client.';
 
   @override
-  String exchangeSaved(int number) {
+  String exchangeSaved(String number) {
     return 'Échange enregistré : ticket n°$number.';
   }
 
@@ -1725,4 +1725,228 @@ class AppLocalizationsFr extends AppLocalizations {
   String alertExchangeBody(String by, String amount, String taken) {
     return '$by a fait un échange : rendu $amount, pris $taken.';
   }
+
+  @override
+  String get syncTitle => 'Synchronisation Wi-Fi';
+
+  @override
+  String get syncSub => 'Relier les téléphones de la boutique';
+
+  @override
+  String get syncStandaloneTitle => 'Ce téléphone n\'est relié à aucun autre.';
+
+  @override
+  String get syncStandaloneBody =>
+      'Sur le téléphone du patron, activez le hub : les téléphones des employés s\'y relient par le Wi-Fi de la boutique, sans internet.';
+
+  @override
+  String get becomeHub => 'Faire de ce téléphone le téléphone principal';
+
+  @override
+  String get hubActive => 'Hub actif';
+
+  @override
+  String get hubStopped => 'Hub arrêté';
+
+  @override
+  String hubAddress(String address) {
+    return 'Adresse : $address';
+  }
+
+  @override
+  String get hubNoWifi =>
+      'Pas de Wi-Fi : connectez ce téléphone au Wi-Fi de la boutique.';
+
+  @override
+  String get hubKeepOpen =>
+      'Gardez l\'application ouverte ou en arrière-plan sur ce téléphone (ne la fermez pas) pour que les autres puissent se synchroniser.';
+
+  @override
+  String get pairTitle => 'Relier un téléphone';
+
+  @override
+  String get pairBody =>
+      'Sur le téléphone de l\'employé, choisissez « Rejoindre une boutique » et scannez ce code. Ne le montrez à personne d\'autre : il donne accès à la boutique.';
+
+  @override
+  String get showPairingCode => 'Afficher le code';
+
+  @override
+  String get linkedPhones => 'Téléphones reliés';
+
+  @override
+  String get noLinkedPhones => 'Aucun autre téléphone pour l\'instant.';
+
+  @override
+  String devicePhoneLabel(String code, String name) {
+    return 'Téléphone $code · $name';
+  }
+
+  @override
+  String get thisPhone => 'Ce téléphone';
+
+  @override
+  String lastSyncAt(String time) {
+    return 'Dernière synchro : $time';
+  }
+
+  @override
+  String get neverSynced => 'Jamais synchronisé';
+
+  @override
+  String get removePhone => 'Retirer ce téléphone';
+
+  @override
+  String removePhoneBody(String name) {
+    return '$name ne pourra plus se synchroniser. Ce qu\'il a déjà envoyé est gardé.';
+  }
+
+  @override
+  String get phoneRemoved => 'Téléphone retiré';
+
+  @override
+  String linkedTo(String shop, String code) {
+    return 'Relié à $shop · téléphone $code';
+  }
+
+  @override
+  String get syncNow => 'Synchroniser maintenant';
+
+  @override
+  String get syncing => 'Synchronisation…';
+
+  @override
+  String syncDone(int sent, int received) {
+    return 'Synchronisé : $sent envoyé(s), $received reçu(s)';
+  }
+
+  @override
+  String get syncAuto =>
+      'Synchronisation automatique toutes les 2 minutes et après chaque vente.';
+
+  @override
+  String get syncErrUnreachable =>
+      'Hub introuvable. Le téléphone du patron est-il allumé, sur le même Wi-Fi, avec l\'application ouverte ?';
+
+  @override
+  String get syncErrSignature =>
+      'Code de la boutique refusé. Reliez ce téléphone à nouveau avec le code du patron.';
+
+  @override
+  String get syncErrVersion =>
+      'Versions différentes : installez la même version de l\'application sur les deux téléphones.';
+
+  @override
+  String get syncErrRemoved =>
+      'Ce téléphone a été retiré de la boutique par le patron.';
+
+  @override
+  String get syncErrOther => 'La synchronisation a échoué. Réessayez.';
+
+  @override
+  String pendingChanges(int count) {
+    return '$count changement(s) à envoyer';
+  }
+
+  @override
+  String get joinShop => 'Rejoindre une boutique existante';
+
+  @override
+  String get joinTitle => 'Rejoindre une boutique';
+
+  @override
+  String get joinIntro =>
+      'Sur le téléphone du patron : Plus → Synchronisation Wi-Fi → activez le hub et affichez le code. Puis scannez-le ici. Les deux téléphones doivent être sur le même Wi-Fi.';
+
+  @override
+  String get scanPairingCode => 'Scanner le code du patron';
+
+  @override
+  String get notPairingCode => 'Ce n\'est pas un code de la boutique.';
+
+  @override
+  String get deviceNameLabel => 'Nom de ce téléphone';
+
+  @override
+  String get deviceNameHint => 'ex : Caisse 2';
+
+  @override
+  String joinButton(String shop) {
+    return 'Rejoindre $shop';
+  }
+
+  @override
+  String get joining => 'Téléchargement de la boutique…';
+
+  @override
+  String joined(String code) {
+    return 'Téléphone relié (téléphone $code). Connectez-vous avec votre code PIN.';
+  }
+
+  @override
+  String get leaveShop => 'Rejoindre une autre boutique';
+
+  @override
+  String get leaveShopSub =>
+      'Pour un téléphone d\'employé : efface ce téléphone';
+
+  @override
+  String get leaveShopBody =>
+      'Toutes les données de ce téléphone (produits, ventes, comptes…) seront effacées. Ensuite, il pourra rejoindre la boutique du patron. À faire seulement sur un téléphone d\'employé.';
+
+  @override
+  String get leaveShopConfirm => 'Effacer ce téléphone';
+
+  @override
+  String alertDuplicateBarcodeTitle(String barcode) {
+    return 'Code-barres en double : $barcode';
+  }
+
+  @override
+  String alertDuplicateBarcodeBody(String names) {
+    return 'Produits : $names. Fusionnez-les ou changez un code-barres.';
+  }
+
+  @override
+  String alertDuplicateCustomerTitle(String phone) {
+    return 'Client en double : $phone';
+  }
+
+  @override
+  String alertDuplicateCustomerBody(String names) {
+    return 'Clients : $names. Fusionnez-les depuis la fiche client.';
+  }
+
+  @override
+  String get typeDuplicates => 'Doublons (produits, clients)';
+
+  @override
+  String get mergeInto => 'Fusionner avec…';
+
+  @override
+  String mergeTitle(String name) {
+    return 'Fusionner dans $name ?';
+  }
+
+  @override
+  String mergeCustomerBody(String from, String into) {
+    return 'Les ventes, paiements et la dette de $from passent à $into, puis $from est archivé.';
+  }
+
+  @override
+  String mergeProductBody(String from, String into) {
+    return 'Les ventes, le stock et les pertes de $from passent à $into, puis $from est archivé.';
+  }
+
+  @override
+  String get merge => 'Fusionner';
+
+  @override
+  String get merged => 'Fusionné';
+
+  @override
+  String get hubServiceTitle => 'Hub de la boutique actif';
+
+  @override
+  String get hubServiceText => 'Les autres téléphones peuvent se synchroniser.';
 }

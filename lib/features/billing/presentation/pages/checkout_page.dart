@@ -259,29 +259,29 @@ class CheckoutPage extends StatelessWidget {
       case null || PrintOutcome.printed when sale.isCredit && sale.onCredit > 0:
         showAppSnack(
             context,
-            l10n.saleSavedCredit(sale.number, formatDAForUi(sale.onCredit),
+            l10n.saleSavedCredit(sale.ticket, formatDAForUi(sale.onCredit),
                 sale.customerName ?? ''),
             kind: SnackKind.success);
       case null:
-        showAppSnack(context, l10n.saleSaved(sale.number),
+        showAppSnack(context, l10n.saleSaved(sale.ticket),
             kind: SnackKind.success);
       case PrintOutcome.printed:
-        showAppSnack(context, l10n.saleSavedAndPrinted(sale.number),
+        showAppSnack(context, l10n.saleSavedAndPrinted(sale.ticket),
             kind: SnackKind.success);
       case PrintOutcome.noSavedPrinter:
-        _printProblem(context, l10n, sale.number, l10n.printNoPrinter);
+        _printProblem(context, l10n, sale.ticket, l10n.printNoPrinter);
       case PrintOutcome.connectFailed:
-        _printProblem(context, l10n, sale.number, l10n.printConnectFailed);
+        _printProblem(context, l10n, sale.ticket, l10n.printConnectFailed);
       case PrintOutcome.failed:
-        _printProblem(context, l10n, sale.number, l10n.printFailed);
+        _printProblem(context, l10n, sale.ticket, l10n.printFailed);
     }
     context.pop();
   }
 
-  void _printProblem(
-      BuildContext context, AppLocalizations l10n, int number, String problem) {
+  void _printProblem(BuildContext context, AppLocalizations l10n, String ticket,
+      String problem) {
     showAppSnack(
-        context, '${l10n.saleSaved(number)}. $problem ${l10n.printReprintHint}',
+        context, '${l10n.saleSaved(ticket)}. $problem ${l10n.printReprintHint}',
         kind: SnackKind.error);
   }
 

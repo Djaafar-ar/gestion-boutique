@@ -13,6 +13,7 @@ import 'generated/schema_v4.dart' as v4;
 import 'generated/schema_v5.dart' as v5;
 import 'generated/schema_v6.dart' as v6;
 import 'generated/schema_v7.dart' as v7;
+import 'generated/schema_v8.dart' as v8;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -300,6 +301,40 @@ void main() {
         final items = await newDb.select(newDb.returnItems).get();
         expect(items.map((i) => (i.saleItemId, i.backToStock, i.unitCost)),
             [('line1', 1, null)]);
+      },
+    );
+  });
+
+  // Wi-Fi sync: everything already in the shop goes into the change log,
+  // so a phone joining later receives it; new changes are logged too.
+  test('migration from v7 to v8 puts the shop in the change log', () async {
+    const at = '2026-10-06T14:32:00.000';
+    const product = v7.ProductsData(
+        id: 'p1',
+        createdAt: at,
+        updatedAt: at,
+        deviceId: 'phone-1',
+        deleted: 0,
+        name: 'Hamoud 33cl',
+        barcode: '613',
+        sellPrice: 6000,
+        buyPrice: 4000,
+        lowStockThreshold: 0,
+        archived: 0);
+
+    await verifier.testWithDataIntegrity(
+      oldVersion: 7,
+      newVersion: 8,
+      createOld: v7.DatabaseAtV7.new,
+      createNew: v8.DatabaseAtV8.new,
+      openTestedDatabase: AppDatabase.new,
+      createItems: (batch, oldDb) => batch.insert(oldDb.products, product),
+      validateItems: (newDb) async {
+        expect((await newDb.select(newDb.products).get()).single.name,
+            'Hamoud 33cl');
+        final log = await newDb.select(newDb.syncLog).get();
+        expect(log.map((l) => (l.entity, l.rowId)), [('products', 'p1')]);
+        expect(await newDb.select(newDb.devices).get(), isEmpty);
       },
     );
   });

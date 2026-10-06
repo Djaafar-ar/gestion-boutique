@@ -112,12 +112,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmAndPrint => 'Confirm and print';
 
   @override
-  String saleSaved(int number) {
+  String saleSaved(String number) {
     return 'Sale #$number saved';
   }
 
   @override
-  String saleSavedAndPrinted(int number) {
+  String saleSavedAndPrinted(String number) {
     return 'Sale #$number saved and printed';
   }
 
@@ -147,7 +147,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get historyEmptyBody => 'Confirmed sales will appear here.';
 
   @override
-  String saleTitle(int number) {
+  String saleTitle(String number) {
     return 'Sale #$number';
   }
 
@@ -962,7 +962,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String returnTitle(int number) {
+  String returnTitle(String number) {
     return 'Return for sale #$number';
   }
 
@@ -1100,7 +1100,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customerHistory => 'Account history';
 
   @override
-  String entryCreditSale(int number) {
+  String entryCreditSale(String number) {
     return 'Credit sale #$number';
   }
 
@@ -1108,7 +1108,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get entryPayment => 'Payment received';
 
   @override
-  String entryRefund(int number) {
+  String entryRefund(String number) {
     return 'Return of ticket #$number';
   }
 
@@ -1188,7 +1188,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allowAnyway => 'Allow';
 
   @override
-  String saleSavedCredit(int number, String amount, String name) {
+  String saleSavedCredit(String number, String amount, String name) {
     return 'Sale #$number saved · $amount on $name\'s account';
   }
 
@@ -1450,7 +1450,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get alertReturnTitle => 'Customer return';
 
   @override
-  String alertReturnBody(String by, int number, String amount) {
+  String alertReturnBody(String by, String number, String amount) {
     return '$by took back items from ticket #$number: $amount.';
   }
 
@@ -1622,7 +1622,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exchangeButton => 'Exchange';
 
   @override
-  String exchangeTitle(int number) {
+  String exchangeTitle(String number) {
     return 'Exchange of ticket #$number';
   }
 
@@ -1676,7 +1676,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exchangeNothingTaken => 'Add the items the customer takes.';
 
   @override
-  String exchangeSaved(int number) {
+  String exchangeSaved(String number) {
     return 'Exchange saved: ticket #$number.';
   }
 
@@ -1709,4 +1709,226 @@ class AppLocalizationsEn extends AppLocalizations {
   String alertExchangeBody(String by, String amount, String taken) {
     return '$by made an exchange: brought back $amount, taken $taken.';
   }
+
+  @override
+  String get syncTitle => 'Wi-Fi sync';
+
+  @override
+  String get syncSub => 'Link the shop\'s phones';
+
+  @override
+  String get syncStandaloneTitle => 'This phone is not linked to any other.';
+
+  @override
+  String get syncStandaloneBody =>
+      'On the owner\'s phone, switch on the hub: the workers\' phones link to it over the shop\'s Wi-Fi, without internet.';
+
+  @override
+  String get becomeHub => 'Make this the main phone';
+
+  @override
+  String get hubActive => 'Hub on';
+
+  @override
+  String get hubStopped => 'Hub off';
+
+  @override
+  String hubAddress(String address) {
+    return 'Address: $address';
+  }
+
+  @override
+  String get hubNoWifi => 'No Wi-Fi: connect this phone to the shop\'s Wi-Fi.';
+
+  @override
+  String get hubKeepOpen =>
+      'Keep the app open or in the background on this phone (do not close it) so the others can sync.';
+
+  @override
+  String get pairTitle => 'Link a phone';
+
+  @override
+  String get pairBody =>
+      'On the worker\'s phone, choose \"Join a shop\" and scan this code. Do not show it to anyone else: it gives access to the shop.';
+
+  @override
+  String get showPairingCode => 'Show the code';
+
+  @override
+  String get linkedPhones => 'Linked phones';
+
+  @override
+  String get noLinkedPhones => 'No other phone yet.';
+
+  @override
+  String devicePhoneLabel(String code, String name) {
+    return 'Phone $code · $name';
+  }
+
+  @override
+  String get thisPhone => 'This phone';
+
+  @override
+  String lastSyncAt(String time) {
+    return 'Last sync: $time';
+  }
+
+  @override
+  String get neverSynced => 'Never synced';
+
+  @override
+  String get removePhone => 'Remove this phone';
+
+  @override
+  String removePhoneBody(String name) {
+    return '$name will no longer be able to sync. What it already sent is kept.';
+  }
+
+  @override
+  String get phoneRemoved => 'Phone removed';
+
+  @override
+  String linkedTo(String shop, String code) {
+    return 'Linked to $shop · phone $code';
+  }
+
+  @override
+  String get syncNow => 'Sync now';
+
+  @override
+  String get syncing => 'Syncing…';
+
+  @override
+  String syncDone(int sent, int received) {
+    return 'Synced: $sent sent, $received received';
+  }
+
+  @override
+  String get syncAuto =>
+      'Syncs on its own every 2 minutes and after each sale.';
+
+  @override
+  String get syncErrUnreachable =>
+      'Hub not found. Is the owner\'s phone on, on the same Wi-Fi, with the app open?';
+
+  @override
+  String get syncErrSignature =>
+      'Shop code refused. Link this phone again with the owner\'s code.';
+
+  @override
+  String get syncErrVersion =>
+      'Different versions: install the same version of the app on both phones.';
+
+  @override
+  String get syncErrRemoved =>
+      'This phone was removed from the shop by the owner.';
+
+  @override
+  String get syncErrOther => 'The sync failed. Try again.';
+
+  @override
+  String pendingChanges(int count) {
+    return '$count change(s) to send';
+  }
+
+  @override
+  String get joinShop => 'Join an existing shop';
+
+  @override
+  String get joinTitle => 'Join a shop';
+
+  @override
+  String get joinIntro =>
+      'On the owner\'s phone: More → Wi-Fi sync → switch on the hub and show the code. Then scan it here. Both phones must be on the same Wi-Fi.';
+
+  @override
+  String get scanPairingCode => 'Scan the owner\'s code';
+
+  @override
+  String get notPairingCode => 'This is not a shop code.';
+
+  @override
+  String get deviceNameLabel => 'Name of this phone';
+
+  @override
+  String get deviceNameHint => 'e.g. Till 2';
+
+  @override
+  String joinButton(String shop) {
+    return 'Join $shop';
+  }
+
+  @override
+  String get joining => 'Downloading the shop…';
+
+  @override
+  String joined(String code) {
+    return 'Phone linked (phone $code). Log in with your PIN.';
+  }
+
+  @override
+  String get leaveShop => 'Join another shop';
+
+  @override
+  String get leaveShopSub => 'For a worker\'s phone: erases this phone';
+
+  @override
+  String get leaveShopBody =>
+      'All data on this phone (products, sales, accounts…) will be erased. Then it can join the owner\'s shop. Only do this on a worker\'s phone.';
+
+  @override
+  String get leaveShopConfirm => 'Erase this phone';
+
+  @override
+  String alertDuplicateBarcodeTitle(String barcode) {
+    return 'Duplicate barcode: $barcode';
+  }
+
+  @override
+  String alertDuplicateBarcodeBody(String names) {
+    return 'Products: $names. Merge them or change a barcode.';
+  }
+
+  @override
+  String alertDuplicateCustomerTitle(String phone) {
+    return 'Duplicate customer: $phone';
+  }
+
+  @override
+  String alertDuplicateCustomerBody(String names) {
+    return 'Customers: $names. Merge them from the customer page.';
+  }
+
+  @override
+  String get typeDuplicates => 'Duplicates (products, customers)';
+
+  @override
+  String get mergeInto => 'Merge with…';
+
+  @override
+  String mergeTitle(String name) {
+    return 'Merge into $name?';
+  }
+
+  @override
+  String mergeCustomerBody(String from, String into) {
+    return 'The sales, payments and debt of $from move to $into, then $from is archived.';
+  }
+
+  @override
+  String mergeProductBody(String from, String into) {
+    return 'The sales, stock and losses of $from move to $into, then $from is archived.';
+  }
+
+  @override
+  String get merge => 'Merge';
+
+  @override
+  String get merged => 'Merged';
+
+  @override
+  String get hubServiceTitle => 'Shop hub on';
+
+  @override
+  String get hubServiceText => 'The other phones can sync.';
 }

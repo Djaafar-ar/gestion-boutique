@@ -12,6 +12,9 @@ void main() {
     expect(guardRoute(session, '/sell'), '/setup');
     expect(guardRoute(session, '/login'), '/setup');
     expect(guardRoute(session, '/setup'), isNull);
+    // A worker's phone joins the owner's shop instead.
+    expect(guardRoute(session, '/join'), isNull);
+    expect(guardRoute(session, '/scanner'), isNull);
   });
 
   test('nobody logged in: only the PIN screen', () {

@@ -7,6 +7,7 @@ import '../../../../core/database/user_names.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/session/session_cubit.dart';
 import '../../../../core/settings/settings_store.dart';
+import '../../../billing/domain/entities/sale.dart';
 import '../../domain/entities/customer.dart';
 import '../../domain/repositories/customer_repository.dart';
 import '../customer_debts.dart';
@@ -116,7 +117,10 @@ class CustomerRepositoryImpl implements CustomerRepository {
             ..where((s) => s.customerId.equals(id) & s.deleted.equals(false)))
           .get();
       final saleIds = sales.map((s) => s.id).toList();
-      final numbers = {for (final s in sales) s.id: s.number};
+      final codes = await deviceCodes(db);
+      final tickets = {
+        for (final s in sales) s.id: ticketLabel(s.number, codes[s.deviceId]),
+      };
       final refunds = saleIds.isEmpty
           ? <ReturnRow>[]
           : await (db.select(db.returns)
@@ -142,7 +146,7 @@ class CustomerRepositoryImpl implements CustomerRepository {
             amount: s.total - s.paidNow,
             byName: names[s.userId],
             saleId: s.id,
-            saleNumber: s.number,
+            saleTicket: tickets[s.id],
             saleTotal: s.total,
             paidNow: s.paidNow,
           ),
@@ -153,7 +157,7 @@ class CustomerRepositoryImpl implements CustomerRepository {
             amount: -r.total,
             byName: names[r.userId],
             saleId: r.saleId,
-            saleNumber: numbers[r.saleId],
+            saleTicket: tickets[r.saleId],
             note: r.reason,
           ),
         for (final p in payments)

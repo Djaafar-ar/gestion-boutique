@@ -4,6 +4,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/service_locator.dart';
+import '../../../../core/session/session_cubit.dart';
+import '../../../../core/widgets/app_snack.dart';
+import '../../../../core/widgets/confirm_merge.dart';
+import '../../../sync/data/merge_service.dart';
+import '../widgets/product_picker.dart';
 import '../../../../core/utils/date_format.dart';
 import '../../../../core/utils/money.dart';
 import '../../../../core/widgets/empty_state.dart';
@@ -42,10 +47,34 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     }
   }
 
+  /// Owner: this product is the same as another one (a duplicate made on
+  /// two phones): everything moves to the other, this one is archived.
+  Future<void> _mergeInto(Product product) async {
+    final l10n = AppLocalizations.of(context);
+    final into = await pickProduct(context);
+    if (into == null || into.id == product.id || !mounted) return;
+    final ok = await confirmMerge(context,
+        into: into.name, body: l10n.mergeProductBody(product.name, into.name));
+    if (!ok || !mounted) return;
+    final result = await sl<MergeService>()
+        .mergeProducts(keepId: into.id, dropId: product.id);
+    if (!mounted) return;
+    result.fold(
+      (failure) => showAppSnack(context, l10n.errorWithDetail(failure.message),
+          kind: SnackKind.error),
+      (_) {
+        context.read<ProductBloc>().add(LoadProducts());
+        showAppSnack(context, l10n.merged, kind: SnackKind.success);
+        context.pop();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
+    final isOwner = context.watch<SessionCubit>().state.isOwner;
     final product = context
         .watch<ProductBloc>()
         .state
@@ -69,6 +98,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             tooltip: l10n.editProduct,
             onPressed: () => _open('/stock/edit/${product.id}', extra: product),
           ),
+          if (isOwner)
+            PopupMenuButton<void>(
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  onTap: () => _mergeInto(product),
+                  child: Text(l10n.mergeInto),
+                ),
+              ],
+            ),
         ],
       ),
       body: FutureBuilder<({List<StockBatch> batches, int stock})>(

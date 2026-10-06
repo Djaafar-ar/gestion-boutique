@@ -36,13 +36,21 @@ class _SalesHistoryPageState extends State<SalesHistoryPage> {
   Future<List<Sale>> _load() async {
     final session = context.read<SessionCubit>().state;
     final day = _day;
+    // "12" finds ticket 12 of every phone, "B-12" only phone B's.
+    final match =
+        RegExp(r'^([A-Za-z])?\s*-?\s*(\d+)$').firstMatch(_search.text.trim());
+    final letter = match?.group(1)?.toUpperCase();
     final result = await sl<SaleRepository>().getSales(
       userId: session.isOwner ? null : session.user?.id,
-      number: int.tryParse(_search.text.trim()),
+      number: match == null ? null : int.parse(match.group(2)!),
       from: day,
       to: day?.add(const Duration(days: 1)),
     );
-    return result.fold((failure) => throw failure.message, (sales) => sales);
+    return result.fold(
+        (failure) => throw failure.message,
+        (sales) => letter == null
+            ? sales
+            : sales.where((s) => (s.deviceCode ?? 'A') == letter).toList());
   }
 
   @override
@@ -95,7 +103,6 @@ class _SalesHistoryPageState extends State<SalesHistoryPage> {
                 Expanded(
                   child: TextField(
                     controller: _search,
-                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       hintText: l10n.searchTicketHint,
                       prefixIcon: const Icon(Icons.search),
@@ -251,7 +258,7 @@ class _SaleTile extends StatelessWidget {
             sale.isCredit ? Icons.menu_book_outlined : Icons.receipt_outlined,
             size: 20),
       ),
-      title: Text(l10n.saleTitle(sale.number),
+      title: Text(l10n.saleTitle(sale.ticket),
           style: const TextStyle(fontWeight: FontWeight.w600)),
       subtitle: Text([
         formatTime(sale.createdAt),

@@ -82,7 +82,7 @@ class _SaleDetailPageState extends State<SaleDetailPage> {
         final sale = snapshot.data;
         return Scaffold(
           appBar: AppBar(
-              title: Text(sale == null ? '' : l10n.saleTitle(sale.number))),
+              title: Text(sale == null ? '' : l10n.saleTitle(sale.ticket))),
           body: snapshot.hasError
               ? EmptyState(
                   icon: Icons.error_outline,

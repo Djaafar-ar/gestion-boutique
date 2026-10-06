@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/service_locator.dart';
@@ -143,6 +144,15 @@ class _SetupPageState extends State<SetupPage> {
                   Text(
                       isUpdate ? l10n.setupExistingBody : l10n.setupWelcomeBody,
                       style: TextStyle(color: scheme.onSurfaceVariant)),
+                  // A worker's phone joins the owner's shop instead.
+                  if (!isUpdate && _step == 0) ...[
+                    const SizedBox(height: 12),
+                    OutlinedButton.icon(
+                      onPressed: () => context.go('/join'),
+                      icon: const Icon(Icons.wifi_tethering),
+                      label: Text(l10n.joinShop),
+                    ),
+                  ],
                   const SizedBox(height: 32),
                   Text('${_step + 1}/$_steps · ${titles[_step]}',
                       style: TextStyle(

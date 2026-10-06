@@ -115,12 +115,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get confirmAndPrint => 'تأكيد وطباعة';
 
   @override
-  String saleSaved(int number) {
+  String saleSaved(String number) {
     return 'تم حفظ البيع رقم $number';
   }
 
   @override
-  String saleSavedAndPrinted(int number) {
+  String saleSavedAndPrinted(String number) {
     return 'تم حفظ وطباعة البيع رقم $number';
   }
 
@@ -150,7 +150,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get historyEmptyBody => 'ستظهر هنا المبيعات المؤكدة.';
 
   @override
-  String saleTitle(int number) {
+  String saleTitle(String number) {
     return 'البيع رقم $number';
   }
 
@@ -969,7 +969,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String returnTitle(int number) {
+  String returnTitle(String number) {
     return 'إرجاع البيع رقم $number';
   }
 
@@ -1107,7 +1107,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get customerHistory => 'سجل الحساب';
 
   @override
-  String entryCreditSale(int number) {
+  String entryCreditSale(String number) {
     return 'بيع بالدين رقم $number';
   }
 
@@ -1115,7 +1115,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get entryPayment => 'دفعة مستلمة';
 
   @override
-  String entryRefund(int number) {
+  String entryRefund(String number) {
     return 'إرجاع التذكرة رقم $number';
   }
 
@@ -1194,7 +1194,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get allowAnyway => 'السماح';
 
   @override
-  String saleSavedCredit(int number, String amount, String name) {
+  String saleSavedCredit(String number, String amount, String name) {
     return 'تم حفظ البيع رقم $number · $amount على حساب $name';
   }
 
@@ -1455,7 +1455,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get alertReturnTitle => 'إرجاع زبون';
 
   @override
-  String alertReturnBody(String by, int number, String amount) {
+  String alertReturnBody(String by, String number, String amount) {
     return 'قام $by بإرجاع من التذكرة رقم $number: $amount.';
   }
 
@@ -1628,7 +1628,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get exchangeButton => 'استبدال';
 
   @override
-  String exchangeTitle(int number) {
+  String exchangeTitle(String number) {
     return 'استبدال التذكرة رقم $number';
   }
 
@@ -1682,7 +1682,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get exchangeNothingTaken => 'أضف السلع التي يأخذها الزبون.';
 
   @override
-  String exchangeSaved(int number) {
+  String exchangeSaved(String number) {
     return 'تم حفظ الاستبدال: التذكرة رقم $number.';
   }
 
@@ -1715,4 +1715,224 @@ class AppLocalizationsAr extends AppLocalizations {
   String alertExchangeBody(String by, String amount, String taken) {
     return 'قام $by باستبدال: مُرجع $amount، مأخوذ $taken.';
   }
+
+  @override
+  String get syncTitle => 'المزامنة عبر Wi-Fi';
+
+  @override
+  String get syncSub => 'ربط هواتف المتجر';
+
+  @override
+  String get syncStandaloneTitle => 'هذا الهاتف غير مرتبط بأي هاتف آخر.';
+
+  @override
+  String get syncStandaloneBody =>
+      'على هاتف المالك، شغّل المحور: ترتبط به هواتف العمال عبر شبكة Wi-Fi المتجر، دون إنترنت.';
+
+  @override
+  String get becomeHub => 'اجعل هذا الهاتف هو الرئيسي';
+
+  @override
+  String get hubActive => 'المحور يعمل';
+
+  @override
+  String get hubStopped => 'المحور متوقف';
+
+  @override
+  String hubAddress(String address) {
+    return 'العنوان: $address';
+  }
+
+  @override
+  String get hubNoWifi => 'لا يوجد Wi-Fi: اربط هذا الهاتف بشبكة Wi-Fi المتجر.';
+
+  @override
+  String get hubKeepOpen =>
+      'أبقِ التطبيق مفتوحاً أو في الخلفية على هذا الهاتف (لا تغلقه) لكي تتمكن الهواتف الأخرى من المزامنة.';
+
+  @override
+  String get pairTitle => 'ربط هاتف';
+
+  @override
+  String get pairBody =>
+      'على هاتف العامل، اختر «الانضمام إلى متجر» وامسح هذا الرمز. لا تُظهره لأي شخص آخر: فهو يمنح الوصول إلى المتجر.';
+
+  @override
+  String get showPairingCode => 'إظهار الرمز';
+
+  @override
+  String get linkedPhones => 'الهواتف المرتبطة';
+
+  @override
+  String get noLinkedPhones => 'لا يوجد هاتف آخر بعد.';
+
+  @override
+  String devicePhoneLabel(String code, String name) {
+    return 'الهاتف $code · $name';
+  }
+
+  @override
+  String get thisPhone => 'هذا الهاتف';
+
+  @override
+  String lastSyncAt(String time) {
+    return 'آخر مزامنة: $time';
+  }
+
+  @override
+  String get neverSynced => 'لم تتم المزامنة بعد';
+
+  @override
+  String get removePhone => 'إزالة هذا الهاتف';
+
+  @override
+  String removePhoneBody(String name) {
+    return 'لن يتمكن $name من المزامنة بعد الآن. يُحتفظ بما أرسله سابقاً.';
+  }
+
+  @override
+  String get phoneRemoved => 'تمت إزالة الهاتف';
+
+  @override
+  String linkedTo(String shop, String code) {
+    return 'مرتبط بـ $shop · الهاتف $code';
+  }
+
+  @override
+  String get syncNow => 'زامن الآن';
+
+  @override
+  String get syncing => 'جارٍ المزامنة…';
+
+  @override
+  String syncDone(int sent, int received) {
+    return 'تمت المزامنة: $sent مُرسل، $received مُستلم';
+  }
+
+  @override
+  String get syncAuto => 'مزامنة تلقائية كل دقيقتين وبعد كل بيع.';
+
+  @override
+  String get syncErrUnreachable =>
+      'المحور غير موجود. هل هاتف المالك يعمل، على نفس شبكة Wi-Fi، والتطبيق مفتوح؟';
+
+  @override
+  String get syncErrSignature =>
+      'رُفض رمز المتجر. اربط هذا الهاتف مجدداً برمز المالك.';
+
+  @override
+  String get syncErrVersion =>
+      'إصدارات مختلفة: ثبّت نفس إصدار التطبيق على الهاتفين.';
+
+  @override
+  String get syncErrRemoved => 'أزال المالك هذا الهاتف من المتجر.';
+
+  @override
+  String get syncErrOther => 'فشلت المزامنة. أعد المحاولة.';
+
+  @override
+  String pendingChanges(int count) {
+    return '$count تغيير للإرسال';
+  }
+
+  @override
+  String get joinShop => 'الانضمام إلى متجر موجود';
+
+  @override
+  String get joinTitle => 'الانضمام إلى متجر';
+
+  @override
+  String get joinIntro =>
+      'على هاتف المالك: المزيد ← المزامنة عبر Wi-Fi ← شغّل المحور وأظهر الرمز. ثم امسحه هنا. يجب أن يكون الهاتفان على نفس شبكة Wi-Fi.';
+
+  @override
+  String get scanPairingCode => 'امسح رمز المالك';
+
+  @override
+  String get notPairingCode => 'هذا ليس رمز متجر.';
+
+  @override
+  String get deviceNameLabel => 'اسم هذا الهاتف';
+
+  @override
+  String get deviceNameHint => 'مثال: الصندوق 2';
+
+  @override
+  String joinButton(String shop) {
+    return 'الانضمام إلى $shop';
+  }
+
+  @override
+  String get joining => 'جارٍ تنزيل المتجر…';
+
+  @override
+  String joined(String code) {
+    return 'تم ربط الهاتف (الهاتف $code). سجّل الدخول برمز PIN.';
+  }
+
+  @override
+  String get leaveShop => 'الانضمام إلى متجر آخر';
+
+  @override
+  String get leaveShopSub => 'لهاتف عامل: يمسح هذا الهاتف';
+
+  @override
+  String get leaveShopBody =>
+      'سيتم مسح كل بيانات هذا الهاتف (المنتجات، المبيعات، الحسابات…). بعدها يمكنه الانضمام إلى متجر المالك. افعل ذلك فقط على هاتف عامل.';
+
+  @override
+  String get leaveShopConfirm => 'مسح هذا الهاتف';
+
+  @override
+  String alertDuplicateBarcodeTitle(String barcode) {
+    return 'رمز شريطي مكرر: $barcode';
+  }
+
+  @override
+  String alertDuplicateBarcodeBody(String names) {
+    return 'المنتجات: $names. ادمجها أو غيّر رمزاً شريطياً.';
+  }
+
+  @override
+  String alertDuplicateCustomerTitle(String phone) {
+    return 'زبون مكرر: $phone';
+  }
+
+  @override
+  String alertDuplicateCustomerBody(String names) {
+    return 'الزبائن: $names. ادمجهم من صفحة الزبون.';
+  }
+
+  @override
+  String get typeDuplicates => 'تكرارات (منتجات، زبائن)';
+
+  @override
+  String get mergeInto => 'دمج مع…';
+
+  @override
+  String mergeTitle(String name) {
+    return 'الدمج في $name؟';
+  }
+
+  @override
+  String mergeCustomerBody(String from, String into) {
+    return 'تنتقل مبيعات ومدفوعات ودين $from إلى $into، ثم يُؤرشف $from.';
+  }
+
+  @override
+  String mergeProductBody(String from, String into) {
+    return 'تنتقل مبيعات ومخزون وخسائر $from إلى $into، ثم يُؤرشف $from.';
+  }
+
+  @override
+  String get merge => 'دمج';
+
+  @override
+  String get merged => 'تم الدمج';
+
+  @override
+  String get hubServiceTitle => 'محور المتجر يعمل';
+
+  @override
+  String get hubServiceText => 'يمكن للهواتف الأخرى المزامنة.';
 }

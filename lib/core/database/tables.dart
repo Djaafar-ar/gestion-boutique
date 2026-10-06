@@ -310,6 +310,20 @@ class ChangeLogs extends Table with SyncColumns {
   Set<Column> get primaryKey => {id};
 }
 
+/// The phones of the shop, so everyone knows each phone's letter: the
+/// owner's hub is 'A', worker phones 'B', 'C'... Ticket numbers start
+/// with the letter of the phone that made them, so two phones never give
+/// the same number. `id` is the phone's device id.
+@DataClassName('DeviceRow')
+class Devices extends Table with SyncColumns {
+  TextColumn get code => text()();
+  TextColumn get name => text()();
+  TextColumn get role => text()(); // 'hub' or 'worker'
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 /// Alerts shown in the Alertes tab. Each phone works them out from its own
 /// data (after a sync too), so they are never synced. [id] says what the
 /// alert is about, for example 'lowStock:<product id>': there is never

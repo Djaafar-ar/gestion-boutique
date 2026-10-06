@@ -1,6 +1,8 @@
 import 'package:drift/drift.dart';
 
 import '../../../core/database/app_database.dart';
+import '../../../core/database/user_names.dart';
+import '../../billing/domain/entities/sale.dart';
 import '../../customers/data/customer_debts.dart';
 import '../../shop/data/repositories/shop_repository_impl.dart';
 import '../../stock/data/stock_ledger.dart';
@@ -78,6 +80,28 @@ Future<List<AlertDraft>> currentAlerts(AppDatabase db,
     }
   }
 
+  // The same barcode on two products: two phones created it before they
+  // synced. The owner merges them.
+  final byBarcode = <String, List<ProductRow>>{};
+  for (final product in products.values) {
+    if (product.barcode.trim().isEmpty) continue;
+    byBarcode.putIfAbsent(product.barcode.trim(), () => []).add(product);
+  }
+  for (final MapEntry(key: barcode, value: same) in byBarcode.entries) {
+    if (same.length < 2) continue;
+    drafts.add(AlertDraft(
+      id: 'duplicateBarcode:$barcode',
+      type: AlertType.duplicateBarcode,
+      refId: barcode,
+      data: {
+        'barcode': barcode,
+        'names': same.map((p) => p.name).join(', '),
+        'productId': same.first.id,
+      },
+      level: same.length,
+    ));
+  }
+
   // Supplier payments waiting for the owner.
   final pending = await (db.select(db.supplierPayments).join([
     leftOuterJoin(db.suppliers,
@@ -127,6 +151,31 @@ Future<List<AlertDraft>> currentAlerts(AppDatabase db,
     }
   }
 
+  // Two customers with the same phone number.
+  final active = await (db.select(db.customers)
+        ..where((c) => c.deleted.equals(false) & c.active.equals(true)))
+      .get();
+  final byPhone = <String, List<CustomerRow>>{};
+  for (final customer in active) {
+    final digits = customer.phone.replaceAll(RegExp(r'\D'), '');
+    if (digits.length < 6) continue;
+    byPhone.putIfAbsent(digits, () => []).add(customer);
+  }
+  for (final MapEntry(key: phone, value: same) in byPhone.entries) {
+    if (same.length < 2) continue;
+    drafts.add(AlertDraft(
+      id: 'duplicateCustomer:$phone',
+      type: AlertType.duplicateCustomer,
+      refId: phone,
+      data: {
+        'phone': same.first.phone,
+        'names': same.map((c) => c.name).join(', '),
+        'customerId': same.first.id,
+      },
+      level: same.length,
+    ));
+  }
+
   // Wrong PINs the owner has not looked at yet, per account.
   final attempts = await (db.select(db.failedLogins)
         ..where((f) => f.seen.equals(false) & f.deleted.equals(false)))
@@ -167,6 +216,7 @@ Future<List<AlertDraft>> currentAlerts(AppDatabase db,
       at: delivery.createdAt,
     ));
   }
+  final codes = await deviceCodes(db);
   final exchangeSales = db.alias(db.sales, 'exchange_sales');
   final returns = await (db.select(db.returns).join([
     leftOuterJoin(db.sales, db.sales.id.equalsExp(db.returns.saleId)),
@@ -186,7 +236,10 @@ Future<List<AlertDraft>> currentAlerts(AppDatabase db,
       data: {
         // The ticket to open: the exchange ticket, else the old one.
         'saleId': ret.exchangeSaleId ?? ret.saleId,
-        'number': row.readTableOrNull(db.sales)?.number,
+        'ticket': switch (row.readTableOrNull(db.sales)) {
+          final sale? => ticketLabel(sale.number, codes[sale.deviceId]),
+          null => null,
+        },
         'amount': ret.total,
         'taken': row.readTableOrNull(exchangeSales)?.total,
         'kind': ret.exchangeSaleId != null

@@ -361,6 +361,16 @@ At the **end of every phase**:
 - Conflict rules from §3.4, duplicate-barcode alert.
 - Tests: two in-memory databases sync with each other (duplicates, conflicts, interrupted sync).
 - **You test on your 2 real phones:** pair, sell on the worker phone, see the sale on the owner phone, change a price on the owner phone, see it on the worker phone, turn Wi-Fi off/on, sync resumes.
+- **How it was built:**
+  - **Change log:** database triggers write every insert or update of a shared row to a change log (`sync_log`, database v8). Existing data was added to it once, so a phone joining later receives everything.
+  - **Server:** the hub is a plain `dart:io` HTTP server on port 8787, with no extra package. It runs in the app, kept alive by an Android foreground service (`specialUse`, with a Wi-Fi lock) that shows "Hub actif".
+  - **Each sync:** the worker sends its own new changes, then receives every change after its last one, 500 rows at a time. If the answer is lost, the same rows are sent again; the hub keeps one copy of each, by record id.
+  - **Security:** every request and answer is signed (HMAC-SHA256) with the shop secret, and the "where is the hub?" UDP answer (port 8788) is signed too. Data travels unencrypted but only on the local Wi-Fi.
+  - **Conflicts:** the last change wins by the hub's clock. A worker clock that is more than 2 minutes off is corrected. A change made on the worker and not yet sent is never overwritten by an older version from the hub.
+  - **Phone letters:** owner A, workers B, C… Each phone numbers its own tickets: `42` on the owner's phone, `B-42` on phone B. Search accepts "B-42".
+  - **Joining:** a new phone uses "Rejoindre une boutique existante" on its first screen. A phone that already has its own data uses Plus → Synchronisation Wi-Fi → "Rejoindre une autre boutique", which erases it after the owner types their PIN.
+  - **Duplicates:** the same barcode, or the same customer phone number, created on two phones raises an owner alert. "Fusionner avec…" moves sales, stock, payments and debt to the record kept and archives the other.
+  - **Not done:** no automatic sync just because the phone connected to Wi-Fi (it syncs every 2 minutes, 5 seconds after a change, and on "Sync now").
 
 ### Phase 8: Google Sheets and live sales (added after Phase 2)
 **Idea in simple words:** your Google Sheet becomes a live copy of the shop, for viewing and reports. Every phone with internet (mobile data) posts its own new records to a small Google Apps Script attached to the sheet, so you don't need your own server. Wi-Fi sync (Phase 7) stays the main way data reaches the owner's phone; the sheet is an extra.

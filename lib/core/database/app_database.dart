@@ -2,11 +2,14 @@ import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 
 import 'app_database.steps.dart';
+import 'synced_tables.dart';
 import 'tables.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [
+@DriftDatabase(include: {
+  'sync.drift'
+}, tables: [
   Shops,
   Categories,
   Products,
@@ -24,6 +27,7 @@ part 'app_database.g.dart';
   Users,
   ChangeLogs,
   FailedLogins,
+  Devices,
   Alerts,
   AlertReads,
   AppSettings,
@@ -41,7 +45,7 @@ class AppDatabase extends _$AppDatabase {
   // 2. run: dart run drift_dev make-migrations
   // 3. add the new step below (the generated tests check it).
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -102,6 +106,55 @@ class AppDatabase extends _$AppDatabase {
             await m.createIndex(schema.returnsExchangeSale);
             await m.alterTable(TableMigration(schema.returnItems,
                 newColumns: [schema.returnItems.unitCost]));
+          },
+          // Phase 7: Wi-Fi sync. Phones get letters, and every change of a
+          // shared row is written to the change log by triggers.
+          from7To8: (m, schema) async {
+            await m.createTable(schema.devices);
+            await m.createTable(schema.syncLog);
+            await m.create(schema.syncLogShopsInsert);
+            await m.create(schema.syncLogShopsUpdate);
+            await m.create(schema.syncLogCategoriesInsert);
+            await m.create(schema.syncLogCategoriesUpdate);
+            await m.create(schema.syncLogProductsInsert);
+            await m.create(schema.syncLogProductsUpdate);
+            await m.create(schema.syncLogDeliveriesInsert);
+            await m.create(schema.syncLogDeliveriesUpdate);
+            await m.create(schema.syncLogStockAllocationsInsert);
+            await m.create(schema.syncLogStockAllocationsUpdate);
+            await m.create(schema.syncLogLossesInsert);
+            await m.create(schema.syncLogLossesUpdate);
+            await m.create(schema.syncLogReturnsInsert);
+            await m.create(schema.syncLogReturnsUpdate);
+            await m.create(schema.syncLogReturnItemsInsert);
+            await m.create(schema.syncLogReturnItemsUpdate);
+            await m.create(schema.syncLogSuppliersInsert);
+            await m.create(schema.syncLogSuppliersUpdate);
+            await m.create(schema.syncLogSupplierPaymentsInsert);
+            await m.create(schema.syncLogSupplierPaymentsUpdate);
+            await m.create(schema.syncLogCustomersInsert);
+            await m.create(schema.syncLogCustomersUpdate);
+            await m.create(schema.syncLogCustomerPaymentsInsert);
+            await m.create(schema.syncLogCustomerPaymentsUpdate);
+            await m.create(schema.syncLogSalesInsert);
+            await m.create(schema.syncLogSalesUpdate);
+            await m.create(schema.syncLogSaleItemsInsert);
+            await m.create(schema.syncLogSaleItemsUpdate);
+            await m.create(schema.syncLogUsersInsert);
+            await m.create(schema.syncLogUsersUpdate);
+            await m.create(schema.syncLogFailedLoginsInsert);
+            await m.create(schema.syncLogFailedLoginsUpdate);
+            await m.create(schema.syncLogChangeLogsInsert);
+            await m.create(schema.syncLogChangeLogsUpdate);
+            await m.create(schema.syncLogDevicesInsert);
+            await m.create(schema.syncLogDevicesUpdate);
+            // Everything already in the shop is "changed" once, so a worker
+            // phone joining later receives it all.
+            for (final table in syncedTables) {
+              await customStatement(
+                  'INSERT OR REPLACE INTO sync_log (entity, row_id) '
+                  "SELECT '$table', id FROM $table");
+            }
           },
         ),
       );

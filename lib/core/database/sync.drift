@@ -1,0 +1,194 @@
+import 'tables.dart';
+
+-- The change log used by the Wi-Fi sync. Every insert or update of a
+-- shared row writes its table (entity) and row id here, one line per row:
+-- a new change moves the line to the end with a new number (delete, then
+-- insert: an "OR REPLACE" here would be overruled by an upsert). The hub
+-- serves this log in order; a worker phone sends the lines it wrote.
+CREATE TABLE sync_log (
+  seq INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  entity TEXT NOT NULL,
+  row_id TEXT NOT NULL,
+  UNIQUE (entity, row_id)
+) AS SyncLogRow;
+
+
+CREATE TRIGGER sync_log_shops_insert AFTER INSERT ON shops BEGIN
+  DELETE FROM sync_log WHERE entity = 'shops' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('shops', new.id);
+END;
+
+CREATE TRIGGER sync_log_shops_update AFTER UPDATE ON shops BEGIN
+  DELETE FROM sync_log WHERE entity = 'shops' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('shops', new.id);
+END;
+
+CREATE TRIGGER sync_log_categories_insert AFTER INSERT ON categories BEGIN
+  DELETE FROM sync_log WHERE entity = 'categories' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('categories', new.id);
+END;
+
+CREATE TRIGGER sync_log_categories_update AFTER UPDATE ON categories BEGIN
+  DELETE FROM sync_log WHERE entity = 'categories' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('categories', new.id);
+END;
+
+CREATE TRIGGER sync_log_products_insert AFTER INSERT ON products BEGIN
+  DELETE FROM sync_log WHERE entity = 'products' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('products', new.id);
+END;
+
+CREATE TRIGGER sync_log_products_update AFTER UPDATE ON products BEGIN
+  DELETE FROM sync_log WHERE entity = 'products' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('products', new.id);
+END;
+
+CREATE TRIGGER sync_log_deliveries_insert AFTER INSERT ON deliveries BEGIN
+  DELETE FROM sync_log WHERE entity = 'deliveries' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('deliveries', new.id);
+END;
+
+CREATE TRIGGER sync_log_deliveries_update AFTER UPDATE ON deliveries BEGIN
+  DELETE FROM sync_log WHERE entity = 'deliveries' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('deliveries', new.id);
+END;
+
+CREATE TRIGGER sync_log_stock_allocations_insert AFTER INSERT ON stock_allocations BEGIN
+  DELETE FROM sync_log WHERE entity = 'stock_allocations' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('stock_allocations', new.id);
+END;
+
+CREATE TRIGGER sync_log_stock_allocations_update AFTER UPDATE ON stock_allocations BEGIN
+  DELETE FROM sync_log WHERE entity = 'stock_allocations' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('stock_allocations', new.id);
+END;
+
+CREATE TRIGGER sync_log_losses_insert AFTER INSERT ON losses BEGIN
+  DELETE FROM sync_log WHERE entity = 'losses' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('losses', new.id);
+END;
+
+CREATE TRIGGER sync_log_losses_update AFTER UPDATE ON losses BEGIN
+  DELETE FROM sync_log WHERE entity = 'losses' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('losses', new.id);
+END;
+
+CREATE TRIGGER sync_log_returns_insert AFTER INSERT ON returns BEGIN
+  DELETE FROM sync_log WHERE entity = 'returns' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('returns', new.id);
+END;
+
+CREATE TRIGGER sync_log_returns_update AFTER UPDATE ON returns BEGIN
+  DELETE FROM sync_log WHERE entity = 'returns' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('returns', new.id);
+END;
+
+CREATE TRIGGER sync_log_return_items_insert AFTER INSERT ON return_items BEGIN
+  DELETE FROM sync_log WHERE entity = 'return_items' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('return_items', new.id);
+END;
+
+CREATE TRIGGER sync_log_return_items_update AFTER UPDATE ON return_items BEGIN
+  DELETE FROM sync_log WHERE entity = 'return_items' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('return_items', new.id);
+END;
+
+CREATE TRIGGER sync_log_suppliers_insert AFTER INSERT ON suppliers BEGIN
+  DELETE FROM sync_log WHERE entity = 'suppliers' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('suppliers', new.id);
+END;
+
+CREATE TRIGGER sync_log_suppliers_update AFTER UPDATE ON suppliers BEGIN
+  DELETE FROM sync_log WHERE entity = 'suppliers' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('suppliers', new.id);
+END;
+
+CREATE TRIGGER sync_log_supplier_payments_insert AFTER INSERT ON supplier_payments BEGIN
+  DELETE FROM sync_log WHERE entity = 'supplier_payments' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('supplier_payments', new.id);
+END;
+
+CREATE TRIGGER sync_log_supplier_payments_update AFTER UPDATE ON supplier_payments BEGIN
+  DELETE FROM sync_log WHERE entity = 'supplier_payments' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('supplier_payments', new.id);
+END;
+
+CREATE TRIGGER sync_log_customers_insert AFTER INSERT ON customers BEGIN
+  DELETE FROM sync_log WHERE entity = 'customers' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('customers', new.id);
+END;
+
+CREATE TRIGGER sync_log_customers_update AFTER UPDATE ON customers BEGIN
+  DELETE FROM sync_log WHERE entity = 'customers' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('customers', new.id);
+END;
+
+CREATE TRIGGER sync_log_customer_payments_insert AFTER INSERT ON customer_payments BEGIN
+  DELETE FROM sync_log WHERE entity = 'customer_payments' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('customer_payments', new.id);
+END;
+
+CREATE TRIGGER sync_log_customer_payments_update AFTER UPDATE ON customer_payments BEGIN
+  DELETE FROM sync_log WHERE entity = 'customer_payments' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('customer_payments', new.id);
+END;
+
+CREATE TRIGGER sync_log_sales_insert AFTER INSERT ON sales BEGIN
+  DELETE FROM sync_log WHERE entity = 'sales' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('sales', new.id);
+END;
+
+CREATE TRIGGER sync_log_sales_update AFTER UPDATE ON sales BEGIN
+  DELETE FROM sync_log WHERE entity = 'sales' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('sales', new.id);
+END;
+
+CREATE TRIGGER sync_log_sale_items_insert AFTER INSERT ON sale_items BEGIN
+  DELETE FROM sync_log WHERE entity = 'sale_items' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('sale_items', new.id);
+END;
+
+CREATE TRIGGER sync_log_sale_items_update AFTER UPDATE ON sale_items BEGIN
+  DELETE FROM sync_log WHERE entity = 'sale_items' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('sale_items', new.id);
+END;
+
+CREATE TRIGGER sync_log_users_insert AFTER INSERT ON users BEGIN
+  DELETE FROM sync_log WHERE entity = 'users' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('users', new.id);
+END;
+
+CREATE TRIGGER sync_log_users_update AFTER UPDATE ON users BEGIN
+  DELETE FROM sync_log WHERE entity = 'users' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('users', new.id);
+END;
+
+CREATE TRIGGER sync_log_failed_logins_insert AFTER INSERT ON failed_logins BEGIN
+  DELETE FROM sync_log WHERE entity = 'failed_logins' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('failed_logins', new.id);
+END;
+
+CREATE TRIGGER sync_log_failed_logins_update AFTER UPDATE ON failed_logins BEGIN
+  DELETE FROM sync_log WHERE entity = 'failed_logins' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('failed_logins', new.id);
+END;
+
+CREATE TRIGGER sync_log_change_logs_insert AFTER INSERT ON change_logs BEGIN
+  DELETE FROM sync_log WHERE entity = 'change_logs' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('change_logs', new.id);
+END;
+
+CREATE TRIGGER sync_log_change_logs_update AFTER UPDATE ON change_logs BEGIN
+  DELETE FROM sync_log WHERE entity = 'change_logs' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('change_logs', new.id);
+END;
+
+CREATE TRIGGER sync_log_devices_insert AFTER INSERT ON devices BEGIN
+  DELETE FROM sync_log WHERE entity = 'devices' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('devices', new.id);
+END;
+
+CREATE TRIGGER sync_log_devices_update AFTER UPDATE ON devices BEGIN
+  DELETE FROM sync_log WHERE entity = 'devices' AND row_id = new.id;
+  INSERT INTO sync_log (entity, row_id) VALUES ('devices', new.id);
+END;

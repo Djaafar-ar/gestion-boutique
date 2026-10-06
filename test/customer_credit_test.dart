@@ -222,7 +222,7 @@ void main() {
       (CustomerEntryKind.payment, -20000),
       (CustomerEntryKind.sale, 100000),
     ]);
-    expect(history.last.saleNumber, sale.number);
+    expect(history.last.saleTicket, sale.ticket);
     expect(history.last.byName, 'Amine');
     expect(history.first.note, 'Espèces');
   });
