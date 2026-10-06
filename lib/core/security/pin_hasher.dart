@@ -38,6 +38,11 @@ class PinHasher {
     return difference == 0;
   }
 
-  /// A valid PIN is exactly 4 digits.
-  static bool isValidPin(String pin) => RegExp(r'^\d{4}$').hasMatch(pin);
+  /// Workers always have 4 digits; the owner may choose 6.
+  static const workerLength = 4;
+  static const ownerLengths = [4, 6];
+
+  /// A PIN made of exactly [length] digits.
+  static bool isValidPin(String pin, {int length = workerLength}) =>
+      pin.length == length && pin.codeUnits.every((c) => c >= 48 && c <= 57);
 }

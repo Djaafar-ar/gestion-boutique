@@ -23,6 +23,7 @@ import '../../features/product/domain/entities/product.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/setup_page.dart';
 import '../../features/users/domain/entities/app_user.dart';
+import '../../features/users/presentation/pages/failed_logins_page.dart';
 import '../../features/users/presentation/pages/profile_page.dart';
 import '../../features/users/presentation/pages/user_form_page.dart';
 import '../../features/users/presentation/pages/workers_page.dart';
@@ -131,6 +132,11 @@ final router = GoRouter(
                 path: 'profile',
                 parentNavigatorKey: rootNavigatorKey,
                 builder: (context, state) => const ProfilePage(),
+              ),
+              GoRoute(
+                path: 'security',
+                parentNavigatorKey: rootNavigatorKey,
+                builder: (context, state) => const FailedLoginsPage(),
               ),
               GoRoute(
                 path: 'workers',

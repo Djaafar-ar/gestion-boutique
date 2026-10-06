@@ -26,8 +26,12 @@ void main() {
     final settings = SettingsStore(db);
     await settings.load();
     final users = UserRepositoryImpl(db, settings);
-    await users.createOwner(name: 'Karim', phone: '', pin: '1234');
-    amine = (await users.addWorker(name: 'Amine', phone: '', pin: '5678'))
+    final owner =
+        (await users.createOwner(name: 'Karim', phone: '', pin: '1234'))
+            .getOrElse((f) => fail(f.message))
+            .owner;
+    amine = (await users.addWorker(
+            actorId: owner.id, name: 'Amine', phone: '', pin: '5678'))
         .getOrElse((f) => fail(f.message));
     session = SessionCubit(hasOwner: true)..login(amine);
     repo = ProductRepositoryImpl(db, settings, session);

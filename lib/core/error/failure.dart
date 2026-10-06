@@ -16,3 +16,14 @@ class CacheFailure extends Failure {
 class NotFoundFailure extends Failure {
   const NotFoundFailure(super.message);
 }
+
+/// The person is not allowed to do this (for example a worker trying to
+/// reset someone else's PIN).
+class PermissionFailure extends Failure {
+  const PermissionFailure(super.message);
+}
+
+/// A PIN or recovery code was wrong.
+class WrongSecretFailure extends Failure {
+  const WrongSecretFailure(super.message);
+}

@@ -1,17 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/l10n/app_localizations.dart';
+import '../../core/service_locator.dart';
+import '../../core/session/session_cubit.dart';
+import '../../features/users/domain/repositories/user_repository.dart';
+import '../../features/users/presentation/pages/failed_logins_page.dart';
 
 /// Which bottom tab is visible. The Sell tab listens to it to switch the
 /// camera off while another tab is open.
 final currentTabIndex = ValueNotifier<int>(0);
 
 /// The frame around the 5 main tabs, with the bottom navigation bar.
-class AppShell extends StatelessWidget {
+class AppShell extends StatefulWidget {
   final StatefulNavigationShell shell;
 
   const AppShell({super.key, required this.shell});
+
+  @override
+  State<AppShell> createState() => _AppShellState();
+}
+
+class _AppShellState extends State<AppShell> {
+  StatefulNavigationShell get shell => widget.shell;
+
+  @override
+  void initState() {
+    super.initState();
+    // The shell is built again after every login.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _warnOwner());
+  }
+
+  /// Tells the owner about wrong codes typed since their last login.
+  Future<void> _warnOwner() async {
+    if (!context.read<SessionCubit>().state.isOwner) return;
+    final attempts =
+        await sl<UserRepository>().getFailedLogins(unseenOnly: true);
+    if (attempts.isEmpty || !mounted) return;
+    await showFailedLoginsWarning(context, attempts,
+        onSeeAll: () => context.push('/more/security'));
+  }
 
   @override
   Widget build(BuildContext context) {

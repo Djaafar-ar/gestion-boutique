@@ -10,12 +10,20 @@ class AppUser extends Equatable {
   final UserRole role;
   final bool active;
 
+  /// How many digits the PIN has (4, or 6 for an owner who chose it).
+  final int pinLength;
+
+  /// Locked after too many wrong PINs.
+  final bool lockedOut;
+
   const AppUser({
     required this.id,
     required this.name,
     this.phone = '',
     required this.role,
     this.active = true,
+    this.pinLength = 4,
+    this.lockedOut = false,
   });
 
   bool get isOwner => role == UserRole.owner;
@@ -35,8 +43,31 @@ class AppUser extends Equatable {
         phone: phone ?? this.phone,
         role: role,
         active: active ?? this.active,
+        pinLength: pinLength,
+        lockedOut: lockedOut,
       );
 
   @override
-  List<Object?> get props => [id, name, phone, role, active];
+  List<Object?> get props =>
+      [id, name, phone, role, active, pinLength, lockedOut];
+}
+
+enum FailedLoginKind { pin, recovery }
+
+/// A wrong PIN or recovery code typed for [accountName]'s account.
+class FailedLogin extends Equatable {
+  final String accountId;
+  final String accountName;
+  final FailedLoginKind kind;
+  final DateTime at;
+
+  const FailedLogin({
+    required this.accountId,
+    required this.accountName,
+    required this.kind,
+    required this.at,
+  });
+
+  @override
+  List<Object?> get props => [accountId, accountName, kind, at];
 }

@@ -470,11 +470,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String loginLocked(int seconds) {
-    return 'Too many tries. Try again in $seconds s.';
-  }
-
-  @override
   String get roleOwner => 'Owner';
 
   @override
@@ -607,5 +602,158 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String soldBy(String name) {
     return 'Sold by $name';
+  }
+
+  @override
+  String get commonOk => 'OK';
+
+  @override
+  String get continueLabel => 'Continue';
+
+  @override
+  String get pinLengthLabel => 'PIN length';
+
+  @override
+  String pinDigits(int count) {
+    return '$count digits';
+  }
+
+  @override
+  String pinLabelN(int count) {
+    return 'PIN ($count digits)';
+  }
+
+  @override
+  String newPinLabelN(int count) {
+    return 'New PIN ($count digits)';
+  }
+
+  @override
+  String pinInvalidN(int count) {
+    return 'The PIN must have $count digits';
+  }
+
+  @override
+  String get pinInvalidAny => 'Invalid PIN';
+
+  @override
+  String loginWait(String time) {
+    return 'Too many wrong PINs. Try again in $time.';
+  }
+
+  @override
+  String get loginWaitPaused =>
+      'The countdown only runs while the app is open.';
+
+  @override
+  String get loginLockedWorker =>
+      'This account is locked after too many wrong PINs. Ask the owner to unlock it.';
+
+  @override
+  String get loginLockedOwner =>
+      'This account is locked after too many wrong PINs. Use your recovery code.';
+
+  @override
+  String get forgotPin => 'Forgot your PIN?';
+
+  @override
+  String get recoveryTitle => 'Recover the account';
+
+  @override
+  String get recoveryIntro =>
+      'Type the recovery code you wrote down when the account was created, then choose a new PIN.';
+
+  @override
+  String get recoveryCodeLabel => 'Recovery code';
+
+  @override
+  String get recoveryCodeHint => 'e.g. K7QM-3WZD-HP9X';
+
+  @override
+  String get recoveryCodeWrong =>
+      'Wrong recovery code. The attempt is recorded.';
+
+  @override
+  String get recoveryShowTitle => 'Your recovery code';
+
+  @override
+  String get recoveryShowBody =>
+      'Write this code on paper and keep it somewhere safe. It lets you change the owner PIN if it is forgotten or locked. It will never be shown again.';
+
+  @override
+  String get recoveryOldCodeUsed =>
+      'The old code was used and no longer works. Here is the new one.';
+
+  @override
+  String get recoveryNoted => 'I wrote this code down';
+
+  @override
+  String get recoveryTile => 'Recovery code';
+
+  @override
+  String get recoveryMissing => 'Not created yet: create it now';
+
+  @override
+  String get recoveryExists =>
+      'Created. Tap to make a new one (the old one will stop working).';
+
+  @override
+  String get recoveryMissingBanner =>
+      'Create your recovery code: without it, a forgotten or locked owner PIN cannot be changed.';
+
+  @override
+  String get confirmWithPin => 'Enter your current PIN to continue';
+
+  @override
+  String get lockedBadge => 'LOCKED';
+
+  @override
+  String get lockedWorkerCard =>
+      'This account is locked after too many wrong PINs.';
+
+  @override
+  String get unlockAccount => 'Unlock the account';
+
+  @override
+  String get accountUnlocked => 'Account unlocked';
+
+  @override
+  String get resetPinLabel => 'New PIN (to reset it)';
+
+  @override
+  String get ownerPinFromProfile => 'Change your own PIN from your profile.';
+
+  @override
+  String get failedLoginsTitle => 'Failed login attempts';
+
+  @override
+  String get failedLoginsSub => 'Wrong codes typed, by account';
+
+  @override
+  String failedLoginsWarning(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count wrong codes were typed since your last login.',
+      one: '1 wrong code was typed since your last login.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get failedLoginsEmpty => 'No failed attempts.';
+
+  @override
+  String get seeAll => 'See all';
+
+  @override
+  String get securitySection => 'Security';
+
+  @override
+  String get kindPin => 'PIN';
+
+  @override
+  String accountLabel(String name) {
+    return 'Account: $name';
   }
 }

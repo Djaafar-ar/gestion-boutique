@@ -33,7 +33,6 @@ class _WorkersPageState extends State<WorkersPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.workersTitle)),
@@ -69,17 +68,11 @@ class _WorkersPageState extends State<WorkersPage> {
                           user.isOwner ? l10n.roleOwner : l10n.roleWorker,
                           if (user.phone.isNotEmpty) user.phone,
                         ].join(' · ')),
-                        trailing: user.active
-                            ? const Icon(Icons.chevron_right)
-                            : Chip(
-                                label: Text(l10n.inactiveBadge,
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        color: scheme.onErrorContainer)),
-                                backgroundColor: scheme.errorContainer,
-                                side: BorderSide.none,
-                                visualDensity: VisualDensity.compact,
-                              ),
+                        trailing: user.lockedOut
+                            ? _Badge(icon: Icons.lock, text: l10n.lockedBadge)
+                            : !user.active
+                                ? _Badge(text: l10n.inactiveBadge)
+                                : const Icon(Icons.chevron_right),
                         onTap: () =>
                             _open('/more/workers/${user.id}', user: user),
                       ),
@@ -105,6 +98,29 @@ class _WorkersPageState extends State<WorkersPage> {
         icon: const Icon(Icons.person_add_alt_1),
         label: Text(l10n.addWorker),
       ),
+    );
+  }
+}
+
+/// Small red label such as "LOCKED" or "DISABLED".
+class _Badge extends StatelessWidget {
+  final String text;
+  final IconData? icon;
+
+  const _Badge({required this.text, this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Chip(
+      avatar: icon == null
+          ? null
+          : Icon(icon, size: 14, color: scheme.onErrorContainer),
+      label: Text(text,
+          style: TextStyle(fontSize: 10, color: scheme.onErrorContainer)),
+      backgroundColor: scheme.errorContainer,
+      side: BorderSide.none,
+      visualDensity: VisualDensity.compact,
     );
   }
 }

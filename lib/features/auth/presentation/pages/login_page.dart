@@ -10,9 +10,11 @@ import '../../../users/domain/entities/app_user.dart';
 import '../../../users/domain/repositories/user_repository.dart';
 import '../../../users/presentation/widgets/user_avatar.dart';
 import '../../data/login_guard.dart';
+import '../../data/login_service.dart';
 import '../widgets/pin_pad.dart';
+import 'recovery_page.dart';
 
-/// Pick your name, then type your 4-digit PIN.
+/// Pick your name, then type your PIN.
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -21,71 +23,102 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final LoginGuard _guard = sl<LoginGuard>();
-  late final Future<List<AppUser>> _users = _loadUsers();
+  final LoginService _login = sl<LoginService>();
+  late Future<List<AppUser>> _users = _loadUsers();
   AppUser? _selected;
+
+  /// Why the PIN pad is blocked (wait or lock), or null.
+  LoginResult? _blocked;
   String? _message;
-  Timer? _lockTimer;
+  bool _checking = false;
+  Timer? _timer;
 
   Future<List<AppUser>> _loadUsers() async {
     final result = await sl<UserRepository>().getUsers(activeOnly: true);
     final users = result.getOrElse((_) => []);
     // Only one account: go straight to the PIN.
-    if (users.length == 1) _selected = users.single;
+    if (users.length == 1 && _selected == null) await _select(users.single);
     return users;
   }
 
   @override
-  void initState() {
-    super.initState();
-    _tickLock();
-  }
-
-  @override
   void dispose() {
-    _lockTimer?.cancel();
+    _timer?.cancel();
+    final user = _selected;
+    if (user != null) sl<LoginGuard>().saveProgress(user.id);
     super.dispose();
   }
 
-  /// Refreshes the countdown every second while the screen is locked.
-  void _tickLock() {
-    _lockTimer?.cancel();
-    if (!_guard.isLocked) return;
-    _lockTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+  Future<void> _select(AppUser user) async {
+    final status = await _login.status(user.id);
+    if (!mounted) return;
+    setState(() {
+      _selected = user;
+      _message = null;
+      _blocked = status;
+    });
+    _startCountdown();
+  }
+
+  /// While waiting: redraw every second and save the time left, so
+  /// closing the app pauses the wait instead of cancelling it.
+  void _startCountdown() {
+    _timer?.cancel();
+    if (_blocked is! LoginMustWait) return;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+      final user = _selected;
+      if (!mounted || user == null) return timer.cancel();
+      await sl<LoginGuard>().saveProgress(user.id);
+      final status = await _login.status(user.id);
       if (!mounted) return;
-      setState(() {});
-      if (!_guard.isLocked) {
-        timer.cancel();
-        setState(() => _message = null);
-      }
+      setState(() => _blocked = status);
+      if (status is! LoginMustWait) timer.cancel();
     });
   }
 
   Future<void> _checkPin(String pin) async {
     final user = _selected;
-    if (user == null || _guard.isLocked) return;
+    if (user == null || _checking) return;
     final l10n = AppLocalizations.of(context);
-
-    final ok = await sl<UserRepository>().checkPin(user.id, pin);
+    setState(() => _checking = true);
+    final result = await _login.tryPin(user.id, pin);
     if (!mounted) return;
-    if (ok != null) {
-      await _guard.recordSuccess();
-      if (mounted) context.read<SessionCubit>().login(ok);
-      return;
+    setState(() => _checking = false);
+
+    switch (result) {
+      case LoginSuccess(:final user):
+        context.read<SessionCubit>().login(user);
+      case LoginWrongPin(:final triesLeft):
+        setState(() => _message = l10n.loginWrongPin(triesLeft));
+      case LoginMustWait() || LoginLockedOut():
+        setState(() {
+          _message = null;
+          _blocked = result;
+          // Show the lock icon on the account right away.
+          if (result is LoginLockedOut) _users = _loadUsers();
+        });
+        _startCountdown();
     }
-    await _guard.recordFailure();
-    setState(() {
-      _message =
-          _guard.isLocked ? null : l10n.loginWrongPin(_guard.attemptsLeft);
-    });
-    _tickLock();
+  }
+
+  Future<void> _openRecovery() async {
+    final recovered = await Navigator.of(context)
+        .push<AppUser>(MaterialPageRoute(builder: (_) => const RecoveryPage()));
+    if (recovered != null && mounted) {
+      context.read<SessionCubit>().login(recovered);
+    } else if (mounted) {
+      // The owner may have been unlocked; reload the list and status.
+      setState(() => _users = _loadUsers());
+      final user = _selected;
+      if (user != null) await _select(user);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
-    final locked = _guard.isLocked;
+    final selected = _selected;
 
     return Scaffold(
       body: SafeArea(
@@ -102,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                 Icon(Icons.storefront, size: 48, color: scheme.primary),
                 const SizedBox(height: 12),
                 Text(
-                  _selected == null ? l10n.loginTitle : l10n.loginEnterPin,
+                  selected == null ? l10n.loginTitle : l10n.loginEnterPin,
                   textAlign: TextAlign.center,
                   style: Theme.of(context)
                       .textTheme
@@ -110,7 +143,6 @@ class _LoginPageState extends State<LoginPage> {
                       ?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 24),
-                // Everyone who can log in; the chosen one is highlighted.
                 Wrap(
                   alignment: WrapAlignment.center,
                   spacing: 12,
@@ -119,35 +151,58 @@ class _LoginPageState extends State<LoginPage> {
                     for (final user in users)
                       _UserChoice(
                         user: user,
-                        selected: user.id == _selected?.id,
-                        onTap: () => setState(() {
-                          _selected = user;
-                          _message = null;
-                        }),
+                        selected: user.id == selected?.id,
+                        onTap: () => _select(user),
                       ),
                   ],
                 ),
                 const SizedBox(height: 24),
-                if (_selected != null) ...[
-                  SizedBox(
-                    height: 24,
-                    child: Text(
-                      locked
-                          ? l10n.loginLocked(_guard.remainingLock.inSeconds + 1)
-                          : (_message ?? ''),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: scheme.error),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  PinPad(onCompleted: _checkPin, enabled: !locked),
-                ],
+                if (selected != null) ..._pinArea(l10n, scheme, selected),
               ],
             );
           },
         ),
       ),
     );
+  }
+
+  List<Widget> _pinArea(
+      AppLocalizations l10n, ColorScheme scheme, AppUser user) {
+    final blocked = _blocked;
+    final text = switch (blocked) {
+      LoginMustWait(:final wait) => l10n.loginWait(_minutesSeconds(wait)),
+      LoginLockedOut() =>
+        user.isOwner ? l10n.loginLockedOwner : l10n.loginLockedWorker,
+      _ => _message ?? '',
+    };
+    return [
+      Text(text,
+          textAlign: TextAlign.center, style: TextStyle(color: scheme.error)),
+      if (blocked is LoginMustWait)
+        Text(l10n.loginWaitPaused,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant)),
+      const SizedBox(height: 8),
+      if (blocked is! LoginLockedOut)
+        PinPad(
+          key: ValueKey(user.id),
+          length: user.pinLength,
+          onCompleted: _checkPin,
+          enabled: blocked == null && !_checking,
+        ),
+      if (user.isOwner)
+        TextButton.icon(
+          onPressed: _openRecovery,
+          icon: const Icon(Icons.key),
+          label: Text(l10n.forgotPin),
+        ),
+    ];
+  }
+
+  /// 125 seconds -> "2:05".
+  String _minutesSeconds(Duration wait) {
+    final seconds = wait.inSeconds + (wait.inMilliseconds % 1000 > 0 ? 1 : 0);
+    return '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}';
   }
 }
 
@@ -186,6 +241,7 @@ class _UserChoice extends StatelessWidget {
                 style: const TextStyle(fontWeight: FontWeight.w600)),
             Text(user.isOwner ? l10n.roleOwner : l10n.roleWorker,
                 style: TextStyle(fontSize: 11, color: scheme.onSurfaceVariant)),
+            if (user.lockedOut) Icon(Icons.lock, size: 14, color: scheme.error),
           ],
         ),
       ),

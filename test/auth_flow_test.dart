@@ -4,6 +4,7 @@ import 'package:billing_app/core/service_locator.dart';
 import 'package:billing_app/core/session/session_cubit.dart';
 import 'package:billing_app/core/settings/settings_store.dart';
 import 'package:billing_app/features/auth/data/login_guard.dart';
+import 'package:billing_app/features/auth/data/login_service.dart';
 import 'package:billing_app/features/auth/presentation/pages/login_page.dart';
 import 'package:billing_app/features/auth/presentation/pages/setup_page.dart';
 import 'package:billing_app/features/shop/data/repositories/shop_repository_impl.dart';
@@ -40,7 +41,8 @@ void main() {
       ..registerSingleton(settings)
       ..registerSingleton<UserRepository>(users)
       ..registerSingleton<ShopRepository>(ShopRepositoryImpl(db, settings))
-      ..registerSingleton(LoginGuard(settings));
+      ..registerSingleton(LoginGuard(settings))
+      ..registerSingleton(LoginService(users, sl<LoginGuard>()));
   });
 
   tearDown(() async {
@@ -73,6 +75,13 @@ void main() {
     );
   }
 
+  /// A phone-sized screen, so the whole PIN pad is visible.
+  void phoneScreen(WidgetTester tester) {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 2.5;
+    addTearDown(tester.view.reset);
+  }
+
   /// Lets real database work finish, then redraws the screen.
   Future<void> settle(WidgetTester tester) async {
     await tester
@@ -91,6 +100,7 @@ void main() {
 
   testWidgets('setup creates the shop and the owner, then logs in',
       (tester) async {
+    phoneScreen(tester);
     await tester.pumpWidget(app(const SetupPage()));
     await settle(tester);
 
@@ -123,6 +133,18 @@ void main() {
     await tester.tap(find.text('Terminer'));
     await settle(tester);
 
+    // The recovery code is shown once and must be confirmed.
+    expect(find.text('Votre code de récupération'), findsOneWidget);
+    expect(session.state.hasOwner, isFalse);
+    await tester.tap(find.text('Continuer'));
+    await tester.pumpAndSettle();
+    expect(find.text('Votre code de récupération'), findsOneWidget,
+        reason: 'cannot continue before ticking the box');
+    await tester.tap(find.text("J'ai noté ce code"));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Continuer'));
+    await settle(tester);
+
     expect(session.state.hasOwner, isTrue);
     expect(session.state.user?.name, 'Karim');
     expect(session.state.isOwner, isTrue);
@@ -133,11 +155,16 @@ void main() {
   testWidgets('login: wrong PIN is refused, right PIN opens the app',
       (tester) async {
     await tester.runAsync(() async {
-      await users.createOwner(name: 'Karim', phone: '', pin: '1234');
-      await users.addWorker(name: 'Amine', phone: '', pin: '5678');
+      final owner =
+          (await users.createOwner(name: 'Karim', phone: '', pin: '1234'))
+              .toNullable()!
+              .owner;
+      await users.addWorker(
+          actorId: owner.id, name: 'Amine', phone: '', pin: '5678');
     });
     session = SessionCubit(hasOwner: true);
 
+    phoneScreen(tester);
     await tester.pumpWidget(app(const LoginPage()));
     await settle(tester);
     expect(find.text('Qui êtes-vous ?'), findsOneWidget);
@@ -151,5 +178,51 @@ void main() {
     await typePin(tester, '5678');
     expect(session.state.user?.name, 'Amine');
     expect(session.state.isOwner, isFalse);
+  });
+
+  testWidgets('5 wrong PINs: the pad is blocked with a countdown',
+      (tester) async {
+    await tester.runAsync(() async {
+      final owner =
+          (await users.createOwner(name: 'Karim', phone: '', pin: '1234'))
+              .toNullable()!
+              .owner;
+      await users.addWorker(
+          actorId: owner.id, name: 'Amine', phone: '', pin: '5678');
+    });
+    session = SessionCubit(hasOwner: true);
+
+    phoneScreen(tester);
+    await tester.pumpWidget(app(const LoginPage()));
+    await settle(tester);
+    await tester.tap(find.text('Amine'));
+    await tester.pumpAndSettle();
+    for (var i = 0; i < 5; i++) {
+      await typePin(tester, '0000');
+    }
+
+    expect(find.textContaining('Réessayez dans 0:30'), findsOneWidget);
+    // Even the right PIN does nothing now: the keys are disabled.
+    await typePin(tester, '5678');
+    expect(session.state.isLoggedIn, isFalse);
+
+    // Close the screen so its countdown timer stops.
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('the owner can log in with a 6-digit PIN', (tester) async {
+    await tester.runAsync(
+        () => users.createOwner(name: 'Karim', phone: '', pin: '246810'));
+    session = SessionCubit(hasOwner: true);
+
+    phoneScreen(tester);
+    await tester.pumpWidget(app(const LoginPage()));
+    await settle(tester);
+    // Only one account: the PIN pad opens directly, with 6 dots.
+    await typePin(tester, '2468');
+    expect(session.state.isLoggedIn, isFalse);
+    await typePin(tester, '10');
+
+    expect(session.state.user?.name, 'Karim');
   });
 }

@@ -478,11 +478,6 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String loginLocked(int seconds) {
-    return 'Trop d\'essais. Réessayez dans $seconds s.';
-  }
-
-  @override
   String get roleOwner => 'Propriétaire';
 
   @override
@@ -617,5 +612,159 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String soldBy(String name) {
     return 'Vendu par $name';
+  }
+
+  @override
+  String get commonOk => 'OK';
+
+  @override
+  String get continueLabel => 'Continuer';
+
+  @override
+  String get pinLengthLabel => 'Longueur du code PIN';
+
+  @override
+  String pinDigits(int count) {
+    return '$count chiffres';
+  }
+
+  @override
+  String pinLabelN(int count) {
+    return 'Code PIN ($count chiffres)';
+  }
+
+  @override
+  String newPinLabelN(int count) {
+    return 'Nouveau code PIN ($count chiffres)';
+  }
+
+  @override
+  String pinInvalidN(int count) {
+    return 'Le code PIN doit avoir $count chiffres';
+  }
+
+  @override
+  String get pinInvalidAny => 'Code PIN invalide';
+
+  @override
+  String loginWait(String time) {
+    return 'Trop de codes faux. Réessayez dans $time.';
+  }
+
+  @override
+  String get loginWaitPaused =>
+      'Le décompte avance seulement quand l\'application est ouverte.';
+
+  @override
+  String get loginLockedWorker =>
+      'Ce compte est verrouillé après trop de codes faux. Demandez au propriétaire de le débloquer.';
+
+  @override
+  String get loginLockedOwner =>
+      'Ce compte est verrouillé après trop de codes faux. Utilisez votre code de récupération.';
+
+  @override
+  String get forgotPin => 'Code PIN oublié ?';
+
+  @override
+  String get recoveryTitle => 'Récupérer le compte';
+
+  @override
+  String get recoveryIntro =>
+      'Tapez le code de récupération noté lors de la création du compte, puis choisissez un nouveau code PIN.';
+
+  @override
+  String get recoveryCodeLabel => 'Code de récupération';
+
+  @override
+  String get recoveryCodeHint => 'ex : K7QM-3WZD-HP9X';
+
+  @override
+  String get recoveryCodeWrong =>
+      'Code de récupération incorrect. La tentative est enregistrée.';
+
+  @override
+  String get recoveryShowTitle => 'Votre code de récupération';
+
+  @override
+  String get recoveryShowBody =>
+      'Notez ce code sur papier et gardez-le en lieu sûr. Il permet de changer le code PIN du propriétaire s\'il est oublié ou bloqué. Il ne sera plus jamais affiché.';
+
+  @override
+  String get recoveryOldCodeUsed =>
+      'L\'ancien code a été utilisé : il ne fonctionne plus. Voici le nouveau.';
+
+  @override
+  String get recoveryNoted => 'J\'ai noté ce code';
+
+  @override
+  String get recoveryTile => 'Code de récupération';
+
+  @override
+  String get recoveryMissing => 'Pas encore créé : créez-le maintenant';
+
+  @override
+  String get recoveryExists =>
+      'Créé. Touchez pour en créer un nouveau (l\'ancien ne marchera plus).';
+
+  @override
+  String get recoveryMissingBanner =>
+      'Créez votre code de récupération : sans lui, un code PIN propriétaire oublié ou bloqué ne pourra pas être changé.';
+
+  @override
+  String get confirmWithPin => 'Entrez votre code PIN actuel pour continuer';
+
+  @override
+  String get lockedBadge => 'VERROUILLÉ';
+
+  @override
+  String get lockedWorkerCard =>
+      'Ce compte est verrouillé après trop de codes PIN faux.';
+
+  @override
+  String get unlockAccount => 'Débloquer le compte';
+
+  @override
+  String get accountUnlocked => 'Compte débloqué';
+
+  @override
+  String get resetPinLabel => 'Nouveau code PIN (pour le réinitialiser)';
+
+  @override
+  String get ownerPinFromProfile =>
+      'Changez votre propre code PIN depuis votre profil.';
+
+  @override
+  String get failedLoginsTitle => 'Tentatives de connexion échouées';
+
+  @override
+  String get failedLoginsSub => 'Codes faux tapés, par compte';
+
+  @override
+  String failedLoginsWarning(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count codes faux ont été tapés depuis votre dernière connexion.',
+      one: '1 code faux a été tapé depuis votre dernière connexion.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get failedLoginsEmpty => 'Aucune tentative échouée.';
+
+  @override
+  String get seeAll => 'Tout voir';
+
+  @override
+  String get securitySection => 'Sécurité';
+
+  @override
+  String get kindPin => 'Code PIN';
+
+  @override
+  String accountLabel(String name) {
+    return 'Compte : $name';
   }
 }

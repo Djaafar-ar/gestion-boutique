@@ -476,11 +476,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String loginLocked(int seconds) {
-    return 'محاولات كثيرة. أعد المحاولة بعد $seconds ثانية.';
-  }
-
-  @override
   String get roleOwner => 'المالك';
 
   @override
@@ -613,5 +608,158 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String soldBy(String name) {
     return 'باعه $name';
+  }
+
+  @override
+  String get commonOk => 'حسنًا';
+
+  @override
+  String get continueLabel => 'متابعة';
+
+  @override
+  String get pinLengthLabel => 'طول الرمز السري';
+
+  @override
+  String pinDigits(int count) {
+    return '$count أرقام';
+  }
+
+  @override
+  String pinLabelN(int count) {
+    return 'الرمز السري ($count أرقام)';
+  }
+
+  @override
+  String newPinLabelN(int count) {
+    return 'رمز سري جديد ($count أرقام)';
+  }
+
+  @override
+  String pinInvalidN(int count) {
+    return 'يجب أن يتكون الرمز من $count أرقام';
+  }
+
+  @override
+  String get pinInvalidAny => 'رمز سري غير صالح';
+
+  @override
+  String loginWait(String time) {
+    return 'رموز خاطئة كثيرة. أعد المحاولة بعد $time.';
+  }
+
+  @override
+  String get loginWaitPaused =>
+      'العدّ التنازلي يعمل فقط عندما يكون التطبيق مفتوحًا.';
+
+  @override
+  String get loginLockedWorker =>
+      'هذا الحساب مقفل بعد رموز خاطئة كثيرة. اطلب من المالك فتحه.';
+
+  @override
+  String get loginLockedOwner =>
+      'هذا الحساب مقفل بعد رموز خاطئة كثيرة. استعمل رمز الاسترجاع.';
+
+  @override
+  String get forgotPin => 'نسيت الرمز السري؟';
+
+  @override
+  String get recoveryTitle => 'استرجاع الحساب';
+
+  @override
+  String get recoveryIntro =>
+      'اكتب رمز الاسترجاع الذي دونته عند إنشاء الحساب، ثم اختر رمزًا سريًا جديدًا.';
+
+  @override
+  String get recoveryCodeLabel => 'رمز الاسترجاع';
+
+  @override
+  String get recoveryCodeHint => 'مثال: K7QM-3WZD-HP9X';
+
+  @override
+  String get recoveryCodeWrong => 'رمز الاسترجاع خاطئ. تم تسجيل المحاولة.';
+
+  @override
+  String get recoveryShowTitle => 'رمز الاسترجاع الخاص بك';
+
+  @override
+  String get recoveryShowBody =>
+      'اكتب هذا الرمز على ورقة واحفظه في مكان آمن. يسمح بتغيير الرمز السري للمالك إذا نُسي أو أُقفل. لن يُعرض مرة أخرى.';
+
+  @override
+  String get recoveryOldCodeUsed =>
+      'تم استعمال الرمز القديم ولم يعد صالحًا. إليك الرمز الجديد.';
+
+  @override
+  String get recoveryNoted => 'دونت هذا الرمز';
+
+  @override
+  String get recoveryTile => 'رمز الاسترجاع';
+
+  @override
+  String get recoveryMissing => 'لم يُنشأ بعد: أنشئه الآن';
+
+  @override
+  String get recoveryExists =>
+      'تم إنشاؤه. المس لإنشاء رمز جديد (لن يعمل القديم).';
+
+  @override
+  String get recoveryMissingBanner =>
+      'أنشئ رمز الاسترجاع: بدونه لا يمكن تغيير رمز المالك المنسي أو المقفل.';
+
+  @override
+  String get confirmWithPin => 'أدخل رمزك السري الحالي للمتابعة';
+
+  @override
+  String get lockedBadge => 'مقفل';
+
+  @override
+  String get lockedWorkerCard => 'هذا الحساب مقفل بعد رموز سرية خاطئة كثيرة.';
+
+  @override
+  String get unlockAccount => 'فتح الحساب';
+
+  @override
+  String get accountUnlocked => 'تم فتح الحساب';
+
+  @override
+  String get resetPinLabel => 'رمز سري جديد (لإعادة تعيينه)';
+
+  @override
+  String get ownerPinFromProfile => 'غيّر رمزك السري من ملفك الشخصي.';
+
+  @override
+  String get failedLoginsTitle => 'محاولات دخول فاشلة';
+
+  @override
+  String get failedLoginsSub => 'الرموز الخاطئة حسب الحساب';
+
+  @override
+  String failedLoginsWarning(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تمت كتابة $count رمزًا خاطئًا منذ آخر دخول لك.',
+      few: 'تمت كتابة $count رموز خاطئة منذ آخر دخول لك.',
+      two: 'تمت كتابة رمزين خاطئين منذ آخر دخول لك.',
+      one: 'تمت كتابة رمز خاطئ واحد منذ آخر دخول لك.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get failedLoginsEmpty => 'لا توجد محاولات فاشلة.';
+
+  @override
+  String get seeAll => 'عرض الكل';
+
+  @override
+  String get securitySection => 'الأمان';
+
+  @override
+  String get kindPin => 'الرمز السري';
+
+  @override
+  String accountLabel(String name) {
+    return 'الحساب: $name';
   }
 }

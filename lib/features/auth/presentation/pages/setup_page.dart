@@ -9,9 +9,9 @@ import '../../../../core/widgets/app_snack.dart';
 import '../../../shop/domain/entities/shop.dart';
 import '../../../shop/domain/repositories/shop_repository.dart';
 import '../../../shop/presentation/bloc/shop_bloc.dart';
-import '../../../users/domain/entities/app_user.dart';
 import '../../../users/domain/repositories/user_repository.dart';
 import '../widgets/pin_field.dart';
+import '../widgets/recovery_code_dialog.dart';
 
 /// First launch: shop details, owner name, owner PIN (3 small steps).
 /// Phones updated from Phase 1 see the same screens with their shop
@@ -37,6 +37,7 @@ class _SetupPageState extends State<SetupPage> {
 
   Shop _existingShop = const Shop();
   int _step = 0;
+  int _pinLength = 4;
   bool _saving = false;
 
   @override
@@ -90,7 +91,7 @@ class _SetupPageState extends State<SetupPage> {
       addressLine1: _shopAddress.text.trim(),
     ));
     var error = shopSaved.getLeft().toNullable()?.message;
-    AppUser? owner;
+    OwnerSetup? setup;
     if (error == null) {
       final created = await sl<UserRepository>().createOwner(
         name: _ownerName.text,
@@ -98,16 +99,20 @@ class _SetupPageState extends State<SetupPage> {
         pin: _pin.text,
       );
       error = created.getLeft().toNullable()?.message;
-      owner = created.toNullable();
+      setup = created.toNullable();
     }
     if (!mounted) return;
     setState(() => _saving = false);
 
-    if (owner == null) {
+    if (setup == null) {
       showAppSnack(context, l10n.errorWithDetail(error ?? ''),
           kind: SnackKind.error);
       return;
     }
+    // Shown once: the owner must write it down before going on.
+    await showRecoveryCode(context, setup.recoveryCode);
+    if (!mounted) return;
+    final owner = setup.owner;
     context.read<ShopBloc>().add(LoadShopEvent());
     // The router now opens the Sell tab.
     context.read<SessionCubit>().ownerCreated(owner);
@@ -241,12 +246,26 @@ class _SetupPageState extends State<SetupPage> {
       );
 
   Widget _pinStep(AppLocalizations l10n) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          PinLengthPicker(
+            value: _pinLength,
+            onChanged: (length) => setState(() {
+              _pinLength = length;
+              _pin.clear();
+              _pinConfirm.clear();
+            }),
+          ),
+          const SizedBox(height: 16),
           PinField(
-              controller: _pin, label: l10n.pinLabel, helper: l10n.pinHelp),
+              controller: _pin,
+              length: _pinLength,
+              label: l10n.pinLabelN(_pinLength),
+              helper: l10n.pinHelp),
           const SizedBox(height: 16),
           PinField(
             controller: _pinConfirm,
+            length: _pinLength,
             label: l10n.pinConfirmLabel,
             mustMatch: () => _pin.text,
           ),

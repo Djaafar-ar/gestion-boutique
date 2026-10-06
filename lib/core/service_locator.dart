@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../features/auth/data/login_guard.dart';
+import '../../features/auth/data/login_service.dart';
 import '../../features/billing/data/receipt_printer.dart';
 import '../../features/billing/data/repositories/sale_repository_impl.dart';
 import '../../features/billing/domain/repositories/sale_repository.dart';
@@ -49,6 +50,7 @@ Future<void> init() async {
   sl.registerSingleton<UserRepository>(users);
   sl.registerSingleton(SessionCubit(hasOwner: await users.hasOwner()));
   sl.registerLazySingleton(() => LoginGuard(sl()));
+  sl.registerLazySingleton(() => LoginService(sl(), sl()));
 
   // Features - Product
   // Bloc

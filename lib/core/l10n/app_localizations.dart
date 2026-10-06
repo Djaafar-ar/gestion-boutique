@@ -928,12 +928,6 @@ abstract class AppLocalizations {
   /// **'Code PIN incorrect. {left, plural, =1{Encore 1 essai.} other{Encore {left} essais.}}'**
   String loginWrongPin(int left);
 
-  /// No description provided for @loginLocked.
-  ///
-  /// In fr, this message translates to:
-  /// **'Trop d\'essais. Réessayez dans {seconds} s.'**
-  String loginLocked(int seconds);
-
   /// No description provided for @roleOwner.
   ///
   /// In fr, this message translates to:
@@ -1197,6 +1191,252 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Vendu par {name}'**
   String soldBy(String name);
+
+  /// No description provided for @commonOk.
+  ///
+  /// In fr, this message translates to:
+  /// **'OK'**
+  String get commonOk;
+
+  /// No description provided for @continueLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Continuer'**
+  String get continueLabel;
+
+  /// No description provided for @pinLengthLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Longueur du code PIN'**
+  String get pinLengthLabel;
+
+  /// No description provided for @pinDigits.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} chiffres'**
+  String pinDigits(int count);
+
+  /// No description provided for @pinLabelN.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code PIN ({count} chiffres)'**
+  String pinLabelN(int count);
+
+  /// No description provided for @newPinLabelN.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau code PIN ({count} chiffres)'**
+  String newPinLabelN(int count);
+
+  /// No description provided for @pinInvalidN.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le code PIN doit avoir {count} chiffres'**
+  String pinInvalidN(int count);
+
+  /// No description provided for @pinInvalidAny.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code PIN invalide'**
+  String get pinInvalidAny;
+
+  /// No description provided for @loginWait.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trop de codes faux. Réessayez dans {time}.'**
+  String loginWait(String time);
+
+  /// No description provided for @loginWaitPaused.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le décompte avance seulement quand l\'application est ouverte.'**
+  String get loginWaitPaused;
+
+  /// No description provided for @loginLockedWorker.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce compte est verrouillé après trop de codes faux. Demandez au propriétaire de le débloquer.'**
+  String get loginLockedWorker;
+
+  /// No description provided for @loginLockedOwner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce compte est verrouillé après trop de codes faux. Utilisez votre code de récupération.'**
+  String get loginLockedOwner;
+
+  /// No description provided for @forgotPin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code PIN oublié ?'**
+  String get forgotPin;
+
+  /// No description provided for @recoveryTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Récupérer le compte'**
+  String get recoveryTitle;
+
+  /// No description provided for @recoveryIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tapez le code de récupération noté lors de la création du compte, puis choisissez un nouveau code PIN.'**
+  String get recoveryIntro;
+
+  /// No description provided for @recoveryCodeLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code de récupération'**
+  String get recoveryCodeLabel;
+
+  /// No description provided for @recoveryCodeHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : K7QM-3WZD-HP9X'**
+  String get recoveryCodeHint;
+
+  /// No description provided for @recoveryCodeWrong.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code de récupération incorrect. La tentative est enregistrée.'**
+  String get recoveryCodeWrong;
+
+  /// No description provided for @recoveryShowTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre code de récupération'**
+  String get recoveryShowTitle;
+
+  /// No description provided for @recoveryShowBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notez ce code sur papier et gardez-le en lieu sûr. Il permet de changer le code PIN du propriétaire s\'il est oublié ou bloqué. Il ne sera plus jamais affiché.'**
+  String get recoveryShowBody;
+
+  /// No description provided for @recoveryOldCodeUsed.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'ancien code a été utilisé : il ne fonctionne plus. Voici le nouveau.'**
+  String get recoveryOldCodeUsed;
+
+  /// No description provided for @recoveryNoted.
+  ///
+  /// In fr, this message translates to:
+  /// **'J\'ai noté ce code'**
+  String get recoveryNoted;
+
+  /// No description provided for @recoveryTile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code de récupération'**
+  String get recoveryTile;
+
+  /// No description provided for @recoveryMissing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore créé : créez-le maintenant'**
+  String get recoveryMissing;
+
+  /// No description provided for @recoveryExists.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créé. Touchez pour en créer un nouveau (l\'ancien ne marchera plus).'**
+  String get recoveryExists;
+
+  /// No description provided for @recoveryMissingBanner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créez votre code de récupération : sans lui, un code PIN propriétaire oublié ou bloqué ne pourra pas être changé.'**
+  String get recoveryMissingBanner;
+
+  /// No description provided for @confirmWithPin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrez votre code PIN actuel pour continuer'**
+  String get confirmWithPin;
+
+  /// No description provided for @lockedBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'VERROUILLÉ'**
+  String get lockedBadge;
+
+  /// No description provided for @lockedWorkerCard.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce compte est verrouillé après trop de codes PIN faux.'**
+  String get lockedWorkerCard;
+
+  /// No description provided for @unlockAccount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Débloquer le compte'**
+  String get unlockAccount;
+
+  /// No description provided for @accountUnlocked.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte débloqué'**
+  String get accountUnlocked;
+
+  /// No description provided for @resetPinLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau code PIN (pour le réinitialiser)'**
+  String get resetPinLabel;
+
+  /// No description provided for @ownerPinFromProfile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changez votre propre code PIN depuis votre profil.'**
+  String get ownerPinFromProfile;
+
+  /// No description provided for @failedLoginsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tentatives de connexion échouées'**
+  String get failedLoginsTitle;
+
+  /// No description provided for @failedLoginsSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Codes faux tapés, par compte'**
+  String get failedLoginsSub;
+
+  /// No description provided for @failedLoginsWarning.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 code faux a été tapé depuis votre dernière connexion.} other{{count} codes faux ont été tapés depuis votre dernière connexion.}}'**
+  String failedLoginsWarning(int count);
+
+  /// No description provided for @failedLoginsEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune tentative échouée.'**
+  String get failedLoginsEmpty;
+
+  /// No description provided for @seeAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout voir'**
+  String get seeAll;
+
+  /// No description provided for @securitySection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sécurité'**
+  String get securitySection;
+
+  /// No description provided for @kindPin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code PIN'**
+  String get kindPin;
+
+  /// No description provided for @accountLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte : {name}'**
+  String accountLabel(String name);
 }
 
 class _AppLocalizationsDelegate

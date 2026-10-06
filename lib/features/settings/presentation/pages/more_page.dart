@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:app_settings/app_settings.dart';
 
 import '../../../../core/l10n/app_localizations.dart';
+import '../../../../core/service_locator.dart';
 import '../../../../core/session/session_cubit.dart';
 import '../../../../core/widgets/app_snack.dart';
 import '../../../billing/presentation/bloc/billing_bloc.dart';
+import '../../../users/domain/repositories/user_repository.dart';
 import '../../../users/presentation/widgets/user_avatar.dart';
 import '../../../shop/presentation/bloc/shop_bloc.dart';
 import '../bloc/printer_bloc.dart';
@@ -31,11 +33,27 @@ class _MorePageState extends State<MorePage> {
     'en': 'English',
   };
 
+  /// Whether the owner has made a recovery code (null for workers).
+  Future<bool>? _hasRecoveryCode;
+
   @override
   void initState() {
     super.initState();
     // Re-read the saved printer whenever this page opens
     context.read<PrinterBloc>().add(InitPrinterEvent());
+    _checkRecoveryCode();
+  }
+
+  void _checkRecoveryCode() {
+    _hasRecoveryCode = context.read<SessionCubit>().state.isOwner
+        ? sl<UserRepository>().ownerHasRecoveryCode()
+        : null;
+  }
+
+  /// Opens the profile, then checks again for the recovery code.
+  Future<void> _openProfile() async {
+    await context.push('/more/profile');
+    if (mounted) setState(_checkRecoveryCode);
   }
 
   @override
@@ -60,9 +78,31 @@ class _MorePageState extends State<MorePage> {
                 subtitle: Text(
                     '${l10n.myProfile} · ${user.isOwner ? l10n.roleOwner : l10n.roleWorker}'),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () => context.push('/more/profile'),
+                onTap: _openProfile,
               ),
             ]),
+          if (_hasRecoveryCode != null)
+            FutureBuilder<bool>(
+              future: _hasRecoveryCode,
+              builder: (context, snapshot) {
+                if (snapshot.data != false) return const SizedBox.shrink();
+                final scheme = Theme.of(context).colorScheme;
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                  child: Card(
+                    color: scheme.errorContainer,
+                    child: ListTile(
+                      leading: Icon(Icons.key, color: scheme.onErrorContainer),
+                      title: Text(l10n.recoveryMissingBanner,
+                          style: TextStyle(color: scheme.onErrorContainer)),
+                      trailing: Icon(Icons.chevron_right,
+                          color: scheme.onErrorContainer),
+                      onTap: _openProfile,
+                    ),
+                  ),
+                );
+              },
+            ),
           // Shop details and the team are managed by the owner only.
           if (session.isOwner) ...[
             _SectionHeader(l10n.sectionShop),
@@ -83,6 +123,16 @@ class _MorePageState extends State<MorePage> {
                 subtitle: Text(l10n.workersSub),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => context.push('/more/workers'),
+              ),
+            ]),
+            _SectionHeader(l10n.securitySection),
+            _Group(children: [
+              ListTile(
+                leading: const _TileIcon(Icons.shield_outlined),
+                title: Text(l10n.failedLoginsTitle),
+                subtitle: Text(l10n.failedLoginsSub),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/more/security'),
               ),
             ]),
           ],

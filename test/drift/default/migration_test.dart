@@ -1,6 +1,6 @@
 // dart format width=80
 // ignore_for_file: unused_local_variable, unused_import
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift_dev/api/migrations_native.dart';
 import 'package:billing_app/core/database/app_database.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,6 +8,7 @@ import 'generated/schema.dart';
 
 import 'generated/schema_v1.dart' as v1;
 import 'generated/schema_v2.dart' as v2;
+import 'generated/schema_v3.dart' as v3;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -85,6 +86,43 @@ void main() {
         final settings = await newDb.select(newDb.appSettings).get();
         expect(settings.map((s) => (s.key, s.value)), [('language', 'ar')]);
         expect(await newDb.select(newDb.users).get(), isEmpty);
+      },
+    );
+  });
+
+  // Phase 2 phones already have an owner and workers: after the upgrade
+  // they keep their PIN and get the safe defaults (4 digits, not locked,
+  // no recovery code yet).
+  test('migration from v2 to v3 keeps accounts and their PINs', () async {
+    const at = '2026-10-06T14:32:00.000';
+    const owner = v2.UsersData(
+        id: 'u1',
+        createdAt: at,
+        updatedAt: at,
+        deviceId: 'phone-1',
+        deleted: 0,
+        name: 'Karim',
+        phone: '0555',
+        role: 'owner',
+        pinHash: 'hash',
+        pinSalt: 'salt',
+        active: 1);
+
+    await verifier.testWithDataIntegrity(
+      oldVersion: 2,
+      newVersion: 3,
+      createOld: v2.DatabaseAtV2.new,
+      createNew: v3.DatabaseAtV3.new,
+      openTestedDatabase: AppDatabase.new,
+      createItems: (batch, oldDb) => batch.insert(oldDb.users, owner),
+      validateItems: (newDb) async {
+        final user = await newDb.select(newDb.users).getSingle();
+        expect(
+            (user.name, user.pinHash, user.pinSalt), ('Karim', 'hash', 'salt'));
+        expect(user.pinLength, 4);
+        expect(user.lockedOut, 0); // 0 = false in the snapshot
+        expect(user.recoveryHash, isNull);
+        expect(await newDb.select(newDb.failedLogins).get(), isEmpty);
       },
     );
   });

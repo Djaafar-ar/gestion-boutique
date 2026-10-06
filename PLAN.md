@@ -18,7 +18,7 @@
 **Decisions you made:**
 - Selling a product at 0 stock is **allowed**. The app shows a warning and the owner gets an alert.
 - Prices show as `1 250,00 DA` in **every** language.
-- The foundation work is split into **two phases** (8 phases in total).
+- The foundation work is split into **two phases** (9 phases in total, after adding Google Sheets).
 - Sync is tested on **2 real Android phones**.
 
 ---
@@ -299,6 +299,12 @@ At the **end of every phase**:
 - Products gain buy price, category, low-stock threshold.
 - Tests: PIN hashing, role permissions, history logging.
 
+### Phase 2b: Login security (added after Phase 2)
+- Wrong-PIN protection per account, getting stronger: 5 wrong → wait 30 s, 10 wrong → wait 5 min, 15 wrong → account locked. A worker is unlocked by the owner; the owner unlocks with the recovery code. Waits count down only while the app is open, so closing the app or changing the phone's date/time doesn't shorten them.
+- Every failed attempt is saved (account, date and time) and shown to the owner as a warning at login, with a full list in *Plus*.
+- The owner can choose a 4- or 6-digit PIN. Workers can only change their own PIN; only the owner can reset a worker's PIN; PINs are never shown or stored as typed.
+- Owner recovery code: shown once at setup (or created from the profile by existing owners). It resets the owner PIN, unlocks the account, and is then replaced by a new code.
+
 ### Phase 3: Stock deliveries, expiry, FEFO, losses
 - Tables `deliveries`, `losses`.
 - "Add delivery" screen: scan/choose product, quantity, buy price (pre-filled), optional expiry date, supplier (optional until Phase 4), received by (automatic).
@@ -346,7 +352,34 @@ At the **end of every phase**:
 - Tests: two in-memory databases sync with each other (duplicates, conflicts, interrupted sync).
 - **You test on your 2 real phones:** pair, sell on the worker phone, see the sale on the owner phone, change a price on the owner phone, see it on the worker phone, turn Wi-Fi off/on, sync resumes.
 
-### Phase 8: Printer and final polish
+### Phase 8: Google Sheets and live sales (added after Phase 2)
+**Idea in simple words:** your Google Sheet becomes a live copy of the shop, for viewing and reports. Every phone with internet (mobile data) posts its own new records to a small Google Apps Script attached to the sheet, so you don't need your own server. Wi-Fi sync (Phase 7) stays the main way data reaches the owner's phone; the sheet is an extra.
+
+- **Script:** a Google Apps Script web app attached to your sheet. In this phase I give you the full script code and step-by-step instructions with screenshots-style explanations (open the sheet → Extensions → Apps Script → paste → Deploy as web app → copy the URL). A one-time "Installer" function creates the tabs and their formulas.
+- **Tabs:** Sales, Sale items, Stock deliveries, Current stock, Losses, Supplier payments, Customer credit, Daily summary, Stats per worker. Returns appear in Sales as "Retour" lines, and discounts as their own column.
+  - Sales, Sale items, Stock deliveries, Losses, Supplier payments and Customer credit receive raw rows from the phones.
+  - Current stock, Daily summary and Stats per worker are **calculated inside the sheet** with formulas, so phones never send them. That keeps mobile data small.
+- **Sending (every phone, owner and workers):** each new sale, return, stock delivery, loss, supplier payment and customer credit or payment goes into a small "to send" queue, the moment it's saved.
+  - With internet, the queue is sent at once in one small batch (only new records, compact JSON).
+  - Without internet, records wait in the queue on the phone and are sent later. Nothing is lost when the app is closed or the phone restarts, because the queue lives in the database.
+  - A **"Send now" button** and the **last send time** are shown in *Plus → Google Sheet*.
+- **No duplicates:** every record keeps its unique id (UUID). The script records ids it has already written, and ignores a record it has seen before. This covers the same sale arriving from a worker's phone and later from the owner's phone after Wi-Fi sync. The script uses a lock (`LockService`) so two phones writing at the same moment can't create doubles.
+- **One direction only:** app → sheet. Editing the sheet never changes the app.
+- **Security:**
+  - Every request is signed with a **secret key** (HMAC) plus a timestamp. The script rejects anything unsigned, signed with the wrong key, or replayed old requests.
+  - Two keys: a **write key** that all phones have (to send records), and a **read key** that only the owner's phone has (for "Ventes en direct"). A worker's phone can add rows but can't read the shop's figures.
+  - The owner types the script URL and keys in *Plus → Google Sheet*. Workers' phones receive the URL and write key automatically during Wi-Fi pairing (Phase 7).
+- **"Ventes en direct" screen (owner, away from the shop):**
+  - It reads only the sales added since its last check from the script, every **30 seconds while the screen is open**.
+  - It shows the latest sales, who sold, and today's totals (revenue, number of sales, per worker).
+  - **Phone notification for each new sale**, which the owner can turn off.
+  - While the app is open or recently in the background, it checks every 30 s. When the app is fully closed, Android only allows a background check about **every 15 minutes**, so notifications then come in small groups. That's an Android rule, not a choice.
+- **Data use:** only new records are sent, batched. Live polling asks "anything since X?" and usually gets an empty answer of a few bytes.
+- Packages: `http`, `connectivity_plus` (already planned for Phase 7), `workmanager` for the 15-minute background check.
+- Tests: queue keeps records until the script confirms them; duplicates are ignored; offline then online sends everything once; signatures are checked; a fake script server in tests.
+- **You test:** install the script, sell on a worker phone with mobile data, see the row appear in the sheet, then sell offline and see it arrive when data comes back. Open "Ventes en direct" on the owner phone away from the shop's Wi-Fi.
+
+### Phase 9: Printer and final polish
 - New receipt layout (§3.6): French always, DA, ticket number, worker name, wrapped names, accents/code page, "Remove accents" option, test print, reprint from the sales list.
 - New receipt lines for discount and credit, plus an optional "Ticket de retour".
 - **Backup & restore (owner only):**
@@ -371,4 +404,5 @@ Cloud backup, iPhone build, discounts on individual lines (only whole-ticket dis
 - `flutter run` on the Android emulator, following the phase's "You test" checklist.
 - Phase 1 specifically: install the **current** app version first, add some products, then install the new version and check that the products survived.
 - Phase 7: two real phones on the same Wi-Fi.
-- Phase 8: a real print on your 58mm printer, and a backup made on one phone restored on the emulator.
+- Phase 8: the Google Sheet receives sales from a phone on mobile data, without duplicates.
+- Phase 9: a real print on your 58mm printer, and a backup made on one phone restored on the emulator.

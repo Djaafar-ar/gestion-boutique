@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 
-/// Four dots and a big number keypad. Calls [onCompleted] once 4 digits
-/// are typed, then clears itself.
+/// One dot per digit and a big number keypad. Calls [onCompleted] once
+/// [length] digits are typed, then clears itself.
 class PinPad extends StatefulWidget {
   final ValueChanged<String> onCompleted;
   final bool enabled;
+  final int length;
 
-  const PinPad({super.key, required this.onCompleted, this.enabled = true});
+  const PinPad(
+      {super.key,
+      required this.onCompleted,
+      this.enabled = true,
+      this.length = 4});
 
   @override
   State<PinPad> createState() => _PinPadState();
 }
 
 class _PinPadState extends State<PinPad> {
-  static const _length = 4;
   String _pin = '';
+
+  int get _length => widget.length;
 
   void _press(String digit) {
     if (!widget.enabled || _pin.length >= _length) return;

@@ -15,6 +15,7 @@ part 'app_database.g.dart';
   SaleItems,
   Users,
   ChangeLogs,
+  FailedLogins,
   AppSettings,
 ])
 class AppDatabase extends _$AppDatabase {
@@ -30,7 +31,7 @@ class AppDatabase extends _$AppDatabase {
   // 2. run: dart run drift_dev make-migrations
   // 3. add the new step below (the generated tests check it).
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -41,6 +42,15 @@ class AppDatabase extends _$AppDatabase {
             await m.createTable(schema.users);
             await m.createTable(schema.changeLogs);
             await m.createIndex(schema.changeLogsEntity);
+          },
+          // Phase 2b: stronger PIN protection and owner recovery code.
+          from2To3: (m, schema) async {
+            await m.addColumn(schema.users, schema.users.pinLength);
+            await m.addColumn(schema.users, schema.users.lockedOut);
+            await m.addColumn(schema.users, schema.users.recoveryHash);
+            await m.addColumn(schema.users, schema.users.recoverySalt);
+            await m.createTable(schema.failedLogins);
+            await m.createIndex(schema.failedLoginsSeen);
           },
         ),
       );

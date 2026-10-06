@@ -215,14 +215,6 @@
       }
     }
   },
-  "loginLocked": "Trop d'essais. Réessayez dans {seconds} s.",
-  "@loginLocked": {
-    "placeholders": {
-      "seconds": {
-        "type": "int"
-      }
-    }
-  },
   "roleOwner": "Propriétaire",
   "roleWorker": "Employé",
   "teamSection": "Équipe",
@@ -268,6 +260,96 @@
   "fieldArchived": "Archivé",
   "soldBy": "Vendu par {name}",
   "@soldBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "commonOk": "OK",
+  "continueLabel": "Continuer",
+  "pinLengthLabel": "Longueur du code PIN",
+  "pinDigits": "{count} chiffres",
+  "@pinDigits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pinLabelN": "Code PIN ({count} chiffres)",
+  "@pinLabelN": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "newPinLabelN": "Nouveau code PIN ({count} chiffres)",
+  "@newPinLabelN": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pinInvalidN": "Le code PIN doit avoir {count} chiffres",
+  "@pinInvalidN": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pinInvalidAny": "Code PIN invalide",
+  "loginWait": "Trop de codes faux. Réessayez dans {time}.",
+  "@loginWait": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "loginWaitPaused": "Le décompte avance seulement quand l'application est ouverte.",
+  "loginLockedWorker": "Ce compte est verrouillé après trop de codes faux. Demandez au propriétaire de le débloquer.",
+  "loginLockedOwner": "Ce compte est verrouillé après trop de codes faux. Utilisez votre code de récupération.",
+  "forgotPin": "Code PIN oublié ?",
+  "recoveryTitle": "Récupérer le compte",
+  "recoveryIntro": "Tapez le code de récupération noté lors de la création du compte, puis choisissez un nouveau code PIN.",
+  "recoveryCodeLabel": "Code de récupération",
+  "recoveryCodeHint": "ex : K7QM-3WZD-HP9X",
+  "recoveryCodeWrong": "Code de récupération incorrect. La tentative est enregistrée.",
+  "recoveryShowTitle": "Votre code de récupération",
+  "recoveryShowBody": "Notez ce code sur papier et gardez-le en lieu sûr. Il permet de changer le code PIN du propriétaire s'il est oublié ou bloqué. Il ne sera plus jamais affiché.",
+  "recoveryOldCodeUsed": "L'ancien code a été utilisé : il ne fonctionne plus. Voici le nouveau.",
+  "recoveryNoted": "J'ai noté ce code",
+  "recoveryTile": "Code de récupération",
+  "recoveryMissing": "Pas encore créé : créez-le maintenant",
+  "recoveryExists": "Créé. Touchez pour en créer un nouveau (l'ancien ne marchera plus).",
+  "recoveryMissingBanner": "Créez votre code de récupération : sans lui, un code PIN propriétaire oublié ou bloqué ne pourra pas être changé.",
+  "confirmWithPin": "Entrez votre code PIN actuel pour continuer",
+  "lockedBadge": "VERROUILLÉ",
+  "lockedWorkerCard": "Ce compte est verrouillé après trop de codes PIN faux.",
+  "unlockAccount": "Débloquer le compte",
+  "accountUnlocked": "Compte débloqué",
+  "resetPinLabel": "Nouveau code PIN (pour le réinitialiser)",
+  "ownerPinFromProfile": "Changez votre propre code PIN depuis votre profil.",
+  "failedLoginsTitle": "Tentatives de connexion échouées",
+  "failedLoginsSub": "Codes faux tapés, par compte",
+  "failedLoginsWarning": "{count, plural, =1{1 code faux a été tapé depuis votre dernière connexion.} other{{count} codes faux ont été tapés depuis votre dernière connexion.}}",
+  "@failedLoginsWarning": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "failedLoginsEmpty": "Aucune tentative échouée.",
+  "seeAll": "Tout voir",
+  "securitySection": "Sécurité",
+  "kindPin": "Code PIN",
+  "accountLabel": "Compte : {name}",
+  "@accountLabel": {
     "placeholders": {
       "name": {
         "type": "String"

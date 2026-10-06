@@ -3588,6 +3588,36 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRow> {
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("active" IN (0, 1))'),
       defaultValue: const Constant(true));
+  static const VerificationMeta _pinLengthMeta =
+      const VerificationMeta('pinLength');
+  @override
+  late final GeneratedColumn<int> pinLength = GeneratedColumn<int>(
+      'pin_length', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(4));
+  static const VerificationMeta _lockedOutMeta =
+      const VerificationMeta('lockedOut');
+  @override
+  late final GeneratedColumn<bool> lockedOut = GeneratedColumn<bool>(
+      'locked_out', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("locked_out" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _recoveryHashMeta =
+      const VerificationMeta('recoveryHash');
+  @override
+  late final GeneratedColumn<String> recoveryHash = GeneratedColumn<String>(
+      'recovery_hash', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _recoverySaltMeta =
+      const VerificationMeta('recoverySalt');
+  @override
+  late final GeneratedColumn<String> recoverySalt = GeneratedColumn<String>(
+      'recovery_salt', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -3601,7 +3631,11 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRow> {
         role,
         pinHash,
         pinSalt,
-        active
+        active,
+        pinLength,
+        lockedOut,
+        recoveryHash,
+        recoverySalt
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -3676,6 +3710,26 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRow> {
       context.handle(_activeMeta,
           active.isAcceptableOrUnknown(data['active']!, _activeMeta));
     }
+    if (data.containsKey('pin_length')) {
+      context.handle(_pinLengthMeta,
+          pinLength.isAcceptableOrUnknown(data['pin_length']!, _pinLengthMeta));
+    }
+    if (data.containsKey('locked_out')) {
+      context.handle(_lockedOutMeta,
+          lockedOut.isAcceptableOrUnknown(data['locked_out']!, _lockedOutMeta));
+    }
+    if (data.containsKey('recovery_hash')) {
+      context.handle(
+          _recoveryHashMeta,
+          recoveryHash.isAcceptableOrUnknown(
+              data['recovery_hash']!, _recoveryHashMeta));
+    }
+    if (data.containsKey('recovery_salt')) {
+      context.handle(
+          _recoverySaltMeta,
+          recoverySalt.isAcceptableOrUnknown(
+              data['recovery_salt']!, _recoverySaltMeta));
+    }
     return context;
   }
 
@@ -3709,6 +3763,14 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRow> {
           .read(DriftSqlType.string, data['${effectivePrefix}pin_salt'])!,
       active: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}active'])!,
+      pinLength: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}pin_length'])!,
+      lockedOut: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}locked_out'])!,
+      recoveryHash: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}recovery_hash']),
+      recoverySalt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}recovery_salt']),
     );
   }
 
@@ -3731,6 +3793,17 @@ class UserRow extends DataClass implements Insertable<UserRow> {
   final String pinHash;
   final String pinSalt;
   final bool active;
+
+  /// 4 for everyone; the owner may choose 6.
+  final int pinLength;
+
+  /// Set after too many wrong PINs. A worker is unlocked by the owner,
+  /// the owner by the recovery code.
+  final bool lockedOut;
+
+  /// Owner only: hash of the one-time recovery code (never the code).
+  final String? recoveryHash;
+  final String? recoverySalt;
   const UserRow(
       {required this.id,
       required this.createdAt,
@@ -3743,7 +3816,11 @@ class UserRow extends DataClass implements Insertable<UserRow> {
       required this.role,
       required this.pinHash,
       required this.pinSalt,
-      required this.active});
+      required this.active,
+      required this.pinLength,
+      required this.lockedOut,
+      this.recoveryHash,
+      this.recoverySalt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -3761,6 +3838,14 @@ class UserRow extends DataClass implements Insertable<UserRow> {
     map['pin_hash'] = Variable<String>(pinHash);
     map['pin_salt'] = Variable<String>(pinSalt);
     map['active'] = Variable<bool>(active);
+    map['pin_length'] = Variable<int>(pinLength);
+    map['locked_out'] = Variable<bool>(lockedOut);
+    if (!nullToAbsent || recoveryHash != null) {
+      map['recovery_hash'] = Variable<String>(recoveryHash);
+    }
+    if (!nullToAbsent || recoverySalt != null) {
+      map['recovery_salt'] = Variable<String>(recoverySalt);
+    }
     return map;
   }
 
@@ -3779,6 +3864,14 @@ class UserRow extends DataClass implements Insertable<UserRow> {
       pinHash: Value(pinHash),
       pinSalt: Value(pinSalt),
       active: Value(active),
+      pinLength: Value(pinLength),
+      lockedOut: Value(lockedOut),
+      recoveryHash: recoveryHash == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recoveryHash),
+      recoverySalt: recoverySalt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recoverySalt),
     );
   }
 
@@ -3798,6 +3891,10 @@ class UserRow extends DataClass implements Insertable<UserRow> {
       pinHash: serializer.fromJson<String>(json['pinHash']),
       pinSalt: serializer.fromJson<String>(json['pinSalt']),
       active: serializer.fromJson<bool>(json['active']),
+      pinLength: serializer.fromJson<int>(json['pinLength']),
+      lockedOut: serializer.fromJson<bool>(json['lockedOut']),
+      recoveryHash: serializer.fromJson<String?>(json['recoveryHash']),
+      recoverySalt: serializer.fromJson<String?>(json['recoverySalt']),
     );
   }
   @override
@@ -3816,6 +3913,10 @@ class UserRow extends DataClass implements Insertable<UserRow> {
       'pinHash': serializer.toJson<String>(pinHash),
       'pinSalt': serializer.toJson<String>(pinSalt),
       'active': serializer.toJson<bool>(active),
+      'pinLength': serializer.toJson<int>(pinLength),
+      'lockedOut': serializer.toJson<bool>(lockedOut),
+      'recoveryHash': serializer.toJson<String?>(recoveryHash),
+      'recoverySalt': serializer.toJson<String?>(recoverySalt),
     };
   }
 
@@ -3831,7 +3932,11 @@ class UserRow extends DataClass implements Insertable<UserRow> {
           String? role,
           String? pinHash,
           String? pinSalt,
-          bool? active}) =>
+          bool? active,
+          int? pinLength,
+          bool? lockedOut,
+          Value<String?> recoveryHash = const Value.absent(),
+          Value<String?> recoverySalt = const Value.absent()}) =>
       UserRow(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
@@ -3845,6 +3950,12 @@ class UserRow extends DataClass implements Insertable<UserRow> {
         pinHash: pinHash ?? this.pinHash,
         pinSalt: pinSalt ?? this.pinSalt,
         active: active ?? this.active,
+        pinLength: pinLength ?? this.pinLength,
+        lockedOut: lockedOut ?? this.lockedOut,
+        recoveryHash:
+            recoveryHash.present ? recoveryHash.value : this.recoveryHash,
+        recoverySalt:
+            recoverySalt.present ? recoverySalt.value : this.recoverySalt,
       );
   UserRow copyWithCompanion(UsersCompanion data) {
     return UserRow(
@@ -3860,6 +3971,14 @@ class UserRow extends DataClass implements Insertable<UserRow> {
       pinHash: data.pinHash.present ? data.pinHash.value : this.pinHash,
       pinSalt: data.pinSalt.present ? data.pinSalt.value : this.pinSalt,
       active: data.active.present ? data.active.value : this.active,
+      pinLength: data.pinLength.present ? data.pinLength.value : this.pinLength,
+      lockedOut: data.lockedOut.present ? data.lockedOut.value : this.lockedOut,
+      recoveryHash: data.recoveryHash.present
+          ? data.recoveryHash.value
+          : this.recoveryHash,
+      recoverySalt: data.recoverySalt.present
+          ? data.recoverySalt.value
+          : this.recoverySalt,
     );
   }
 
@@ -3877,14 +3996,33 @@ class UserRow extends DataClass implements Insertable<UserRow> {
           ..write('role: $role, ')
           ..write('pinHash: $pinHash, ')
           ..write('pinSalt: $pinSalt, ')
-          ..write('active: $active')
+          ..write('active: $active, ')
+          ..write('pinLength: $pinLength, ')
+          ..write('lockedOut: $lockedOut, ')
+          ..write('recoveryHash: $recoveryHash, ')
+          ..write('recoverySalt: $recoverySalt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, createdAt, updatedAt, deviceId, userId,
-      deleted, name, phone, role, pinHash, pinSalt, active);
+  int get hashCode => Object.hash(
+      id,
+      createdAt,
+      updatedAt,
+      deviceId,
+      userId,
+      deleted,
+      name,
+      phone,
+      role,
+      pinHash,
+      pinSalt,
+      active,
+      pinLength,
+      lockedOut,
+      recoveryHash,
+      recoverySalt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3900,7 +4038,11 @@ class UserRow extends DataClass implements Insertable<UserRow> {
           other.role == this.role &&
           other.pinHash == this.pinHash &&
           other.pinSalt == this.pinSalt &&
-          other.active == this.active);
+          other.active == this.active &&
+          other.pinLength == this.pinLength &&
+          other.lockedOut == this.lockedOut &&
+          other.recoveryHash == this.recoveryHash &&
+          other.recoverySalt == this.recoverySalt);
 }
 
 class UsersCompanion extends UpdateCompanion<UserRow> {
@@ -3916,6 +4058,10 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
   final Value<String> pinHash;
   final Value<String> pinSalt;
   final Value<bool> active;
+  final Value<int> pinLength;
+  final Value<bool> lockedOut;
+  final Value<String?> recoveryHash;
+  final Value<String?> recoverySalt;
   final Value<int> rowid;
   const UsersCompanion({
     this.id = const Value.absent(),
@@ -3930,6 +4076,10 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
     this.pinHash = const Value.absent(),
     this.pinSalt = const Value.absent(),
     this.active = const Value.absent(),
+    this.pinLength = const Value.absent(),
+    this.lockedOut = const Value.absent(),
+    this.recoveryHash = const Value.absent(),
+    this.recoverySalt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   UsersCompanion.insert({
@@ -3945,6 +4095,10 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
     required String pinHash,
     required String pinSalt,
     this.active = const Value.absent(),
+    this.pinLength = const Value.absent(),
+    this.lockedOut = const Value.absent(),
+    this.recoveryHash = const Value.absent(),
+    this.recoverySalt = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdAt = Value(createdAt),
@@ -3967,6 +4121,10 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
     Expression<String>? pinHash,
     Expression<String>? pinSalt,
     Expression<bool>? active,
+    Expression<int>? pinLength,
+    Expression<bool>? lockedOut,
+    Expression<String>? recoveryHash,
+    Expression<String>? recoverySalt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3982,6 +4140,10 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
       if (pinHash != null) 'pin_hash': pinHash,
       if (pinSalt != null) 'pin_salt': pinSalt,
       if (active != null) 'active': active,
+      if (pinLength != null) 'pin_length': pinLength,
+      if (lockedOut != null) 'locked_out': lockedOut,
+      if (recoveryHash != null) 'recovery_hash': recoveryHash,
+      if (recoverySalt != null) 'recovery_salt': recoverySalt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3999,6 +4161,10 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
       Value<String>? pinHash,
       Value<String>? pinSalt,
       Value<bool>? active,
+      Value<int>? pinLength,
+      Value<bool>? lockedOut,
+      Value<String?>? recoveryHash,
+      Value<String?>? recoverySalt,
       Value<int>? rowid}) {
     return UsersCompanion(
       id: id ?? this.id,
@@ -4013,6 +4179,10 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
       pinHash: pinHash ?? this.pinHash,
       pinSalt: pinSalt ?? this.pinSalt,
       active: active ?? this.active,
+      pinLength: pinLength ?? this.pinLength,
+      lockedOut: lockedOut ?? this.lockedOut,
+      recoveryHash: recoveryHash ?? this.recoveryHash,
+      recoverySalt: recoverySalt ?? this.recoverySalt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4056,6 +4226,18 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
     if (active.present) {
       map['active'] = Variable<bool>(active.value);
     }
+    if (pinLength.present) {
+      map['pin_length'] = Variable<int>(pinLength.value);
+    }
+    if (lockedOut.present) {
+      map['locked_out'] = Variable<bool>(lockedOut.value);
+    }
+    if (recoveryHash.present) {
+      map['recovery_hash'] = Variable<String>(recoveryHash.value);
+    }
+    if (recoverySalt.present) {
+      map['recovery_salt'] = Variable<String>(recoverySalt.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -4077,6 +4259,10 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
           ..write('pinHash: $pinHash, ')
           ..write('pinSalt: $pinSalt, ')
           ..write('active: $active, ')
+          ..write('pinLength: $pinLength, ')
+          ..write('lockedOut: $lockedOut, ')
+          ..write('recoveryHash: $recoveryHash, ')
+          ..write('recoverySalt: $recoverySalt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4626,6 +4812,476 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLogRow> {
   }
 }
 
+class $FailedLoginsTable extends FailedLogins
+    with TableInfo<$FailedLoginsTable, FailedLoginRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FailedLoginsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _deviceIdMeta =
+      const VerificationMeta('deviceId');
+  @override
+  late final GeneratedColumn<String> deviceId = GeneratedColumn<String>(
+      'device_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+      'user_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _deletedMeta =
+      const VerificationMeta('deleted');
+  @override
+  late final GeneratedColumn<bool> deleted = GeneratedColumn<bool>(
+      'deleted', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("deleted" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _accountIdMeta =
+      const VerificationMeta('accountId');
+  @override
+  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
+      'account_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+      'kind', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _seenMeta = const VerificationMeta('seen');
+  @override
+  late final GeneratedColumn<bool> seen = GeneratedColumn<bool>(
+      'seen', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("seen" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        createdAt,
+        updatedAt,
+        deviceId,
+        userId,
+        deleted,
+        accountId,
+        kind,
+        seen
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'failed_logins';
+  @override
+  VerificationContext validateIntegrity(Insertable<FailedLoginRow> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('device_id')) {
+      context.handle(_deviceIdMeta,
+          deviceId.isAcceptableOrUnknown(data['device_id']!, _deviceIdMeta));
+    } else if (isInserting) {
+      context.missing(_deviceIdMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(_userIdMeta,
+          userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
+    }
+    if (data.containsKey('deleted')) {
+      context.handle(_deletedMeta,
+          deleted.isAcceptableOrUnknown(data['deleted']!, _deletedMeta));
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(_accountIdMeta,
+          accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta));
+    } else if (isInserting) {
+      context.missing(_accountIdMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+          _kindMeta, kind.isAcceptableOrUnknown(data['kind']!, _kindMeta));
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('seen')) {
+      context.handle(
+          _seenMeta, seen.isAcceptableOrUnknown(data['seen']!, _seenMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FailedLoginRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FailedLoginRow(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+      deviceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}device_id'])!,
+      userId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}user_id']),
+      deleted: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}deleted'])!,
+      accountId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}account_id'])!,
+      kind: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}kind'])!,
+      seen: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}seen'])!,
+    );
+  }
+
+  @override
+  $FailedLoginsTable createAlias(String alias) {
+    return $FailedLoginsTable(attachedDatabase, alias);
+  }
+}
+
+class FailedLoginRow extends DataClass implements Insertable<FailedLoginRow> {
+  final String id;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String deviceId;
+  final String? userId;
+  final bool deleted;
+
+  /// The account someone tried to open.
+  final String accountId;
+  final String kind;
+
+  /// True once the owner has seen the warning.
+  final bool seen;
+  const FailedLoginRow(
+      {required this.id,
+      required this.createdAt,
+      required this.updatedAt,
+      required this.deviceId,
+      this.userId,
+      required this.deleted,
+      required this.accountId,
+      required this.kind,
+      required this.seen});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['device_id'] = Variable<String>(deviceId);
+    if (!nullToAbsent || userId != null) {
+      map['user_id'] = Variable<String>(userId);
+    }
+    map['deleted'] = Variable<bool>(deleted);
+    map['account_id'] = Variable<String>(accountId);
+    map['kind'] = Variable<String>(kind);
+    map['seen'] = Variable<bool>(seen);
+    return map;
+  }
+
+  FailedLoginsCompanion toCompanion(bool nullToAbsent) {
+    return FailedLoginsCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deviceId: Value(deviceId),
+      userId:
+          userId == null && nullToAbsent ? const Value.absent() : Value(userId),
+      deleted: Value(deleted),
+      accountId: Value(accountId),
+      kind: Value(kind),
+      seen: Value(seen),
+    );
+  }
+
+  factory FailedLoginRow.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FailedLoginRow(
+      id: serializer.fromJson<String>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deviceId: serializer.fromJson<String>(json['deviceId']),
+      userId: serializer.fromJson<String?>(json['userId']),
+      deleted: serializer.fromJson<bool>(json['deleted']),
+      accountId: serializer.fromJson<String>(json['accountId']),
+      kind: serializer.fromJson<String>(json['kind']),
+      seen: serializer.fromJson<bool>(json['seen']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deviceId': serializer.toJson<String>(deviceId),
+      'userId': serializer.toJson<String?>(userId),
+      'deleted': serializer.toJson<bool>(deleted),
+      'accountId': serializer.toJson<String>(accountId),
+      'kind': serializer.toJson<String>(kind),
+      'seen': serializer.toJson<bool>(seen),
+    };
+  }
+
+  FailedLoginRow copyWith(
+          {String? id,
+          DateTime? createdAt,
+          DateTime? updatedAt,
+          String? deviceId,
+          Value<String?> userId = const Value.absent(),
+          bool? deleted,
+          String? accountId,
+          String? kind,
+          bool? seen}) =>
+      FailedLoginRow(
+        id: id ?? this.id,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deviceId: deviceId ?? this.deviceId,
+        userId: userId.present ? userId.value : this.userId,
+        deleted: deleted ?? this.deleted,
+        accountId: accountId ?? this.accountId,
+        kind: kind ?? this.kind,
+        seen: seen ?? this.seen,
+      );
+  FailedLoginRow copyWithCompanion(FailedLoginsCompanion data) {
+    return FailedLoginRow(
+      id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deviceId: data.deviceId.present ? data.deviceId.value : this.deviceId,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      deleted: data.deleted.present ? data.deleted.value : this.deleted,
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      seen: data.seen.present ? data.seen.value : this.seen,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FailedLoginRow(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('userId: $userId, ')
+          ..write('deleted: $deleted, ')
+          ..write('accountId: $accountId, ')
+          ..write('kind: $kind, ')
+          ..write('seen: $seen')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, createdAt, updatedAt, deviceId, userId,
+      deleted, accountId, kind, seen);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FailedLoginRow &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deviceId == this.deviceId &&
+          other.userId == this.userId &&
+          other.deleted == this.deleted &&
+          other.accountId == this.accountId &&
+          other.kind == this.kind &&
+          other.seen == this.seen);
+}
+
+class FailedLoginsCompanion extends UpdateCompanion<FailedLoginRow> {
+  final Value<String> id;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<String> deviceId;
+  final Value<String?> userId;
+  final Value<bool> deleted;
+  final Value<String> accountId;
+  final Value<String> kind;
+  final Value<bool> seen;
+  final Value<int> rowid;
+  const FailedLoginsCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deviceId = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.deleted = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.seen = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FailedLoginsCompanion.insert({
+    required String id,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    required String deviceId,
+    this.userId = const Value.absent(),
+    this.deleted = const Value.absent(),
+    required String accountId,
+    required String kind,
+    this.seen = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt),
+        deviceId = Value(deviceId),
+        accountId = Value(accountId),
+        kind = Value(kind);
+  static Insertable<FailedLoginRow> custom({
+    Expression<String>? id,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<String>? deviceId,
+    Expression<String>? userId,
+    Expression<bool>? deleted,
+    Expression<String>? accountId,
+    Expression<String>? kind,
+    Expression<bool>? seen,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deviceId != null) 'device_id': deviceId,
+      if (userId != null) 'user_id': userId,
+      if (deleted != null) 'deleted': deleted,
+      if (accountId != null) 'account_id': accountId,
+      if (kind != null) 'kind': kind,
+      if (seen != null) 'seen': seen,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FailedLoginsCompanion copyWith(
+      {Value<String>? id,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updatedAt,
+      Value<String>? deviceId,
+      Value<String?>? userId,
+      Value<bool>? deleted,
+      Value<String>? accountId,
+      Value<String>? kind,
+      Value<bool>? seen,
+      Value<int>? rowid}) {
+    return FailedLoginsCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deviceId: deviceId ?? this.deviceId,
+      userId: userId ?? this.userId,
+      deleted: deleted ?? this.deleted,
+      accountId: accountId ?? this.accountId,
+      kind: kind ?? this.kind,
+      seen: seen ?? this.seen,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deviceId.present) {
+      map['device_id'] = Variable<String>(deviceId.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (deleted.present) {
+      map['deleted'] = Variable<bool>(deleted.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<String>(accountId.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (seen.present) {
+      map['seen'] = Variable<bool>(seen.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FailedLoginsCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('userId: $userId, ')
+          ..write('deleted: $deleted, ')
+          ..write('accountId: $accountId, ')
+          ..write('kind: $kind, ')
+          ..write('seen: $seen, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $AppSettingsTable extends AppSettings
     with TableInfo<$AppSettingsTable, AppSettingRow> {
   @override
@@ -4827,6 +5483,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $SaleItemsTable saleItems = $SaleItemsTable(this);
   late final $UsersTable users = $UsersTable(this);
   late final $ChangeLogsTable changeLogs = $ChangeLogsTable(this);
+  late final $FailedLoginsTable failedLogins = $FailedLoginsTable(this);
   late final $AppSettingsTable appSettings = $AppSettingsTable(this);
   late final Index productsBarcode = Index('products_barcode',
       'CREATE INDEX products_barcode ON products (barcode)');
@@ -4840,6 +5497,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       'CREATE INDEX sale_items_product ON sale_items (product_id)');
   late final Index changeLogsEntity = Index('change_logs_entity',
       'CREATE INDEX change_logs_entity ON change_logs (entity_id)');
+  late final Index failedLoginsSeen = Index('failed_logins_seen',
+      'CREATE INDEX failed_logins_seen ON failed_logins (seen)');
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4853,13 +5512,15 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         saleItems,
         users,
         changeLogs,
+        failedLogins,
         appSettings,
         productsBarcode,
         deliveriesProduct,
         salesCreated,
         saleItemsSale,
         saleItemsProduct,
-        changeLogsEntity
+        changeLogsEntity,
+        failedLoginsSeen
       ];
   @override
   DriftDatabaseOptions get options =>
@@ -6512,6 +7173,10 @@ typedef $$UsersTableCreateCompanionBuilder = UsersCompanion Function({
   required String pinHash,
   required String pinSalt,
   Value<bool> active,
+  Value<int> pinLength,
+  Value<bool> lockedOut,
+  Value<String?> recoveryHash,
+  Value<String?> recoverySalt,
   Value<int> rowid,
 });
 typedef $$UsersTableUpdateCompanionBuilder = UsersCompanion Function({
@@ -6527,6 +7192,10 @@ typedef $$UsersTableUpdateCompanionBuilder = UsersCompanion Function({
   Value<String> pinHash,
   Value<String> pinSalt,
   Value<bool> active,
+  Value<int> pinLength,
+  Value<bool> lockedOut,
+  Value<String?> recoveryHash,
+  Value<String?> recoverySalt,
   Value<int> rowid,
 });
 
@@ -6573,6 +7242,18 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
 
   ColumnFilters<bool> get active => $composableBuilder(
       column: $table.active, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get pinLength => $composableBuilder(
+      column: $table.pinLength, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get lockedOut => $composableBuilder(
+      column: $table.lockedOut, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get recoveryHash => $composableBuilder(
+      column: $table.recoveryHash, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get recoverySalt => $composableBuilder(
+      column: $table.recoverySalt, builder: (column) => ColumnFilters(column));
 }
 
 class $$UsersTableOrderingComposer
@@ -6619,6 +7300,20 @@ class $$UsersTableOrderingComposer
 
   ColumnOrderings<bool> get active => $composableBuilder(
       column: $table.active, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get pinLength => $composableBuilder(
+      column: $table.pinLength, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get lockedOut => $composableBuilder(
+      column: $table.lockedOut, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get recoveryHash => $composableBuilder(
+      column: $table.recoveryHash,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get recoverySalt => $composableBuilder(
+      column: $table.recoverySalt,
+      builder: (column) => ColumnOrderings(column));
 }
 
 class $$UsersTableAnnotationComposer
@@ -6665,6 +7360,18 @@ class $$UsersTableAnnotationComposer
 
   GeneratedColumn<bool> get active =>
       $composableBuilder(column: $table.active, builder: (column) => column);
+
+  GeneratedColumn<int> get pinLength =>
+      $composableBuilder(column: $table.pinLength, builder: (column) => column);
+
+  GeneratedColumn<bool> get lockedOut =>
+      $composableBuilder(column: $table.lockedOut, builder: (column) => column);
+
+  GeneratedColumn<String> get recoveryHash => $composableBuilder(
+      column: $table.recoveryHash, builder: (column) => column);
+
+  GeneratedColumn<String> get recoverySalt => $composableBuilder(
+      column: $table.recoverySalt, builder: (column) => column);
 }
 
 class $$UsersTableTableManager extends RootTableManager<
@@ -6702,6 +7409,10 @@ class $$UsersTableTableManager extends RootTableManager<
             Value<String> pinHash = const Value.absent(),
             Value<String> pinSalt = const Value.absent(),
             Value<bool> active = const Value.absent(),
+            Value<int> pinLength = const Value.absent(),
+            Value<bool> lockedOut = const Value.absent(),
+            Value<String?> recoveryHash = const Value.absent(),
+            Value<String?> recoverySalt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               UsersCompanion(
@@ -6717,6 +7428,10 @@ class $$UsersTableTableManager extends RootTableManager<
             pinHash: pinHash,
             pinSalt: pinSalt,
             active: active,
+            pinLength: pinLength,
+            lockedOut: lockedOut,
+            recoveryHash: recoveryHash,
+            recoverySalt: recoverySalt,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -6732,6 +7447,10 @@ class $$UsersTableTableManager extends RootTableManager<
             required String pinHash,
             required String pinSalt,
             Value<bool> active = const Value.absent(),
+            Value<int> pinLength = const Value.absent(),
+            Value<bool> lockedOut = const Value.absent(),
+            Value<String?> recoveryHash = const Value.absent(),
+            Value<String?> recoverySalt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               UsersCompanion.insert(
@@ -6747,6 +7466,10 @@ class $$UsersTableTableManager extends RootTableManager<
             pinHash: pinHash,
             pinSalt: pinSalt,
             active: active,
+            pinLength: pinLength,
+            lockedOut: lockedOut,
+            recoveryHash: recoveryHash,
+            recoverySalt: recoverySalt,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -7037,6 +7760,243 @@ typedef $$ChangeLogsTableProcessedTableManager = ProcessedTableManager<
     ),
     ChangeLogRow,
     PrefetchHooks Function()>;
+typedef $$FailedLoginsTableCreateCompanionBuilder = FailedLoginsCompanion
+    Function({
+  required String id,
+  required DateTime createdAt,
+  required DateTime updatedAt,
+  required String deviceId,
+  Value<String?> userId,
+  Value<bool> deleted,
+  required String accountId,
+  required String kind,
+  Value<bool> seen,
+  Value<int> rowid,
+});
+typedef $$FailedLoginsTableUpdateCompanionBuilder = FailedLoginsCompanion
+    Function({
+  Value<String> id,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<String> deviceId,
+  Value<String?> userId,
+  Value<bool> deleted,
+  Value<String> accountId,
+  Value<String> kind,
+  Value<bool> seen,
+  Value<int> rowid,
+});
+
+class $$FailedLoginsTableFilterComposer
+    extends Composer<_$AppDatabase, $FailedLoginsTable> {
+  $$FailedLoginsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get userId => $composableBuilder(
+      column: $table.userId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get deleted => $composableBuilder(
+      column: $table.deleted, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get accountId => $composableBuilder(
+      column: $table.accountId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get kind => $composableBuilder(
+      column: $table.kind, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get seen => $composableBuilder(
+      column: $table.seen, builder: (column) => ColumnFilters(column));
+}
+
+class $$FailedLoginsTableOrderingComposer
+    extends Composer<_$AppDatabase, $FailedLoginsTable> {
+  $$FailedLoginsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get deviceId => $composableBuilder(
+      column: $table.deviceId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+      column: $table.userId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get deleted => $composableBuilder(
+      column: $table.deleted, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get accountId => $composableBuilder(
+      column: $table.accountId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+      column: $table.kind, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get seen => $composableBuilder(
+      column: $table.seen, builder: (column) => ColumnOrderings(column));
+}
+
+class $$FailedLoginsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FailedLoginsTable> {
+  $$FailedLoginsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceId =>
+      $composableBuilder(column: $table.deviceId, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<bool> get deleted =>
+      $composableBuilder(column: $table.deleted, builder: (column) => column);
+
+  GeneratedColumn<String> get accountId =>
+      $composableBuilder(column: $table.accountId, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<bool> get seen =>
+      $composableBuilder(column: $table.seen, builder: (column) => column);
+}
+
+class $$FailedLoginsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $FailedLoginsTable,
+    FailedLoginRow,
+    $$FailedLoginsTableFilterComposer,
+    $$FailedLoginsTableOrderingComposer,
+    $$FailedLoginsTableAnnotationComposer,
+    $$FailedLoginsTableCreateCompanionBuilder,
+    $$FailedLoginsTableUpdateCompanionBuilder,
+    (
+      FailedLoginRow,
+      BaseReferences<_$AppDatabase, $FailedLoginsTable, FailedLoginRow>
+    ),
+    FailedLoginRow,
+    PrefetchHooks Function()> {
+  $$FailedLoginsTableTableManager(_$AppDatabase db, $FailedLoginsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FailedLoginsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FailedLoginsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FailedLoginsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<String> deviceId = const Value.absent(),
+            Value<String?> userId = const Value.absent(),
+            Value<bool> deleted = const Value.absent(),
+            Value<String> accountId = const Value.absent(),
+            Value<String> kind = const Value.absent(),
+            Value<bool> seen = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              FailedLoginsCompanion(
+            id: id,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deviceId: deviceId,
+            userId: userId,
+            deleted: deleted,
+            accountId: accountId,
+            kind: kind,
+            seen: seen,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required DateTime createdAt,
+            required DateTime updatedAt,
+            required String deviceId,
+            Value<String?> userId = const Value.absent(),
+            Value<bool> deleted = const Value.absent(),
+            required String accountId,
+            required String kind,
+            Value<bool> seen = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              FailedLoginsCompanion.insert(
+            id: id,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deviceId: deviceId,
+            userId: userId,
+            deleted: deleted,
+            accountId: accountId,
+            kind: kind,
+            seen: seen,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable<$FailedLoginsTable, FailedLoginRow>(table),
+                    BaseReferences<_$AppDatabase, $FailedLoginsTable,
+                        FailedLoginRow>(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$FailedLoginsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $FailedLoginsTable,
+    FailedLoginRow,
+    $$FailedLoginsTableFilterComposer,
+    $$FailedLoginsTableOrderingComposer,
+    $$FailedLoginsTableAnnotationComposer,
+    $$FailedLoginsTableCreateCompanionBuilder,
+    $$FailedLoginsTableUpdateCompanionBuilder,
+    (
+      FailedLoginRow,
+      BaseReferences<_$AppDatabase, $FailedLoginsTable, FailedLoginRow>
+    ),
+    FailedLoginRow,
+    PrefetchHooks Function()>;
 typedef $$AppSettingsTableCreateCompanionBuilder = AppSettingsCompanion
     Function({
   required String key,
@@ -7189,6 +8149,8 @@ class $AppDatabaseManager {
       $$UsersTableTableManager(_db, _db.users);
   $$ChangeLogsTableTableManager get changeLogs =>
       $$ChangeLogsTableTableManager(_db, _db.changeLogs);
+  $$FailedLoginsTableTableManager get failedLogins =>
+      $$FailedLoginsTableTableManager(_db, _db.failedLogins);
   $$AppSettingsTableTableManager get appSettings =>
       $$AppSettingsTableTableManager(_db, _db.appSettings);
 }

@@ -117,6 +117,32 @@ class Users extends Table with SyncColumns {
   TextColumn get pinSalt => text()();
   BoolColumn get active => boolean().withDefault(const Constant(true))();
 
+  /// 4 for everyone; the owner may choose 6.
+  IntColumn get pinLength => integer().withDefault(const Constant(4))();
+
+  /// Set after too many wrong PINs. A worker is unlocked by the owner,
+  /// the owner by the recovery code.
+  BoolColumn get lockedOut => boolean().withDefault(const Constant(false))();
+
+  /// Owner only: hash of the one-time recovery code (never the code).
+  TextColumn get recoveryHash => text().nullable()();
+  TextColumn get recoverySalt => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Every wrong PIN or recovery code typed, so the owner can see who
+/// tried to get into which account and when.
+@DataClassName('FailedLoginRow')
+@TableIndex(name: 'failed_logins_seen', columns: {#seen})
+class FailedLogins extends Table with SyncColumns {
+  /// The account someone tried to open.
+  TextColumn get accountId => text()();
+  TextColumn get kind => text()(); // 'pin' or 'recovery'
+  /// True once the owner has seen the warning.
+  BoolColumn get seen => boolean().withDefault(const Constant(false))();
+
   @override
   Set<Column> get primaryKey => {id};
 }

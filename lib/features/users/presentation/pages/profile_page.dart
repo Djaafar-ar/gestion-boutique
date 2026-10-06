@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/error/failure.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/service_locator.dart';
 import '../../../../core/session/session_cubit.dart';
@@ -8,6 +9,7 @@ import '../../../../core/utils/date_format.dart';
 import '../../../../core/utils/money.dart';
 import '../../../../core/widgets/app_snack.dart';
 import '../../../auth/presentation/widgets/pin_field.dart';
+import '../../../auth/presentation/widgets/recovery_code_dialog.dart';
 import '../../../billing/domain/entities/sale.dart';
 import '../../../billing/domain/repositories/sale_repository.dart';
 import '../../../billing/presentation/bloc/billing_bloc.dart';
@@ -140,6 +142,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => _changePin(user),
                 ),
+                if (user.isOwner) ...[
+                  const Divider(indent: 56),
+                  _RecoveryCodeTile(owner: user),
+                ],
                 const Divider(indent: 56),
                 ListTile(
                   leading: const Icon(Icons.switch_account_outlined),
@@ -222,7 +228,8 @@ class _StatTile extends StatelessWidget {
   }
 }
 
-/// Asks for the current PIN, then the new one twice.
+/// Asks for the current PIN, then the new one twice. Only ever changes
+/// the logged-in person's own PIN.
 class _ChangePinDialog extends StatefulWidget {
   final AppUser user;
   const _ChangePinDialog({required this.user});
@@ -236,6 +243,7 @@ class _ChangePinDialogState extends State<_ChangePinDialog> {
   final _current = TextEditingController();
   final _pin = TextEditingController();
   final _confirm = TextEditingController();
+  late int _length = widget.user.pinLength;
   String? _error;
 
   @override
@@ -249,19 +257,19 @@ class _ChangePinDialogState extends State<_ChangePinDialog> {
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     final l10n = AppLocalizations.of(context);
-    final repo = sl<UserRepository>();
-    if (await repo.checkPin(widget.user.id, _current.text) == null) {
-      setState(() => _error = l10n.currentPinWrong);
-      return;
-    }
-    final result = await repo.updateUser(widget.user, newPin: _pin.text);
+    final result = await sl<UserRepository>().changeOwnPin(
+        userId: widget.user.id, currentPin: _current.text, newPin: _pin.text);
     if (!mounted) return;
-    if (result.isRight()) {
-      Navigator.pop(context, true);
-    } else {
-      setState(() => _error =
-          l10n.errorWithDetail(result.getLeft().toNullable()!.message));
-    }
+    result.fold(
+      (failure) => setState(() => _error = failure is WrongSecretFailure
+          ? l10n.currentPinWrong
+          : l10n.errorWithDetail(failure.message)),
+      (user) {
+        // The PIN length may have changed: keep the session up to date.
+        context.read<SessionCubit>().userUpdated(user);
+        Navigator.pop(context, true);
+      },
+    );
   }
 
   @override
@@ -274,13 +282,32 @@ class _ChangePinDialogState extends State<_ChangePinDialog> {
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              PinField(controller: _current, label: l10n.currentPinLabel),
+              PinField(
+                  controller: _current,
+                  length: widget.user.pinLength,
+                  label: l10n.currentPinLabel),
               const SizedBox(height: 12),
-              PinField(controller: _pin, label: l10n.newPinLabel),
+              if (widget.user.isOwner) ...[
+                PinLengthPicker(
+                  value: _length,
+                  onChanged: (length) => setState(() {
+                    _length = length;
+                    _pin.clear();
+                    _confirm.clear();
+                  }),
+                ),
+                const SizedBox(height: 12),
+              ],
+              PinField(
+                  controller: _pin,
+                  length: _length,
+                  label: l10n.newPinLabelN(_length)),
               const SizedBox(height: 12),
               PinField(
                 controller: _confirm,
+                length: _length,
                 label: l10n.pinConfirmLabel,
                 mustMatch: () => _pin.text,
               ),
@@ -305,6 +332,94 @@ class _ChangePinDialogState extends State<_ChangePinDialog> {
           child: Text(l10n.commonSave),
         ),
       ],
+    );
+  }
+}
+
+/// Owner only: says whether a recovery code exists and makes a new one
+/// after checking the current PIN.
+class _RecoveryCodeTile extends StatefulWidget {
+  final AppUser owner;
+  const _RecoveryCodeTile({required this.owner});
+
+  @override
+  State<_RecoveryCodeTile> createState() => _RecoveryCodeTileState();
+}
+
+class _RecoveryCodeTileState extends State<_RecoveryCodeTile> {
+  late Future<bool> _hasCode = sl<UserRepository>().ownerHasRecoveryCode();
+
+  Future<void> _create() async {
+    final l10n = AppLocalizations.of(context);
+    final pin = await _askPin(l10n);
+    if (pin == null || !mounted) return;
+    final result = await sl<UserRepository>()
+        .createRecoveryCode(ownerId: widget.owner.id, currentPin: pin);
+    if (!mounted) return;
+    await result.fold(
+      (failure) async => showAppSnack(
+          context,
+          failure is WrongSecretFailure
+              ? l10n.currentPinWrong
+              : l10n.errorWithDetail(failure.message),
+          kind: SnackKind.error),
+      (code) => showRecoveryCode(context, code),
+    );
+    if (mounted) {
+      setState(() => _hasCode = sl<UserRepository>().ownerHasRecoveryCode());
+    }
+  }
+
+  Future<String?> _askPin(AppLocalizations l10n) {
+    final formKey = GlobalKey<FormState>();
+    final controller = TextEditingController();
+    return showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.recoveryTile),
+        content: Form(
+          key: formKey,
+          child: PinField(
+            controller: controller,
+            length: widget.owner.pinLength,
+            label: l10n.confirmWithPin,
+          ),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text(l10n.commonCancel)),
+          FilledButton(
+            style: FilledButton.styleFrom(minimumSize: const Size(88, 40)),
+            onPressed: () {
+              if (formKey.currentState!.validate()) {
+                Navigator.pop(dialogContext, controller.text);
+              }
+            },
+            child: Text(l10n.continueLabel),
+          ),
+        ],
+      ),
+    ).whenComplete(controller.dispose);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    return FutureBuilder<bool>(
+      future: _hasCode,
+      builder: (context, snapshot) {
+        final missing = snapshot.data == false;
+        return ListTile(
+          leading: Icon(Icons.key, color: missing ? scheme.error : null),
+          title: Text(l10n.recoveryTile),
+          subtitle: Text(missing ? l10n.recoveryMissing : l10n.recoveryExists,
+              style: missing ? TextStyle(color: scheme.error) : null),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: _create,
+        );
+      },
     );
   }
 }
