@@ -383,4 +383,229 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shopSaved => 'Details saved';
+
+  @override
+  String get commonYes => 'Yes';
+
+  @override
+  String get commonNo => 'No';
+
+  @override
+  String get commonAdd => 'Add';
+
+  @override
+  String get unknownUser => 'Unknown';
+
+  @override
+  String get nameLabel => 'Name';
+
+  @override
+  String get phoneOptionalLabel => 'Phone (optional)';
+
+  @override
+  String get setupWelcomeTitle => 'Welcome!';
+
+  @override
+  String get setupWelcomeBody => 'Let\'s set up your shop in 3 steps.';
+
+  @override
+  String get setupExistingBody =>
+      'Create the owner account to continue. Your products and sales are kept.';
+
+  @override
+  String get setupStepShop => 'Your shop';
+
+  @override
+  String get setupStepOwner => 'The owner';
+
+  @override
+  String get setupStepPin => 'PIN code';
+
+  @override
+  String get ownerNameLabel => 'Your name';
+
+  @override
+  String get ownerNameHint => 'e.g. Karim Benali';
+
+  @override
+  String get pinLabel => 'PIN (4 digits)';
+
+  @override
+  String get pinConfirmLabel => 'Confirm the PIN';
+
+  @override
+  String get pinInvalid => 'The PIN must be 4 digits';
+
+  @override
+  String get pinMismatch => 'The two PINs do not match';
+
+  @override
+  String get pinHelp =>
+      'You will type this code to open the app. Do not share it.';
+
+  @override
+  String get nextStep => 'Next';
+
+  @override
+  String get previousStep => 'Back';
+
+  @override
+  String get finishSetup => 'Finish';
+
+  @override
+  String get loginTitle => 'Who are you?';
+
+  @override
+  String get loginEnterPin => 'Enter your PIN';
+
+  @override
+  String loginWrongPin(int left) {
+    String _temp0 = intl.Intl.pluralLogic(
+      left,
+      locale: localeName,
+      other: '$left tries left.',
+      one: '1 try left.',
+    );
+    return 'Wrong PIN. $_temp0';
+  }
+
+  @override
+  String loginLocked(int seconds) {
+    return 'Too many tries. Try again in $seconds s.';
+  }
+
+  @override
+  String get roleOwner => 'Owner';
+
+  @override
+  String get roleWorker => 'Worker';
+
+  @override
+  String get teamSection => 'Team';
+
+  @override
+  String get workersTitle => 'Workers';
+
+  @override
+  String get workersSub => 'Add, edit, disable';
+
+  @override
+  String get addWorker => 'Add a worker';
+
+  @override
+  String get editAccount => 'Edit account';
+
+  @override
+  String get workerNameHint => 'e.g. Amine Kaci';
+
+  @override
+  String get newPinLabel => 'New PIN (4 digits)';
+
+  @override
+  String get pinKeepHint => 'Leave empty to keep the current PIN';
+
+  @override
+  String get activeLabel => 'Account active';
+
+  @override
+  String get activeHelp =>
+      'A disabled account can no longer log in. Its history is kept.';
+
+  @override
+  String get inactiveBadge => 'DISABLED';
+
+  @override
+  String get accountSaved => 'Account saved';
+
+  @override
+  String get noWorkersBody => 'Add your workers: each one gets their own PIN.';
+
+  @override
+  String get myProfile => 'My profile';
+
+  @override
+  String get myStatsTitle => 'My sales';
+
+  @override
+  String get periodWeek => 'This week';
+
+  @override
+  String get periodMonth => 'This month';
+
+  @override
+  String get statRevenue => 'Revenue';
+
+  @override
+  String get statSales => 'Sales';
+
+  @override
+  String get statItems => 'Items sold';
+
+  @override
+  String get statLosses => 'Losses recorded';
+
+  @override
+  String get lossesComingSoon => 'Loss tracking comes in step 3.';
+
+  @override
+  String get changePin => 'Change my PIN';
+
+  @override
+  String get currentPinLabel => 'Current PIN';
+
+  @override
+  String get currentPinWrong => 'The current PIN is wrong';
+
+  @override
+  String get pinChanged => 'PIN changed';
+
+  @override
+  String get switchUser => 'Switch user';
+
+  @override
+  String get switchUserSub => 'Back to the PIN screen';
+
+  @override
+  String get buyPriceLabel => 'Buying price (optional)';
+
+  @override
+  String get categoryLabel => 'Category';
+
+  @override
+  String get noCategory => 'No category';
+
+  @override
+  String get newCategory => 'New category…';
+
+  @override
+  String get categoryNameHint => 'e.g. Boissons';
+
+  @override
+  String get lowStockLabel => 'Low-stock alert at';
+
+  @override
+  String get lowStockHelp => '0 = no alert. Alerts come in step 5.';
+
+  @override
+  String get quantityInvalid => 'Enter a whole number';
+
+  @override
+  String get historySection => 'Change history';
+
+  @override
+  String get historyNoChanges => 'No changes yet.';
+
+  @override
+  String get fieldBuyPrice => 'Buying price';
+
+  @override
+  String get fieldLowStock => 'Low-stock level';
+
+  @override
+  String get fieldArchived => 'Archived';
+
+  @override
+  String soldBy(String name) {
+    return 'Sold by $name';
+  }
 }

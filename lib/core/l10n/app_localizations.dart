@@ -777,6 +777,426 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Informations enregistrées'**
   String get shopSaved;
+
+  /// No description provided for @commonYes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Oui'**
+  String get commonYes;
+
+  /// No description provided for @commonNo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non'**
+  String get commonNo;
+
+  /// No description provided for @commonAdd.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter'**
+  String get commonAdd;
+
+  /// No description provided for @unknownUser.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inconnu'**
+  String get unknownUser;
+
+  /// No description provided for @nameLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom'**
+  String get nameLabel;
+
+  /// No description provided for @phoneOptionalLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone (facultatif)'**
+  String get phoneOptionalLabel;
+
+  /// No description provided for @setupWelcomeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bienvenue !'**
+  String get setupWelcomeTitle;
+
+  /// No description provided for @setupWelcomeBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Configurons votre boutique en 3 étapes.'**
+  String get setupWelcomeBody;
+
+  /// No description provided for @setupExistingBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créez le compte du propriétaire pour continuer. Vos produits et vos ventes sont conservés.'**
+  String get setupExistingBody;
+
+  /// No description provided for @setupStepShop.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre boutique'**
+  String get setupStepShop;
+
+  /// No description provided for @setupStepOwner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le propriétaire'**
+  String get setupStepOwner;
+
+  /// No description provided for @setupStepPin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code PIN'**
+  String get setupStepPin;
+
+  /// No description provided for @ownerNameLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre nom'**
+  String get ownerNameLabel;
+
+  /// No description provided for @ownerNameHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : Karim Benali'**
+  String get ownerNameHint;
+
+  /// No description provided for @pinLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code PIN (4 chiffres)'**
+  String get pinLabel;
+
+  /// No description provided for @pinConfirmLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmez le code PIN'**
+  String get pinConfirmLabel;
+
+  /// No description provided for @pinInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le code PIN doit avoir 4 chiffres'**
+  String get pinInvalid;
+
+  /// No description provided for @pinMismatch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les deux codes PIN ne sont pas identiques'**
+  String get pinMismatch;
+
+  /// No description provided for @pinHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous taperez ce code pour ouvrir l\'application. Ne le partagez pas.'**
+  String get pinHelp;
+
+  /// No description provided for @nextStep.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivant'**
+  String get nextStep;
+
+  /// No description provided for @previousStep.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour'**
+  String get previousStep;
+
+  /// No description provided for @finishSetup.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminer'**
+  String get finishSetup;
+
+  /// No description provided for @loginTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Qui êtes-vous ?'**
+  String get loginTitle;
+
+  /// No description provided for @loginEnterPin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrez votre code PIN'**
+  String get loginEnterPin;
+
+  /// No description provided for @loginWrongPin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code PIN incorrect. {left, plural, =1{Encore 1 essai.} other{Encore {left} essais.}}'**
+  String loginWrongPin(int left);
+
+  /// No description provided for @loginLocked.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trop d\'essais. Réessayez dans {seconds} s.'**
+  String loginLocked(int seconds);
+
+  /// No description provided for @roleOwner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Propriétaire'**
+  String get roleOwner;
+
+  /// No description provided for @roleWorker.
+  ///
+  /// In fr, this message translates to:
+  /// **'Employé'**
+  String get roleWorker;
+
+  /// No description provided for @teamSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Équipe'**
+  String get teamSection;
+
+  /// No description provided for @workersTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Employés'**
+  String get workersTitle;
+
+  /// No description provided for @workersSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter, modifier, désactiver'**
+  String get workersSub;
+
+  /// No description provided for @addWorker.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un employé'**
+  String get addWorker;
+
+  /// No description provided for @editAccount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le compte'**
+  String get editAccount;
+
+  /// No description provided for @workerNameHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : Amine Kaci'**
+  String get workerNameHint;
+
+  /// No description provided for @newPinLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau code PIN (4 chiffres)'**
+  String get newPinLabel;
+
+  /// No description provided for @pinKeepHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Laissez vide pour garder le code actuel'**
+  String get pinKeepHint;
+
+  /// No description provided for @activeLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte actif'**
+  String get activeLabel;
+
+  /// No description provided for @activeHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un compte désactivé ne peut plus se connecter. Son historique est conservé.'**
+  String get activeHelp;
+
+  /// No description provided for @inactiveBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'DÉSACTIVÉ'**
+  String get inactiveBadge;
+
+  /// No description provided for @accountSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte enregistré'**
+  String get accountSaved;
+
+  /// No description provided for @noWorkersBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoutez vos employés : chacun aura son propre code PIN.'**
+  String get noWorkersBody;
+
+  /// No description provided for @myProfile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mon profil'**
+  String get myProfile;
+
+  /// No description provided for @myStatsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mes ventes'**
+  String get myStatsTitle;
+
+  /// No description provided for @periodWeek.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette semaine'**
+  String get periodWeek;
+
+  /// No description provided for @periodMonth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce mois-ci'**
+  String get periodMonth;
+
+  /// No description provided for @statRevenue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chiffre d\'affaires'**
+  String get statRevenue;
+
+  /// No description provided for @statSales.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes'**
+  String get statSales;
+
+  /// No description provided for @statItems.
+  ///
+  /// In fr, this message translates to:
+  /// **'Articles vendus'**
+  String get statItems;
+
+  /// No description provided for @statLosses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pertes enregistrées'**
+  String get statLosses;
+
+  /// No description provided for @lossesComingSoon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le suivi des pertes arrive à l\'étape 3.'**
+  String get lossesComingSoon;
+
+  /// No description provided for @changePin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer mon code PIN'**
+  String get changePin;
+
+  /// No description provided for @currentPinLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code PIN actuel'**
+  String get currentPinLabel;
+
+  /// No description provided for @currentPinWrong.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le code PIN actuel est incorrect'**
+  String get currentPinWrong;
+
+  /// No description provided for @pinChanged.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code PIN modifié'**
+  String get pinChanged;
+
+  /// No description provided for @switchUser.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer d\'utilisateur'**
+  String get switchUser;
+
+  /// No description provided for @switchUserSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour à l\'écran des codes PIN'**
+  String get switchUserSub;
+
+  /// No description provided for @buyPriceLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix d\'achat (facultatif)'**
+  String get buyPriceLabel;
+
+  /// No description provided for @categoryLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégorie'**
+  String get categoryLabel;
+
+  /// No description provided for @noCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans catégorie'**
+  String get noCategory;
+
+  /// No description provided for @newCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle catégorie…'**
+  String get newCategory;
+
+  /// No description provided for @categoryNameHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : Boissons'**
+  String get categoryNameHint;
+
+  /// No description provided for @lowStockLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alerte stock bas à partir de'**
+  String get lowStockLabel;
+
+  /// No description provided for @lowStockHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'0 = pas d\'alerte. Les alertes arrivent à l\'étape 5.'**
+  String get lowStockHelp;
+
+  /// No description provided for @quantityInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrez un nombre entier'**
+  String get quantityInvalid;
+
+  /// No description provided for @historySection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Historique des modifications'**
+  String get historySection;
+
+  /// No description provided for @historyNoChanges.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune modification pour l\'instant.'**
+  String get historyNoChanges;
+
+  /// No description provided for @fieldBuyPrice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix d\'achat'**
+  String get fieldBuyPrice;
+
+  /// No description provided for @fieldLowStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seuil de stock bas'**
+  String get fieldLowStock;
+
+  /// No description provided for @fieldArchived.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archivé'**
+  String get fieldArchived;
+
+  /// No description provided for @soldBy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vendu par {name}'**
+  String soldBy(String name);
 }
 
 class _AppLocalizationsDelegate

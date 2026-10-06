@@ -303,6 +303,7 @@ At the **end of every phase**:
 - Tables `deliveries`, `losses`.
 - "Add delivery" screen: scan/choose product, quantity, buy price (pre-filled), optional expiry date, supplier (optional until Phase 4), received by (automatic).
 - Stock calculated from movements. Batch list per product with expiry colours (green / orange / red).
+- **(Requested after Phase 1)** The current quantity is shown on every product: in the Stock list, on the product screen and in the cart. Adding stock always asks for the quantity and lets you enter an expiry date.
 - FEFO at checkout and for losses. `unitCost` saved for profit.
 - Selling at 0 stock: allowed with a warning.
 - "Record loss" screen: reason (damaged, expired, eaten/used by staff, stolen, other), quantity, note. It shows money lost at buy price.

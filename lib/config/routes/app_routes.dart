@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/l10n/app_localizations.dart';
+import '../../core/service_locator.dart';
+import '../../core/session/session_cubit.dart';
 import '../../core/widgets/coming_soon_page.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../features/billing/presentation/pages/home_page.dart';
@@ -16,17 +20,33 @@ import '../../features/settings/presentation/pages/more_page.dart';
 import '../../features/billing/presentation/pages/scanner_page.dart';
 import '../../features/billing/presentation/pages/checkout_page.dart';
 import '../../features/product/domain/entities/product.dart';
+import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/auth/presentation/pages/setup_page.dart';
+import '../../features/users/domain/entities/app_user.dart';
+import '../../features/users/presentation/pages/profile_page.dart';
+import '../../features/users/presentation/pages/user_form_page.dart';
+import '../../features/users/presentation/pages/workers_page.dart';
 import 'app_shell.dart';
+import 'route_guard.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
-// The 5 tabs each keep their own history. Pages opened from a tab with
-// `parentNavigatorKey: rootNavigatorKey` cover the whole screen,
-// so the bottom bar is hidden while filling a form or paying.
 final router = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: '/sell',
+  redirect: (context, state) =>
+      guardRoute(sl<SessionCubit>().state, state.matchedLocation),
+  // Check the rules again whenever someone logs in or out.
+  refreshListenable: _StreamListenable(sl<SessionCubit>().stream),
   routes: [
+    GoRoute(
+      path: '/setup',
+      builder: (context, state) => const SetupPage(),
+    ),
+    GoRoute(
+      path: '/login',
+      builder: (context, state) => const LoginPage(),
+    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, shell) => AppShell(shell: shell),
       branches: [
@@ -107,6 +127,29 @@ final router = GoRouter(
                 parentNavigatorKey: rootNavigatorKey,
                 builder: (context, state) => const ShopDetailsPage(),
               ),
+              GoRoute(
+                path: 'profile',
+                parentNavigatorKey: rootNavigatorKey,
+                builder: (context, state) => const ProfilePage(),
+              ),
+              GoRoute(
+                path: 'workers',
+                parentNavigatorKey: rootNavigatorKey,
+                builder: (context, state) => const WorkersPage(),
+                routes: [
+                  GoRoute(
+                    path: 'new',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => const UserFormPage(),
+                  ),
+                  GoRoute(
+                    path: ':userId',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) =>
+                        UserFormPage(user: state.extra as AppUser?),
+                  ),
+                ],
+              ),
             ],
           ),
         ]),
@@ -131,5 +174,20 @@ class _ProductMissingPage extends StatelessWidget {
       body: EmptyState(
           icon: Icons.search_off_rounded, title: l10n.productsNoMatch),
     );
+  }
+}
+
+/// Lets the router listen to the session: each change re-runs [guardRoute].
+class _StreamListenable extends ChangeNotifier {
+  late final StreamSubscription<dynamic> _subscription;
+
+  _StreamListenable(Stream<dynamic> stream) {
+    _subscription = stream.listen((_) => notifyListeners());
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 }

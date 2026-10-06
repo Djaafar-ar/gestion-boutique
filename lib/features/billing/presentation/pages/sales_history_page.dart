@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/service_locator.dart';
+import '../../../../core/session/session_cubit.dart';
 import '../../../../core/utils/date_format.dart';
 import '../../../../core/utils/money.dart';
 import '../../../../core/widgets/empty_state.dart';
@@ -18,10 +20,19 @@ class SalesHistoryPage extends StatefulWidget {
 }
 
 class _SalesHistoryPageState extends State<SalesHistoryPage> {
-  late Future<List<Sale>> _sales = _load();
+  late Future<List<Sale>> _sales;
 
+  @override
+  void initState() {
+    super.initState();
+    _sales = _load();
+  }
+
+  /// The owner sees every sale, a worker only their own.
   Future<List<Sale>> _load() async {
-    final result = await sl<SaleRepository>().getSales();
+    final session = context.read<SessionCubit>().state;
+    final result = await sl<SaleRepository>()
+        .getSales(userId: session.isOwner ? null : session.user?.id);
     return result.fold((failure) => throw failure.message, (sales) => sales);
   }
 
@@ -144,8 +155,11 @@ class _SaleTile extends StatelessWidget {
       ),
       title: Text(l10n.saleTitle(sale.number),
           style: const TextStyle(fontWeight: FontWeight.w600)),
-      subtitle: Text(
-          '${formatTime(sale.createdAt)} · ${l10n.itemCount(sale.itemCount)}'),
+      subtitle: Text([
+        formatTime(sale.createdAt),
+        l10n.itemCount(sale.itemCount),
+        if (sale.sellerName != null) sale.sellerName!,
+      ].join(' · ')),
       trailing: Text(formatDAForUi(sale.total),
           style: const TextStyle(fontWeight: FontWeight.w600)),
       onTap: () => context.push('/sell/history/${sale.id}'),

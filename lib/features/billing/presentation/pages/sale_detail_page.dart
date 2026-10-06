@@ -76,7 +76,12 @@ class _SaleDetailPageState extends State<SaleDetailPage> {
                   : ListView(
                       padding: const EdgeInsets.all(16),
                       children: [
-                        Text(formatDateTime(sale.createdAt),
+                        Text(
+                            [
+                              formatDateTime(sale.createdAt),
+                              if (sale.sellerName != null)
+                                l10n.soldBy(sale.sellerName!),
+                            ].join(' · '),
                             style: TextStyle(color: scheme.onSurfaceVariant)),
                         const SizedBox(height: 12),
                         Card(

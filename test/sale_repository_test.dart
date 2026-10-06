@@ -1,9 +1,12 @@
 import 'package:billing_app/core/database/app_database.dart';
+import 'package:billing_app/core/session/session_cubit.dart';
 import 'package:billing_app/core/settings/settings_store.dart';
 import 'package:billing_app/features/billing/data/repositories/sale_repository_impl.dart';
 import 'package:billing_app/features/billing/domain/entities/cart_item.dart';
+import 'package:billing_app/features/billing/domain/entities/sale.dart';
 import 'package:billing_app/features/product/data/repositories/product_repository_impl.dart';
 import 'package:billing_app/features/product/domain/entities/product.dart';
+import 'package:billing_app/features/users/domain/entities/app_user.dart';
 import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,6 +17,10 @@ void main() {
   late AppDatabase db;
   late SaleRepositoryImpl repo;
   late ProductRepositoryImpl products;
+  late SessionCubit session;
+
+  const amine = AppUser(id: 'u-amine', name: 'Amine', role: UserRole.worker);
+  const karim = AppUser(id: 'u-karim', name: 'Karim', role: UserRole.owner);
 
   const juice = Product(
       id: 'p1',
@@ -28,11 +35,15 @@ void main() {
     db = AppDatabase(NativeDatabase.memory());
     final settings = SettingsStore(db);
     await settings.load();
-    repo = SaleRepositoryImpl(db, settings);
-    products = ProductRepositoryImpl(db, settings);
+    session = SessionCubit(hasOwner: true)..login(amine);
+    repo = SaleRepositoryImpl(db, settings, session);
+    products = ProductRepositoryImpl(db, settings, session);
   });
 
-  tearDown(() => db.close());
+  tearDown(() async {
+    await session.close();
+    await db.close();
+  });
 
   test('a saved sale keeps its lines, prices and total', () async {
     final result = await repo.saveSale(const [
@@ -93,5 +104,47 @@ void main() {
     final result = await repo.saveSale(const []);
     expect(result.isLeft(), isTrue);
     expect(await db.select(db.sales).get(), isEmpty);
+  });
+
+  test('each sale remembers who made it', () async {
+    final sale = (await repo.saveSale(const [CartItem(product: soda)]))
+        .getOrElse((f) => fail(f.message));
+
+    expect(sale.userId, 'u-amine');
+    final lines = await db.select(db.saleItems).get();
+    expect(lines.single.userId, 'u-amine');
+  });
+
+  test('summary adds up revenue, tickets and items per person', () async {
+    await repo.saveSale(const [CartItem(product: juice, quantity: 2)]);
+    await repo.saveSale(const [CartItem(product: soda, quantity: 3)]);
+    session.login(karim);
+    await repo.saveSale(const [CartItem(product: juice)]);
+
+    final amineTotals = (await repo.getSummary(userId: 'u-amine'))
+        .getOrElse((f) => fail(f.message));
+    expect(amineTotals.revenue, 2 * 18000 + 3 * 6000);
+    expect(amineTotals.salesCount, 2);
+    expect(amineTotals.itemsSold, 5);
+
+    final everyone =
+        (await repo.getSummary()).getOrElse((f) => fail(f.message));
+    expect(everyone.salesCount, 3);
+    expect(everyone.revenue, 2 * 18000 + 3 * 6000 + 18000);
+
+    final tomorrow = DateTime.now().add(const Duration(days: 1));
+    final future = (await repo.getSummary(from: tomorrow))
+        .getOrElse((f) => fail(f.message));
+    expect(future, SalesSummary.empty);
+  });
+
+  test('history can show one person only', () async {
+    await repo.saveSale(const [CartItem(product: soda)]);
+    session.login(karim);
+    await repo.saveSale(const [CartItem(product: juice)]);
+
+    final mine = (await repo.getSales(userId: 'u-karim'))
+        .getOrElse((f) => fail(f.message));
+    expect(mine.map((s) => s.number), [2]);
   });
 }

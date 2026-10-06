@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../core/error/failure.dart';
+import '../../../../core/session/session_cubit.dart';
 import '../../../../core/settings/settings_store.dart';
 import '../../domain/entities/cart_item.dart';
 import '../../domain/entities/sale.dart';
@@ -12,9 +13,10 @@ import '../../domain/repositories/sale_repository.dart';
 class SaleRepositoryImpl implements SaleRepository {
   final AppDatabase db;
   final SettingsStore settings;
+  final SessionCubit session;
   final Uuid _uuid = const Uuid();
 
-  SaleRepositoryImpl(this.db, this.settings);
+  SaleRepositoryImpl(this.db, this.settings, this.session);
 
   @override
   Future<Either<Failure, Sale>> saveSale(List<CartItem> items) async {
@@ -24,6 +26,7 @@ class SaleRepositoryImpl implements SaleRepository {
       final saleId = await db.transaction(() async {
         final now = DateTime.now();
         final deviceId = settings.deviceId;
+        final userId = Value(session.userId);
         final saleId = _uuid.v4();
 
         final maxNumber = db.sales.number.max();
@@ -38,18 +41,22 @@ class SaleRepositoryImpl implements SaleRepository {
               createdAt: now,
               updatedAt: now,
               deviceId: deviceId,
+              userId: userId,
               number: (lastNumber ?? 0) + 1,
               subtotal: subtotal,
               total: subtotal,
               paidNow: subtotal,
             ));
 
-        for (final item in items) {
+        for (final (index, item) in items.indexed) {
+          // One millisecond apart, so the lines keep the cart order.
+          final lineTime = now.add(Duration(milliseconds: index));
           await db.into(db.saleItems).insert(SaleItemsCompanion.insert(
                 id: _uuid.v4(),
-                createdAt: now,
-                updatedAt: now,
+                createdAt: lineTime,
+                updatedAt: lineTime,
                 deviceId: deviceId,
+                userId: userId,
                 saleId: saleId,
                 productId: item.product.id,
                 productName: item.product.name,
@@ -68,7 +75,7 @@ class SaleRepositoryImpl implements SaleRepository {
 
   @override
   Future<Either<Failure, List<Sale>>> getSales(
-      {DateTime? from, DateTime? to}) async {
+      {DateTime? from, DateTime? to, String? userId}) async {
     try {
       final query = db.select(db.sales)
         ..where((s) => s.deleted.equals(false))
@@ -77,6 +84,7 @@ class SaleRepositoryImpl implements SaleRepository {
         query.where((s) => s.createdAt.isBiggerOrEqualValue(from));
       }
       if (to != null) query.where((s) => s.createdAt.isSmallerThanValue(to));
+      if (userId != null) query.where((s) => s.userId.equals(userId));
       final sales = await query.get();
       if (sales.isEmpty) return const Right([]);
 
@@ -89,8 +97,10 @@ class SaleRepositoryImpl implements SaleRepository {
       for (final line in lines) {
         linesBySale.putIfAbsent(line.saleId, () => []).add(line);
       }
-      return Right(
-          sales.map((s) => _toSale(s, linesBySale[s.id] ?? [])).toList());
+      final names = await _userNames(sales.map((s) => s.userId));
+      return Right(sales
+          .map((s) => _toSale(s, linesBySale[s.id] ?? [], names))
+          .toList());
     } catch (e) {
       return Left(CacheFailure(e.toString()));
     }
@@ -105,13 +115,60 @@ class SaleRepositoryImpl implements SaleRepository {
       final lines = await (db.select(db.saleItems)
             ..where((i) => i.saleId.equals(id) & i.deleted.equals(false)))
           .get();
-      return Right(_toSale(sale, lines));
+      return Right(_toSale(sale, lines, await _userNames([sale.userId])));
     } catch (e) {
       return Left(CacheFailure(e.toString()));
     }
   }
 
-  Sale _toSale(SaleRow sale, List<SaleItemRow> lines) {
+  @override
+  Future<Either<Failure, SalesSummary>> getSummary(
+      {DateTime? from, DateTime? to, String? userId}) async {
+    try {
+      Expression<bool> filter(GeneratedColumn<DateTime> createdAt,
+          GeneratedColumn<String> seller, GeneratedColumn<bool> deleted) {
+        Expression<bool> where = deleted.equals(false);
+        if (from != null) where = where & createdAt.isBiggerOrEqualValue(from);
+        if (to != null) where = where & createdAt.isSmallerThanValue(to);
+        if (userId != null) where = where & seller.equals(userId);
+        return where;
+      }
+
+      final revenue = db.sales.total.sum();
+      final count = db.sales.id.count();
+      final totals = await (db.selectOnly(db.sales)
+            ..addColumns([revenue, count])
+            ..where(
+                filter(db.sales.createdAt, db.sales.userId, db.sales.deleted)))
+          .getSingle();
+
+      final quantity = db.saleItems.quantity.sum();
+      final items = await (db.selectOnly(db.saleItems)
+            ..addColumns([quantity])
+            ..where(filter(db.saleItems.createdAt, db.saleItems.userId,
+                db.saleItems.deleted)))
+          .getSingle();
+
+      return Right(SalesSummary(
+        revenue: totals.read(revenue) ?? 0,
+        salesCount: totals.read(count) ?? 0,
+        itemsSold: items.read(quantity) ?? 0,
+      ));
+    } catch (e) {
+      return Left(CacheFailure(e.toString()));
+    }
+  }
+
+  Future<Map<String, String>> _userNames(Iterable<String?> ids) async {
+    final wanted = ids.whereType<String>().toSet();
+    if (wanted.isEmpty) return {};
+    final rows =
+        await (db.select(db.users)..where((u) => u.id.isIn(wanted))).get();
+    return {for (final row in rows) row.id: row.name};
+  }
+
+  Sale _toSale(
+      SaleRow sale, List<SaleItemRow> lines, Map<String, String> names) {
     // Keep the order in which items were added to the cart.
     lines.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     return Sale(
@@ -122,6 +179,8 @@ class SaleRepositoryImpl implements SaleRepository {
       total: sale.total,
       paidNow: sale.paidNow,
       createdAt: sale.createdAt,
+      userId: sale.userId,
+      sellerName: names[sale.userId],
       items: lines
           .map((l) => SaleLine(
                 productId: l.productId,

@@ -27,6 +27,7 @@ class Product extends Equatable {
     int? sellPrice,
     int? buyPrice,
     String? categoryId,
+    bool clearCategory = false,
     int? lowStockThreshold,
     bool? archived,
   }) {
@@ -36,7 +37,7 @@ class Product extends Equatable {
       barcode: barcode ?? this.barcode,
       sellPrice: sellPrice ?? this.sellPrice,
       buyPrice: buyPrice ?? this.buyPrice,
-      categoryId: categoryId ?? this.categoryId,
+      categoryId: clearCategory ? null : (categoryId ?? this.categoryId),
       lowStockThreshold: lowStockThreshold ?? this.lowStockThreshold,
       archived: archived ?? this.archived,
     );

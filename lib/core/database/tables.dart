@@ -106,6 +106,36 @@ class SaleItems extends Table with SyncColumns {
   Set<Column> get primaryKey => {id};
 }
 
+/// The owner and the workers. Everyone logs in with a 4-digit PIN, which
+/// is never saved as is: only a salted hash of it is kept.
+@DataClassName('UserRow')
+class Users extends Table with SyncColumns {
+  TextColumn get name => text()();
+  TextColumn get phone => text().withDefault(const Constant(''))();
+  TextColumn get role => text()(); // 'owner' or 'worker'
+  TextColumn get pinHash => text()();
+  TextColumn get pinSalt => text()();
+  BoolColumn get active => boolean().withDefault(const Constant(true))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// History of changes: who changed which field, when, from what to what.
+/// `userId` and `createdAt` (from [SyncColumns]) say who and when.
+@DataClassName('ChangeLogRow')
+@TableIndex(name: 'change_logs_entity', columns: {#entityId})
+class ChangeLogs extends Table with SyncColumns {
+  TextColumn get entity => text()(); // for now always 'product'
+  TextColumn get entityId => text()();
+  TextColumn get field => text()();
+  TextColumn get oldValue => text().nullable()();
+  TextColumn get newValue => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 /// Settings that belong to this phone only (language, theme, printer...).
 /// They are never synced.
 @DataClassName('AppSettingRow')

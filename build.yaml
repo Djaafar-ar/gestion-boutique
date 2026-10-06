@@ -6,3 +6,9 @@ targets:
           # Dates are saved as readable text with milliseconds, which keeps
           # "which change is newer" exact when phones sync.
           store_date_time_values_as_text: true
+          # Snapshots of every database version, used to test upgrades.
+          # After changing a table run: dart run drift_dev make-migrations
+          databases:
+            default: lib/core/database/app_database.dart
+          schema_dir: drift_schemas/
+          test_dir: test/drift/

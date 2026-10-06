@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../../features/auth/data/login_guard.dart';
 import '../../features/billing/data/receipt_printer.dart';
 import '../../features/billing/data/repositories/sale_repository_impl.dart';
 import '../../features/billing/domain/repositories/sale_repository.dart';
@@ -17,8 +18,11 @@ import '../../features/settings/data/repositories/printer_repository_impl.dart';
 import '../../features/settings/domain/repositories/printer_repository.dart';
 import '../../features/settings/presentation/bloc/printer_bloc.dart';
 import '../../features/settings/presentation/cubit/app_preferences_cubit.dart';
+import '../../features/users/data/repositories/user_repository_impl.dart';
+import '../../features/users/domain/repositories/user_repository.dart';
 import 'database/app_database.dart';
 import 'database/hive_importer.dart';
+import 'session/session_cubit.dart';
 import 'settings/settings_store.dart';
 
 final sl = GetIt.instance;
@@ -39,6 +43,12 @@ Future<void> init() async {
     // Never block the app; the import is tried again next launch.
     debugPrint('Hive import failed: $e\n$stack');
   }
+
+  // Core - Who is logged in
+  final users = UserRepositoryImpl(db, settings);
+  sl.registerSingleton<UserRepository>(users);
+  sl.registerSingleton(SessionCubit(hasOwner: await users.hasOwner()));
+  sl.registerLazySingleton(() => LoginGuard(sl()));
 
   // Features - Product
   // Bloc
@@ -83,7 +93,7 @@ Future<void> init() async {
 
   // Repository
   sl.registerLazySingleton<ProductRepository>(
-    () => ProductRepositoryImpl(sl(), sl()),
+    () => ProductRepositoryImpl(sl(), sl(), sl()),
   );
 
   // Features - Shop
@@ -98,7 +108,7 @@ Future<void> init() async {
 
   // Features - Billing / Sales
   sl.registerLazySingleton<SaleRepository>(
-    () => SaleRepositoryImpl(sl(), sl()),
+    () => SaleRepositoryImpl(sl(), sl(), sl()),
   );
   sl.registerLazySingleton(() => ReceiptPrinter(sl()));
 

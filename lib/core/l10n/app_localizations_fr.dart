@@ -391,4 +391,231 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get shopSaved => 'Informations enregistrées';
+
+  @override
+  String get commonYes => 'Oui';
+
+  @override
+  String get commonNo => 'Non';
+
+  @override
+  String get commonAdd => 'Ajouter';
+
+  @override
+  String get unknownUser => 'Inconnu';
+
+  @override
+  String get nameLabel => 'Nom';
+
+  @override
+  String get phoneOptionalLabel => 'Téléphone (facultatif)';
+
+  @override
+  String get setupWelcomeTitle => 'Bienvenue !';
+
+  @override
+  String get setupWelcomeBody => 'Configurons votre boutique en 3 étapes.';
+
+  @override
+  String get setupExistingBody =>
+      'Créez le compte du propriétaire pour continuer. Vos produits et vos ventes sont conservés.';
+
+  @override
+  String get setupStepShop => 'Votre boutique';
+
+  @override
+  String get setupStepOwner => 'Le propriétaire';
+
+  @override
+  String get setupStepPin => 'Code PIN';
+
+  @override
+  String get ownerNameLabel => 'Votre nom';
+
+  @override
+  String get ownerNameHint => 'ex : Karim Benali';
+
+  @override
+  String get pinLabel => 'Code PIN (4 chiffres)';
+
+  @override
+  String get pinConfirmLabel => 'Confirmez le code PIN';
+
+  @override
+  String get pinInvalid => 'Le code PIN doit avoir 4 chiffres';
+
+  @override
+  String get pinMismatch => 'Les deux codes PIN ne sont pas identiques';
+
+  @override
+  String get pinHelp =>
+      'Vous taperez ce code pour ouvrir l\'application. Ne le partagez pas.';
+
+  @override
+  String get nextStep => 'Suivant';
+
+  @override
+  String get previousStep => 'Retour';
+
+  @override
+  String get finishSetup => 'Terminer';
+
+  @override
+  String get loginTitle => 'Qui êtes-vous ?';
+
+  @override
+  String get loginEnterPin => 'Entrez votre code PIN';
+
+  @override
+  String loginWrongPin(int left) {
+    String _temp0 = intl.Intl.pluralLogic(
+      left,
+      locale: localeName,
+      other: 'Encore $left essais.',
+      one: 'Encore 1 essai.',
+    );
+    return 'Code PIN incorrect. $_temp0';
+  }
+
+  @override
+  String loginLocked(int seconds) {
+    return 'Trop d\'essais. Réessayez dans $seconds s.';
+  }
+
+  @override
+  String get roleOwner => 'Propriétaire';
+
+  @override
+  String get roleWorker => 'Employé';
+
+  @override
+  String get teamSection => 'Équipe';
+
+  @override
+  String get workersTitle => 'Employés';
+
+  @override
+  String get workersSub => 'Ajouter, modifier, désactiver';
+
+  @override
+  String get addWorker => 'Ajouter un employé';
+
+  @override
+  String get editAccount => 'Modifier le compte';
+
+  @override
+  String get workerNameHint => 'ex : Amine Kaci';
+
+  @override
+  String get newPinLabel => 'Nouveau code PIN (4 chiffres)';
+
+  @override
+  String get pinKeepHint => 'Laissez vide pour garder le code actuel';
+
+  @override
+  String get activeLabel => 'Compte actif';
+
+  @override
+  String get activeHelp =>
+      'Un compte désactivé ne peut plus se connecter. Son historique est conservé.';
+
+  @override
+  String get inactiveBadge => 'DÉSACTIVÉ';
+
+  @override
+  String get accountSaved => 'Compte enregistré';
+
+  @override
+  String get noWorkersBody =>
+      'Ajoutez vos employés : chacun aura son propre code PIN.';
+
+  @override
+  String get myProfile => 'Mon profil';
+
+  @override
+  String get myStatsTitle => 'Mes ventes';
+
+  @override
+  String get periodWeek => 'Cette semaine';
+
+  @override
+  String get periodMonth => 'Ce mois-ci';
+
+  @override
+  String get statRevenue => 'Chiffre d\'affaires';
+
+  @override
+  String get statSales => 'Ventes';
+
+  @override
+  String get statItems => 'Articles vendus';
+
+  @override
+  String get statLosses => 'Pertes enregistrées';
+
+  @override
+  String get lossesComingSoon => 'Le suivi des pertes arrive à l\'étape 3.';
+
+  @override
+  String get changePin => 'Changer mon code PIN';
+
+  @override
+  String get currentPinLabel => 'Code PIN actuel';
+
+  @override
+  String get currentPinWrong => 'Le code PIN actuel est incorrect';
+
+  @override
+  String get pinChanged => 'Code PIN modifié';
+
+  @override
+  String get switchUser => 'Changer d\'utilisateur';
+
+  @override
+  String get switchUserSub => 'Retour à l\'écran des codes PIN';
+
+  @override
+  String get buyPriceLabel => 'Prix d\'achat (facultatif)';
+
+  @override
+  String get categoryLabel => 'Catégorie';
+
+  @override
+  String get noCategory => 'Sans catégorie';
+
+  @override
+  String get newCategory => 'Nouvelle catégorie…';
+
+  @override
+  String get categoryNameHint => 'ex : Boissons';
+
+  @override
+  String get lowStockLabel => 'Alerte stock bas à partir de';
+
+  @override
+  String get lowStockHelp =>
+      '0 = pas d\'alerte. Les alertes arrivent à l\'étape 5.';
+
+  @override
+  String get quantityInvalid => 'Entrez un nombre entier';
+
+  @override
+  String get historySection => 'Historique des modifications';
+
+  @override
+  String get historyNoChanges => 'Aucune modification pour l\'instant.';
+
+  @override
+  String get fieldBuyPrice => 'Prix d\'achat';
+
+  @override
+  String get fieldLowStock => 'Seuil de stock bas';
+
+  @override
+  String get fieldArchived => 'Archivé';
+
+  @override
+  String soldBy(String name) {
+    return 'Vendu par $name';
+  }
 }

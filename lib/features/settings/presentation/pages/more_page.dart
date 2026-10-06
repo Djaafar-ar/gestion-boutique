@@ -4,14 +4,18 @@ import 'package:go_router/go_router.dart';
 import 'package:app_settings/app_settings.dart';
 
 import '../../../../core/l10n/app_localizations.dart';
+import '../../../../core/session/session_cubit.dart';
 import '../../../../core/widgets/app_snack.dart';
+import '../../../billing/presentation/bloc/billing_bloc.dart';
+import '../../../users/presentation/widgets/user_avatar.dart';
 import '../../../shop/presentation/bloc/shop_bloc.dart';
 import '../bloc/printer_bloc.dart';
 import '../bloc/printer_event.dart';
 import '../bloc/printer_state.dart';
 import '../cubit/app_preferences_cubit.dart';
 
-/// The "More" tab: shop, language, theme and printer settings.
+/// The "More" tab: profile, shop and team (owner), language, theme,
+/// printer and switching user.
 class MorePage extends StatefulWidget {
   const MorePage({super.key});
 
@@ -38,6 +42,8 @@ class _MorePageState extends State<MorePage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final prefs = context.watch<AppPreferencesCubit>().state;
+    final session = context.watch<SessionCubit>().state;
+    final user = session.user;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.moreTitle)),
@@ -45,16 +51,41 @@ class _MorePageState extends State<MorePage> {
         padding: const EdgeInsets.only(bottom: 32),
         children: [
           _buildShopHeader(l10n),
-          _SectionHeader(l10n.sectionShop),
-          _Group(children: [
-            ListTile(
-              leading: const _TileIcon(Icons.storefront),
-              title: Text(l10n.shopDetails),
-              subtitle: Text(l10n.shopDetailsSub),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.push('/more/shop'),
-            ),
-          ]),
+          if (user != null)
+            _Group(children: [
+              ListTile(
+                leading: UserAvatar(user: user),
+                title: Text(user.name,
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
+                subtitle: Text(
+                    '${l10n.myProfile} · ${user.isOwner ? l10n.roleOwner : l10n.roleWorker}'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/more/profile'),
+              ),
+            ]),
+          // Shop details and the team are managed by the owner only.
+          if (session.isOwner) ...[
+            _SectionHeader(l10n.sectionShop),
+            _Group(children: [
+              ListTile(
+                leading: const _TileIcon(Icons.storefront),
+                title: Text(l10n.shopDetails),
+                subtitle: Text(l10n.shopDetailsSub),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/more/shop'),
+              ),
+            ]),
+            _SectionHeader(l10n.teamSection),
+            _Group(children: [
+              ListTile(
+                leading: const _TileIcon(Icons.groups_outlined),
+                title: Text(l10n.workersTitle),
+                subtitle: Text(l10n.workersSub),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/more/workers'),
+              ),
+            ]),
+          ],
           _SectionHeader(l10n.sectionPreferences),
           _Group(children: [
             ListTile(
@@ -107,6 +138,18 @@ class _MorePageState extends State<MorePage> {
                   color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           ),
+          _Group(children: [
+            ListTile(
+              leading: const _TileIcon(Icons.switch_account_outlined),
+              title: Text(l10n.switchUser),
+              subtitle: Text(l10n.switchUserSub),
+              onTap: () {
+                // The next person starts with an empty cart.
+                context.read<BillingBloc>().add(ClearCartEvent());
+                context.read<SessionCubit>().logout();
+              },
+            ),
+          ]),
         ],
       ),
     );

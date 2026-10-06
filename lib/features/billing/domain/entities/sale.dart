@@ -31,6 +31,10 @@ class Sale extends Equatable {
   final int total; // centimes
   final int paidNow; // centimes
   final DateTime createdAt;
+
+  /// Who made the sale (null for sales made before accounts existed).
+  final String? userId;
+  final String? sellerName;
   final List<SaleLine> items;
 
   const Sale({
@@ -41,12 +45,41 @@ class Sale extends Equatable {
     required this.total,
     required this.paidNow,
     required this.createdAt,
+    this.userId,
+    this.sellerName,
     required this.items,
   });
 
   int get itemCount => items.fold(0, (sum, line) => sum + line.quantity);
 
   @override
-  List<Object?> get props =>
-      [id, number, subtotal, discount, total, paidNow, createdAt, items];
+  List<Object?> get props => [
+        id,
+        number,
+        subtotal,
+        discount,
+        total,
+        paidNow,
+        createdAt,
+        userId,
+        items
+      ];
+}
+
+/// Totals for a period: money taken, number of tickets, items sold.
+class SalesSummary extends Equatable {
+  final int revenue; // centimes
+  final int salesCount;
+  final int itemsSold;
+
+  const SalesSummary({
+    required this.revenue,
+    required this.salesCount,
+    required this.itemsSold,
+  });
+
+  static const empty = SalesSummary(revenue: 0, salesCount: 0, itemsSold: 0);
+
+  @override
+  List<Object?> get props => [revenue, salesCount, itemsSold];
 }

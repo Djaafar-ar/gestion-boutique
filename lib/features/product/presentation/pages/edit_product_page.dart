@@ -1,14 +1,13 @@
-import 'package:billing_app/core/widgets/input_label.dart';
 import 'package:billing_app/core/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../bloc/product_bloc.dart';
+import '../widgets/product_form_fields.dart';
+import '../widgets/product_history.dart';
 import '../../domain/entities/product.dart';
 import '../../../../core/l10n/app_localizations.dart';
-import '../../../../core/utils/app_validators.dart';
-import '../../../../core/utils/money.dart';
 
 class EditProductPage extends StatefulWidget {
   final Product product;
@@ -20,23 +19,21 @@ class EditProductPage extends StatefulWidget {
 
 class _EditProductPageState extends State<EditProductPage> {
   final _formKey = GlobalKey<FormState>();
-  late String _name;
-  late int _sellPrice;
-
-  @override
-  void initState() {
-    super.initState();
-    _name = widget.product.name;
-    _sellPrice = widget.product.sellPrice;
-  }
+  final _values = ProductFormValues();
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
       // copyWith keeps the fields this screen does not show.
-      final updatedProduct =
-          widget.product.copyWith(name: _name.trim(), sellPrice: _sellPrice);
+      final updatedProduct = widget.product.copyWith(
+        name: _values.name,
+        sellPrice: _values.sellPrice,
+        buyPrice: _values.buyPrice,
+        categoryId: _values.categoryId,
+        clearCategory: _values.categoryId == null,
+        lowStockThreshold: _values.lowStockThreshold,
+      );
 
       context.read<ProductBloc>().add(UpdateProduct(updatedProduct));
       context.pop();
@@ -60,7 +57,7 @@ class _EditProductPageState extends State<EditProductPage> {
                 children: [
                   // The barcode cannot be changed.
                   Card(
-                    margin: const EdgeInsets.only(bottom: 24),
+                    margin: const EdgeInsets.only(bottom: 20),
                     child: ListTile(
                       leading: Icon(Icons.qr_code_2,
                           color: scheme.primary, size: 28),
@@ -74,23 +71,9 @@ class _EditProductPageState extends State<EditProductPage> {
                               color: scheme.onSurface)),
                     ),
                   ),
-                  InputLabel(text: l10n.productNameLabel),
-                  TextFormField(
-                    initialValue: _name,
-                    textCapitalization: TextCapitalization.sentences,
-                    validator: AppValidators.required(l10n.productNameRequired),
-                    onSaved: (value) => _name = value!,
-                  ),
-                  const SizedBox(height: 24),
-                  InputLabel(text: l10n.sellPriceLabel),
-                  TextFormField(
-                    initialValue: centimesToInput(_sellPrice),
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
-                    decoration: const InputDecoration(suffixText: 'DA'),
-                    validator: AppValidators.price(l10n),
-                    onSaved: (value) => _sellPrice = parseDA(value)!,
-                  ),
+                  ProductFormFields(initial: widget.product, values: _values),
+                  const SizedBox(height: 28),
+                  ProductHistory(productId: widget.product.id),
                 ],
               ),
             ),

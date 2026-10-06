@@ -16,6 +16,11 @@ class AppShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    // Keep the shared tab index right after a login or a redirect too.
+    if (currentTabIndex.value != shell.currentIndex) {
+      WidgetsBinding.instance.addPostFrameCallback(
+          (_) => currentTabIndex.value = shell.currentIndex);
+    }
     return Scaffold(
       body: shell,
       bottomNavigationBar: NavigationBar(

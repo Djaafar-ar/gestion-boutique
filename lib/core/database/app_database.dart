@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 
+import 'app_database.steps.dart';
 import 'tables.dart';
 
 part 'app_database.g.dart';
@@ -12,6 +13,8 @@ part 'app_database.g.dart';
   Deliveries,
   Sales,
   SaleItems,
+  Users,
+  ChangeLogs,
   AppSettings,
 ])
 class AppDatabase extends _$AppDatabase {
@@ -22,12 +25,23 @@ class AppDatabase extends _$AppDatabase {
 
   static const fileName = 'shop_db';
 
-  // Raise this number and add a step in [migration] whenever a table changes.
+  // How to change a table:
+  // 1. edit tables.dart and raise this number,
+  // 2. run: dart run drift_dev make-migrations
+  // 3. add the new step below (the generated tests check it).
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (m) => m.createAll(),
+        onUpgrade: stepByStep(
+          // Phase 2: owner/workers and the change history.
+          from1To2: (m, schema) async {
+            await m.createTable(schema.users);
+            await m.createTable(schema.changeLogs);
+            await m.createIndex(schema.changeLogsEntity);
+          },
+        ),
       );
 }

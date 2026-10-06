@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/l10n/app_localizations.dart';
+import '../../../../core/session/session_cubit.dart';
 import '../../../../core/utils/money.dart';
 import '../../../../core/widgets/app_snack.dart';
 import '../../../../core/widgets/empty_state.dart';
@@ -193,13 +194,15 @@ class _ProductCard extends StatelessWidget {
                       title: Text(l10n.editProduct),
                     ),
                   ),
-                  PopupMenuItem(
-                    value: 'archive',
-                    child: ListTile(
-                      leading: const Icon(Icons.archive_outlined),
-                      title: Text(l10n.archive),
+                  // Only the owner can hide a product.
+                  if (context.read<SessionCubit>().state.isOwner)
+                    PopupMenuItem(
+                      value: 'archive',
+                      child: ListTile(
+                        leading: const Icon(Icons.archive_outlined),
+                        title: Text(l10n.archive),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ],

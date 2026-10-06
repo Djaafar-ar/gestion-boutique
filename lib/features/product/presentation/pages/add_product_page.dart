@@ -6,10 +6,10 @@ import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
 import '../bloc/product_bloc.dart';
+import '../widgets/product_form_fields.dart';
 import '../../domain/entities/product.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/utils/app_validators.dart';
-import '../../../../core/utils/money.dart';
 import '../../../../core/widgets/app_snack.dart';
 
 class AddProductPage extends StatefulWidget {
@@ -22,8 +22,7 @@ class AddProductPage extends StatefulWidget {
 class _AddProductPageState extends State<AddProductPage> {
   final _formKey = GlobalKey<FormState>();
   final _barcodeController = TextEditingController();
-  String _name = '';
-  int _sellPrice = 0;
+  final _values = ProductFormValues();
 
   @override
   void dispose() {
@@ -56,9 +55,12 @@ class _AddProductPageState extends State<AddProductPage> {
 
       final product = Product(
         id: const Uuid().v4(),
-        name: _name.trim(),
+        name: _values.name,
         barcode: barcode,
-        sellPrice: _sellPrice,
+        sellPrice: _values.sellPrice,
+        buyPrice: _values.buyPrice,
+        categoryId: _values.categoryId,
+        lowStockThreshold: _values.lowStockThreshold,
       );
 
       context.read<ProductBloc>().add(AddProduct(product));
@@ -99,26 +101,8 @@ class _AddProductPageState extends State<AddProductPage> {
                   Text(l10n.scanHelp,
                       style: TextStyle(
                           fontSize: 12, color: scheme.onSurfaceVariant)),
-                  const SizedBox(height: 24),
-                  InputLabel(text: l10n.productNameLabel),
-                  TextFormField(
-                    decoration: InputDecoration(hintText: l10n.productNameHint),
-                    textCapitalization: TextCapitalization.sentences,
-                    validator: AppValidators.required(l10n.productNameRequired),
-                    onSaved: (value) => _name = value!,
-                  ),
-                  const SizedBox(height: 24),
-                  InputLabel(text: l10n.sellPriceLabel),
-                  TextFormField(
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
-                    decoration: const InputDecoration(
-                      hintText: '0,00',
-                      suffixText: 'DA',
-                    ),
-                    validator: AppValidators.price(l10n),
-                    onSaved: (value) => _sellPrice = parseDA(value)!,
-                  ),
+                  const SizedBox(height: 20),
+                  ProductFormFields(values: _values),
                 ],
               ),
             ),

@@ -388,4 +388,230 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shopSaved => 'تم حفظ المعلومات';
+
+  @override
+  String get commonYes => 'نعم';
+
+  @override
+  String get commonNo => 'لا';
+
+  @override
+  String get commonAdd => 'إضافة';
+
+  @override
+  String get unknownUser => 'غير معروف';
+
+  @override
+  String get nameLabel => 'الاسم';
+
+  @override
+  String get phoneOptionalLabel => 'الهاتف (اختياري)';
+
+  @override
+  String get setupWelcomeTitle => 'مرحبًا!';
+
+  @override
+  String get setupWelcomeBody => 'لنُعِدّ محلك في 3 خطوات.';
+
+  @override
+  String get setupExistingBody =>
+      'أنشئ حساب المالك للمتابعة. منتجاتك ومبيعاتك محفوظة.';
+
+  @override
+  String get setupStepShop => 'محلك';
+
+  @override
+  String get setupStepOwner => 'المالك';
+
+  @override
+  String get setupStepPin => 'الرمز السري';
+
+  @override
+  String get ownerNameLabel => 'اسمك';
+
+  @override
+  String get ownerNameHint => 'مثال: كريم بن علي';
+
+  @override
+  String get pinLabel => 'الرمز السري (4 أرقام)';
+
+  @override
+  String get pinConfirmLabel => 'أكّد الرمز السري';
+
+  @override
+  String get pinInvalid => 'يجب أن يتكون الرمز من 4 أرقام';
+
+  @override
+  String get pinMismatch => 'الرمزان غير متطابقين';
+
+  @override
+  String get pinHelp => 'ستكتب هذا الرمز لفتح التطبيق. لا تشاركه.';
+
+  @override
+  String get nextStep => 'التالي';
+
+  @override
+  String get previousStep => 'رجوع';
+
+  @override
+  String get finishSetup => 'إنهاء';
+
+  @override
+  String get loginTitle => 'من أنت؟';
+
+  @override
+  String get loginEnterPin => 'أدخل رمزك السري';
+
+  @override
+  String loginWrongPin(int left) {
+    String _temp0 = intl.Intl.pluralLogic(
+      left,
+      locale: localeName,
+      other: 'بقيت $left محاولة.',
+      few: 'بقيت $left محاولات.',
+      two: 'بقيت محاولتان.',
+      one: 'بقيت محاولة واحدة.',
+    );
+    return 'رمز خاطئ. $_temp0';
+  }
+
+  @override
+  String loginLocked(int seconds) {
+    return 'محاولات كثيرة. أعد المحاولة بعد $seconds ثانية.';
+  }
+
+  @override
+  String get roleOwner => 'المالك';
+
+  @override
+  String get roleWorker => 'عامل';
+
+  @override
+  String get teamSection => 'الفريق';
+
+  @override
+  String get workersTitle => 'العمال';
+
+  @override
+  String get workersSub => 'إضافة، تعديل، تعطيل';
+
+  @override
+  String get addWorker => 'إضافة عامل';
+
+  @override
+  String get editAccount => 'تعديل الحساب';
+
+  @override
+  String get workerNameHint => 'مثال: أمين قاسي';
+
+  @override
+  String get newPinLabel => 'رمز سري جديد (4 أرقام)';
+
+  @override
+  String get pinKeepHint => 'اتركه فارغًا للإبقاء على الرمز الحالي';
+
+  @override
+  String get activeLabel => 'الحساب مفعّل';
+
+  @override
+  String get activeHelp =>
+      'لا يمكن للحساب المعطّل تسجيل الدخول. يبقى سجله محفوظًا.';
+
+  @override
+  String get inactiveBadge => 'معطّل';
+
+  @override
+  String get accountSaved => 'تم حفظ الحساب';
+
+  @override
+  String get noWorkersBody => 'أضف عمالك: لكل واحد رمزه السري.';
+
+  @override
+  String get myProfile => 'ملفي الشخصي';
+
+  @override
+  String get myStatsTitle => 'مبيعاتي';
+
+  @override
+  String get periodWeek => 'هذا الأسبوع';
+
+  @override
+  String get periodMonth => 'هذا الشهر';
+
+  @override
+  String get statRevenue => 'رقم الأعمال';
+
+  @override
+  String get statSales => 'المبيعات';
+
+  @override
+  String get statItems => 'المواد المباعة';
+
+  @override
+  String get statLosses => 'الخسائر المسجلة';
+
+  @override
+  String get lossesComingSoon => 'تتبع الخسائر سيتوفر في المرحلة 3.';
+
+  @override
+  String get changePin => 'تغيير رمزي السري';
+
+  @override
+  String get currentPinLabel => 'الرمز السري الحالي';
+
+  @override
+  String get currentPinWrong => 'الرمز السري الحالي خاطئ';
+
+  @override
+  String get pinChanged => 'تم تغيير الرمز السري';
+
+  @override
+  String get switchUser => 'تبديل المستخدم';
+
+  @override
+  String get switchUserSub => 'العودة إلى شاشة الرمز السري';
+
+  @override
+  String get buyPriceLabel => 'سعر الشراء (اختياري)';
+
+  @override
+  String get categoryLabel => 'الفئة';
+
+  @override
+  String get noCategory => 'بدون فئة';
+
+  @override
+  String get newCategory => 'فئة جديدة…';
+
+  @override
+  String get categoryNameHint => 'مثال: Boissons';
+
+  @override
+  String get lowStockLabel => 'تنبيه المخزون المنخفض عند';
+
+  @override
+  String get lowStockHelp => '0 = بدون تنبيه. التنبيهات في المرحلة 5.';
+
+  @override
+  String get quantityInvalid => 'أدخل عددًا صحيحًا';
+
+  @override
+  String get historySection => 'سجل التعديلات';
+
+  @override
+  String get historyNoChanges => 'لا توجد تعديلات بعد.';
+
+  @override
+  String get fieldBuyPrice => 'سعر الشراء';
+
+  @override
+  String get fieldLowStock => 'حد المخزون المنخفض';
+
+  @override
+  String get fieldArchived => 'مؤرشف';
+
+  @override
+  String soldBy(String name) {
+    return 'باعه $name';
+  }
 }

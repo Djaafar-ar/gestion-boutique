@@ -1,30 +1,37 @@
 {
   "@@locale": "fr",
-
   "appTitle": "Gestion Boutique",
   "navSell": "Vendre",
   "navStock": "Stock",
   "navStats": "Stats",
   "navAlerts": "Alertes",
   "navMore": "Plus",
-
   "commonCancel": "Annuler",
   "commonSave": "Enregistrer",
   "commonRequired": "Champ obligatoire",
   "errorWithDetail": "Erreur : {detail}",
-  "@errorWithDetail": {"placeholders": {"detail": {"type": "String"}}},
-
+  "@errorWithDetail": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
   "comingSoonTitle": "Bientôt disponible",
   "comingSoonStats": "Les statistiques arrivent dans une prochaine étape.",
   "comingSoonAlerts": "Les alertes et notifications arrivent dans une prochaine étape.",
-
   "priceRequired": "Entrez un prix",
   "priceInvalid": "Prix invalide (ex : 1250 ou 1250,50)",
   "priceNegative": "Le prix ne peut pas être négatif",
-
   "cartTitle": "Panier",
   "itemCount": "{count, plural, =0{Aucun article} =1{1 article} other{{count} articles}}",
-  "@itemCount": {"placeholders": {"count": {"type": "int"}}},
+  "@itemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "totalLabel": "TOTAL",
   "cartEmptyTitle": "Panier vide",
   "cartEmptyBody": "Scannez un code-barres avec la caméra pour ajouter des articles.",
@@ -33,8 +40,13 @@
   "cameraOffBody": "Allumez la caméra pour scanner les codes-barres.",
   "turnOnCamera": "Allumer la caméra",
   "productNotFound": "Produit introuvable : {barcode}",
-  "@productNotFound": {"placeholders": {"barcode": {"type": "String"}}},
-
+  "@productNotFound": {
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      }
+    }
+  },
   "checkoutTitle": "Encaissement",
   "columnProduct": "Produit",
   "columnPrice": "Prix",
@@ -43,27 +55,49 @@
   "confirmWithoutPrint": "Valider sans imprimer",
   "confirmAndPrint": "Valider et imprimer",
   "saleSaved": "Vente n°{number} enregistrée",
-  "@saleSaved": {"placeholders": {"number": {"type": "int"}}},
+  "@saleSaved": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "saleSavedAndPrinted": "Vente n°{number} enregistrée et imprimée",
-  "@saleSavedAndPrinted": {"placeholders": {"number": {"type": "int"}}},
+  "@saleSavedAndPrinted": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "saleSaveFailed": "La vente n'a pas pu être enregistrée.",
   "printNoPrinter": "Aucune imprimante enregistrée. Connectez-en une dans Plus.",
   "printConnectFailed": "Impossible de se connecter à l'imprimante.",
   "printFailed": "L'impression a échoué.",
   "printReprintHint": "La vente est enregistrée : réimprimez-la depuis l'historique.",
-
   "historyTitle": "Historique des ventes",
   "historyEmptyTitle": "Aucune vente",
   "historyEmptyBody": "Les ventes validées apparaîtront ici.",
   "saleTitle": "Vente n°{number}",
-  "@saleTitle": {"placeholders": {"number": {"type": "int"}}},
+  "@saleTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "salesCount": "{count, plural, =0{Aucune vente} =1{1 vente} other{{count} ventes}}",
-  "@salesCount": {"placeholders": {"count": {"type": "int"}}},
+  "@salesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "today": "Aujourd'hui",
   "yesterday": "Hier",
   "reprint": "Réimprimer",
   "receiptPrinted": "Ticket imprimé",
-
   "productsTitle": "Produits",
   "productSearchHint": "Nom ou code-barres",
   "productsEmptyTitle": "Aucun produit",
@@ -80,18 +114,29 @@
   "productNameRequired": "Entrez un nom",
   "sellPriceLabel": "Prix de vente",
   "barcodeExists": "Un produit avec le code-barres « {barcode} » existe déjà.",
-  "@barcodeExists": {"placeholders": {"barcode": {"type": "String"}}},
+  "@barcodeExists": {
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      }
+    }
+  },
   "productAdded": "Produit ajouté",
   "productUpdated": "Produit modifié",
   "productArchived": "Produit archivé",
   "archiveProductTitle": "Archiver ce produit ?",
   "archiveProductBody": "« {name} » ne sera plus proposé à la vente. L'historique des ventes est conservé.",
-  "@archiveProductBody": {"placeholders": {"name": {"type": "String"}}},
+  "@archiveProductBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "archive": "Archiver",
   "saveChanges": "Enregistrer les modifications",
   "scanBarcodeTitle": "Scanner un code-barres",
   "alignBarcode": "Placez le code-barres dans le cadre",
-
   "moreTitle": "Plus",
   "shopNameFallback": "Ma boutique",
   "sectionShop": "Boutique",
@@ -117,7 +162,6 @@
   "testPrint": "Imprimer un ticket test",
   "refresh": "Actualiser",
   "bluetoothSettings": "Réglages Bluetooth",
-
   "shopInfoTitle": "Informations générales",
   "shopInfoHint": "Ces informations apparaissent sur les tickets imprimés.",
   "shopNameLabel": "Nom de la boutique",
@@ -131,6 +175,103 @@
   "footerLabel": "Message en bas du ticket",
   "footerHint": "ex : Merci, à bientôt !",
   "maxChars": "{count} caractères max",
-  "@maxChars": {"placeholders": {"count": {"type": "int"}}},
-  "shopSaved": "Informations enregistrées"
+  "@maxChars": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shopSaved": "Informations enregistrées",
+  "commonYes": "Oui",
+  "commonNo": "Non",
+  "commonAdd": "Ajouter",
+  "unknownUser": "Inconnu",
+  "nameLabel": "Nom",
+  "phoneOptionalLabel": "Téléphone (facultatif)",
+  "setupWelcomeTitle": "Bienvenue !",
+  "setupWelcomeBody": "Configurons votre boutique en 3 étapes.",
+  "setupExistingBody": "Créez le compte du propriétaire pour continuer. Vos produits et vos ventes sont conservés.",
+  "setupStepShop": "Votre boutique",
+  "setupStepOwner": "Le propriétaire",
+  "setupStepPin": "Code PIN",
+  "ownerNameLabel": "Votre nom",
+  "ownerNameHint": "ex : Karim Benali",
+  "pinLabel": "Code PIN (4 chiffres)",
+  "pinConfirmLabel": "Confirmez le code PIN",
+  "pinInvalid": "Le code PIN doit avoir 4 chiffres",
+  "pinMismatch": "Les deux codes PIN ne sont pas identiques",
+  "pinHelp": "Vous taperez ce code pour ouvrir l'application. Ne le partagez pas.",
+  "nextStep": "Suivant",
+  "previousStep": "Retour",
+  "finishSetup": "Terminer",
+  "loginTitle": "Qui êtes-vous ?",
+  "loginEnterPin": "Entrez votre code PIN",
+  "loginWrongPin": "Code PIN incorrect. {left, plural, =1{Encore 1 essai.} other{Encore {left} essais.}}",
+  "@loginWrongPin": {
+    "placeholders": {
+      "left": {
+        "type": "int"
+      }
+    }
+  },
+  "loginLocked": "Trop d'essais. Réessayez dans {seconds} s.",
+  "@loginLocked": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "roleOwner": "Propriétaire",
+  "roleWorker": "Employé",
+  "teamSection": "Équipe",
+  "workersTitle": "Employés",
+  "workersSub": "Ajouter, modifier, désactiver",
+  "addWorker": "Ajouter un employé",
+  "editAccount": "Modifier le compte",
+  "workerNameHint": "ex : Amine Kaci",
+  "newPinLabel": "Nouveau code PIN (4 chiffres)",
+  "pinKeepHint": "Laissez vide pour garder le code actuel",
+  "activeLabel": "Compte actif",
+  "activeHelp": "Un compte désactivé ne peut plus se connecter. Son historique est conservé.",
+  "inactiveBadge": "DÉSACTIVÉ",
+  "accountSaved": "Compte enregistré",
+  "noWorkersBody": "Ajoutez vos employés : chacun aura son propre code PIN.",
+  "myProfile": "Mon profil",
+  "myStatsTitle": "Mes ventes",
+  "periodWeek": "Cette semaine",
+  "periodMonth": "Ce mois-ci",
+  "statRevenue": "Chiffre d'affaires",
+  "statSales": "Ventes",
+  "statItems": "Articles vendus",
+  "statLosses": "Pertes enregistrées",
+  "lossesComingSoon": "Le suivi des pertes arrive à l'étape 3.",
+  "changePin": "Changer mon code PIN",
+  "currentPinLabel": "Code PIN actuel",
+  "currentPinWrong": "Le code PIN actuel est incorrect",
+  "pinChanged": "Code PIN modifié",
+  "switchUser": "Changer d'utilisateur",
+  "switchUserSub": "Retour à l'écran des codes PIN",
+  "buyPriceLabel": "Prix d'achat (facultatif)",
+  "categoryLabel": "Catégorie",
+  "noCategory": "Sans catégorie",
+  "newCategory": "Nouvelle catégorie…",
+  "categoryNameHint": "ex : Boissons",
+  "lowStockLabel": "Alerte stock bas à partir de",
+  "lowStockHelp": "0 = pas d'alerte. Les alertes arrivent à l'étape 5.",
+  "quantityInvalid": "Entrez un nombre entier",
+  "historySection": "Historique des modifications",
+  "historyNoChanges": "Aucune modification pour l'instant.",
+  "fieldBuyPrice": "Prix d'achat",
+  "fieldLowStock": "Seuil de stock bas",
+  "fieldArchived": "Archivé",
+  "soldBy": "Vendu par {name}",
+  "@soldBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }
