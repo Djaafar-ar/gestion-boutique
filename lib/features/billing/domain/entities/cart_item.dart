@@ -10,7 +10,8 @@ class CartItem extends Equatable {
     this.quantity = 1,
   });
 
-  double get total => product.price * quantity;
+  /// Line total in centimes.
+  int get total => product.sellPrice * quantity;
 
   CartItem copyWith({
     Product? product,

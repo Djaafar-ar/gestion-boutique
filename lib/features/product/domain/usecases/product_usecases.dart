@@ -37,14 +37,14 @@ class UpdateProductUseCase implements UseCase<void, Product> {
   }
 }
 
-class DeleteProductUseCase implements UseCase<void, String> {
+class ArchiveProductUseCase implements UseCase<void, String> {
   final ProductRepository repository;
 
-  DeleteProductUseCase(this.repository);
+  ArchiveProductUseCase(this.repository);
 
   @override
   Future<Either<Failure, void>> call(String params) {
-    return repository.deleteProduct(params);
+    return repository.archiveProduct(params);
   }
 }
 

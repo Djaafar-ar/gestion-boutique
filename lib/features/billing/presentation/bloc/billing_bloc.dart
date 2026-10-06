@@ -1,33 +1,40 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import '../../data/receipt_printer.dart';
 import '../../domain/entities/cart_item.dart';
+import '../../domain/entities/sale.dart';
+import '../../domain/repositories/sale_repository.dart';
 import 'package:billing_app/features/product/domain/entities/product.dart';
 import 'package:billing_app/features/product/domain/usecases/product_usecases.dart';
-import '../../../../core/utils/printer_helper.dart';
-import '../../../../core/data/hive_database.dart';
+import 'package:billing_app/features/shop/domain/entities/shop.dart';
 
 part 'billing_event.dart';
 part 'billing_state.dart';
 
 class BillingBloc extends Bloc<BillingEvent, BillingState> {
   final GetProductByBarcodeUseCase getProductByBarcodeUseCase;
+  final SaleRepository saleRepository;
+  final ReceiptPrinter receiptPrinter;
 
-  BillingBloc({required this.getProductByBarcodeUseCase})
-      : super(const BillingState()) {
+  BillingBloc({
+    required this.getProductByBarcodeUseCase,
+    required this.saleRepository,
+    required this.receiptPrinter,
+  }) : super(const BillingState()) {
     on<ScanBarcodeEvent>(_onScanBarcode);
     on<AddProductToCartEvent>(_onAddProductToCart);
     on<RemoveProductFromCartEvent>(_onRemoveProductFromCart);
     on<UpdateQuantityEvent>(_onUpdateQuantity);
     on<ClearCartEvent>(_onClearCart);
-    on<PrintReceiptEvent>(_onPrintReceipt);
+    on<CheckoutEvent>(_onCheckout);
   }
 
   Future<void> _onScanBarcode(
       ScanBarcodeEvent event, Emitter<BillingState> emit) async {
     final result = await getProductByBarcodeUseCase(event.barcode);
     result.fold(
-      (failure) =>
-          emit(state.copyWith(error: 'Product not found: ${event.barcode}')),
+      (failure) => emit(state.copyWith(
+          error: BillingError.productNotFound, errorDetail: event.barcode)),
       (product) {
         add(AddProductToCartEvent(product));
       },
@@ -36,21 +43,17 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
 
   void _onAddProductToCart(
       AddProductToCartEvent event, Emitter<BillingState> emit) {
-    // Clear error when adding
-    final cleanState = state.copyWith(error: null);
-
-    final existingIndex = cleanState.cartItems
+    final existingIndex = state.cartItems
         .indexWhere((item) => item.product.id == event.product.id);
     if (existingIndex >= 0) {
-      final existingItem = cleanState.cartItems[existingIndex];
-      final backendItems = List<CartItem>.from(cleanState.cartItems);
-      backendItems[existingIndex] =
+      final existingItem = state.cartItems[existingIndex];
+      final items = List<CartItem>.from(state.cartItems);
+      items[existingIndex] =
           existingItem.copyWith(quantity: existingItem.quantity + 1);
-      emit(cleanState.copyWith(cartItems: backendItems, error: null));
+      emit(state.copyWith(cartItems: items));
     } else {
       final newItem = CartItem(product: event.product);
-      emit(cleanState.copyWith(
-          cartItems: [...cleanState.cartItems, newItem], error: null));
+      emit(state.copyWith(cartItems: [...state.cartItems, newItem]));
     }
   }
 
@@ -82,57 +85,34 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
     emit(const BillingState());
   }
 
-  Future<void> _onPrintReceipt(
-      PrintReceiptEvent event, Emitter<BillingState> emit) async {
-    final printerHelper = PrinterHelper();
+  /// Saves the sale first, then prints if asked. A printing problem never
+  /// loses the sale: it stays saved and can be reprinted from the history.
+  Future<void> _onCheckout(
+      CheckoutEvent event, Emitter<BillingState> emit) async {
+    if (state.cartItems.isEmpty || state.isProcessing) return;
+    emit(state.copyWith(isProcessing: true));
 
-    if (!printerHelper.isConnected) {
-      final savedMac = HiveDatabase.settingsBox.get('printer_mac');
-      if (savedMac != null) {
-        final connected = await printerHelper.connect(savedMac);
-        if (!connected) {
-          emit(state.copyWith(
-              error: 'Failed to auto-connect to printer!', clearError: false));
-          emit(state.copyWith(clearError: true));
-          return;
-        }
-      } else {
-        emit(state.copyWith(
-            error: 'Printer not connected & no saved printer found!',
-            clearError: false));
-        emit(state.copyWith(clearError: true));
-        return;
-      }
-    }
-
-    emit(state.copyWith(
-        isPrinting: true, printSuccess: false, clearError: true));
-
-    try {
-      final items = state.cartItems
-          .map((item) => {
-                'name': item.product.name,
-                'qty': item.quantity,
-                'price': item.product.price,
-                'total': item.total,
-              })
-          .toList();
-
-      await printerHelper.printReceipt(
-          shopName: event.shopName,
-          address1: event.address1,
-          address2: event.address2,
-          phone: event.phone,
-          items: items,
-          total: state.totalAmount,
-          footer: event.footer);
-
-      emit(state.copyWith(isPrinting: false, printSuccess: true));
-    } catch (e) {
+    final saved = await saleRepository.saveSale(state.cartItems);
+    if (saved.isLeft()) {
       emit(state.copyWith(
-          isPrinting: false, error: 'Print failed: $e', clearError: false));
-      // Reset error instantly avoids sticky error
-      emit(state.copyWith(clearError: true));
+        isProcessing: false,
+        error: BillingError.saveFailed,
+        errorDetail: saved.getLeft().toNullable()?.message,
+      ));
+      return;
     }
+    final sale = saved.getRight().toNullable()!;
+
+    PrintResult? printed;
+    if (event.print) {
+      printed = await receiptPrinter.printSale(sale, event.shop);
+    }
+
+    // A fresh state empties the cart for the next customer.
+    emit(BillingState(
+      completedSale: sale,
+      printOutcome: printed?.outcome,
+      errorDetail: printed?.error,
+    ));
   }
 }

@@ -5,8 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../domain/entities/shop.dart';
 import '../bloc/shop_bloc.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/utils/app_validators.dart';
+import '../../../../core/widgets/app_snack.dart';
 
 class ShopDetailsPage extends StatefulWidget {
   const ShopDetailsPage({super.key});
@@ -16,26 +17,24 @@ class ShopDetailsPage extends StatefulWidget {
 }
 
 class _ShopDetailsPageState extends State<ShopDetailsPage> {
+  static const _footerMaxLength = 60;
+
   final _formKey = GlobalKey<FormState>();
-  late TextEditingController _nameController;
-  late TextEditingController _address1Controller;
-  late TextEditingController _address2Controller;
-  late TextEditingController _phoneController;
-  late TextEditingController _upiController;
-  late TextEditingController _footerController;
+  final _nameController = TextEditingController();
+  final _address1Controller = TextEditingController();
+  final _address2Controller = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _footerController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController();
-    _address1Controller = TextEditingController();
-    _address2Controller = TextEditingController();
-    _phoneController = TextEditingController();
-    _upiController = TextEditingController();
-    _footerController = TextEditingController();
-
-    // Load shop data
-    context.read<ShopBloc>().add(LoadShopEvent());
+    final state = context.read<ShopBloc>().state;
+    if (state is ShopLoaded) {
+      _updateControllers(state.shop);
+    } else {
+      context.read<ShopBloc>().add(LoadShopEvent());
+    }
   }
 
   void _updateControllers(Shop shop) {
@@ -44,7 +43,6 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
       _address1Controller.text = shop.addressLine1;
       _address2Controller.text = shop.addressLine2;
       _phoneController.text = shop.phoneNumber;
-      _upiController.text = shop.upiId;
       _footerController.text = shop.footerText;
     }
   }
@@ -55,7 +53,6 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
     _address1Controller.dispose();
     _address2Controller.dispose();
     _phoneController.dispose();
-    _upiController.dispose();
     _footerController.dispose();
     super.dispose();
   }
@@ -63,12 +60,11 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
   void _saveShop() {
     if (_formKey.currentState!.validate()) {
       final shop = Shop(
-        name: _nameController.text,
-        addressLine1: _address1Controller.text,
-        addressLine2: _address2Controller.text,
-        phoneNumber: _phoneController.text,
-        upiId: _upiController.text,
-        footerText: _footerController.text,
+        name: _nameController.text.trim(),
+        addressLine1: _address1Controller.text.trim(),
+        addressLine2: _address2Controller.text.trim(),
+        phoneNumber: _phoneController.text.trim(),
+        footerText: _footerController.text.trim(),
       );
 
       context.read<ShopBloc>().add(UpdateShopEvent(shop));
@@ -77,22 +73,21 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Shop Details'),
-        ),
+        appBar: AppBar(title: Text(l10n.shopDetails)),
         body: BlocConsumer<ShopBloc, ShopState>(
           listener: (context, state) {
             if (state is ShopLoaded) {
               _updateControllers(state.shop);
             } else if (state is ShopOperationSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text('Shop details saved!'),
-                  backgroundColor: Colors.green));
+              showAppSnack(context, l10n.shopSaved, kind: SnackKind.success);
               context.pop();
             } else if (state is ShopError) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(state.message), backgroundColor: Colors.red));
+              showAppSnack(context, l10n.errorWithDetail(state.message),
+                  kind: SnackKind.error);
             }
           },
           buildWhen: (previous, current) =>
@@ -103,75 +98,69 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
             }
 
             return SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 120),
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
               child: Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text('General Information',
+                    Text(l10n.shopInfoTitle,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 13,
                           fontWeight: FontWeight.bold,
-                          letterSpacing: 1.2,
-                          color: AppTheme.primaryColor.withValues(alpha: 0.8),
+                          letterSpacing: 0.6,
+                          color: scheme.primary,
                         )),
-                    const SizedBox(
-                      height: 5,
-                    ),
+                    const SizedBox(height: 4),
                     Text(
-                      'These details will appear on your digital and printed receipts.',
-                      style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                      l10n.shopInfoHint,
+                      style: TextStyle(
+                          fontSize: 12, color: scheme.onSurfaceVariant),
                     ),
                     const SizedBox(height: 24),
-                    const InputLabel(text: 'Shop Name'),
+                    InputLabel(text: l10n.shopNameLabel),
                     _buildTextField(
                       controller: _nameController,
-                      hint: 'e.g. QuickMart Superstore',
-                      validator: AppValidators.required('Required'),
+                      hint: l10n.shopNameHint,
+                      validator: AppValidators.required(l10n.commonRequired),
                     ),
-                    const SizedBox(height: 15),
-                    const InputLabel(text: 'Address Line 1'),
+                    const SizedBox(height: 16),
+                    InputLabel(text: l10n.address1Label),
                     _buildTextField(
                       controller: _address1Controller,
-                      hint: 'Samrajpet, Mecheri',
-                      validator: AppValidators.required('Required'),
+                      hint: l10n.address1Hint,
                     ),
-                    const SizedBox(height: 15),
-                    const InputLabel(text: 'Address Line 2 (Optional)'),
+                    const SizedBox(height: 16),
+                    InputLabel(text: l10n.address2Label),
                     _buildTextField(
                       controller: _address2Controller,
-                      hint: 'Salem - 636453',
+                      hint: l10n.address2Hint,
                     ),
-                    const SizedBox(height: 15),
-                    const InputLabel(text: 'Phone Number'),
+                    const SizedBox(height: 16),
+                    InputLabel(text: l10n.phoneLabel),
                     _buildTextField(
                       controller: _phoneController,
-                      hint: '9876543210',
+                      hint: l10n.phoneHint,
                       keyboardType: TextInputType.phone,
-                      validator: AppValidators.required('Required'),
                     ),
-                    const SizedBox(height: 15),
-                    const InputLabel(text: 'UPI ID'),
-                    _buildTextField(
-                      controller: _upiController,
-                      hint: 'shopname@upi',
-                    ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 16),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const InputLabel(text: 'Receipt Footer Text'),
-                        Text('Max 60 chars',
-                            style: TextStyle(
-                                fontSize: 11, color: Colors.grey[400])),
+                        Expanded(child: InputLabel(text: l10n.footerLabel)),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Text(l10n.maxChars(_footerMaxLength),
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  color: scheme.onSurfaceVariant)),
+                        ),
                       ],
                     ),
                     _buildTextField(
                       controller: _footerController,
-                      hint: 'Thank you, Visit again!!!',
+                      hint: l10n.footerHint,
                       maxLines: 2,
-                      maxLength: 60,
+                      maxLength: _footerMaxLength,
                     ),
                   ],
                 ),
@@ -182,7 +171,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
         bottomNavigationBar: PrimaryButton(
           onPressed: _saveShop,
           icon: Icons.save,
-          label: 'Save Details',
+          label: l10n.commonSave,
         ));
   }
 
@@ -199,7 +188,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
       keyboardType: keyboardType,
       maxLines: maxLines,
       maxLength: maxLength,
-      textCapitalization: TextCapitalization.words,
+      textCapitalization: TextCapitalization.sentences,
       validator: validator,
       decoration: InputDecoration(
         hintText: hint,

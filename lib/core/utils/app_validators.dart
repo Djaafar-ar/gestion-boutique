@@ -1,5 +1,10 @@
+import 'package:flutter/widgets.dart';
+
+import '../l10n/app_localizations.dart';
+import 'money.dart';
+
 class AppValidators {
-  static String? Function(String?) required(String message) {
+  static FormFieldValidator<String> required(String message) {
     return (String? value) {
       if (value == null || value.trim().isEmpty) {
         return message;
@@ -8,16 +13,14 @@ class AppValidators {
     };
   }
 
-  static String? price(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Please enter a price';
-    }
-    if (double.tryParse(value) == null) {
-      return 'Please enter a valid number';
-    }
-    if (double.parse(value) < 0) {
-      return 'Price cannot be negative';
-    }
-    return null;
+  /// Checks a price typed in DA, such as `1250` or `1 250,50`.
+  static FormFieldValidator<String> price(AppLocalizations l10n) {
+    return (String? value) {
+      if (value == null || value.trim().isEmpty) return l10n.priceRequired;
+      final centimes = parseDA(value);
+      if (centimes == null) return l10n.priceInvalid;
+      if (centimes < 0) return l10n.priceNegative;
+      return null;
+    };
   }
 }

@@ -1,0 +1,8 @@
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          # Dates are saved as readable text with milliseconds, which keeps
+          # "which change is newer" exact when phones sync.
+          store_date_time_values_as_text: true

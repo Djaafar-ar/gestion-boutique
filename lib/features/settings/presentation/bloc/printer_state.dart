@@ -13,11 +13,23 @@ enum PrinterStatus {
   testPrinting
 }
 
+/// Why the last printer action failed, shown in the current language.
+enum PrinterError {
+  noPairedDevices,
+  connectAllFailed,
+  connectFailed,
+  permissionDenied,
+  other
+}
+
 class PrinterState extends Equatable {
   final PrinterStatus status;
   final String? connectedMac;
   final String? connectedName;
   final List<BluetoothInfo> devices;
+  final PrinterError? error;
+
+  /// Technical details for [PrinterError.other].
   final String? errorMessage;
 
   const PrinterState({
@@ -25,6 +37,7 @@ class PrinterState extends Equatable {
     this.connectedMac,
     this.connectedName,
     this.devices = const [],
+    this.error,
     this.errorMessage,
   });
 
@@ -33,6 +46,7 @@ class PrinterState extends Equatable {
     String? connectedMac,
     String? connectedName,
     List<BluetoothInfo>? devices,
+    PrinterError? error,
     String? errorMessage,
     bool clearError = false,
   }) {
@@ -41,11 +55,12 @@ class PrinterState extends Equatable {
       connectedMac: connectedMac ?? this.connectedMac,
       connectedName: connectedName ?? this.connectedName,
       devices: devices ?? this.devices,
+      error: clearError ? null : (error ?? this.error),
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
     );
   }
 
   @override
   List<Object?> get props =>
-      [status, connectedMac, connectedName, devices, errorMessage];
+      [status, connectedMac, connectedName, devices, error, errorMessage];
 }

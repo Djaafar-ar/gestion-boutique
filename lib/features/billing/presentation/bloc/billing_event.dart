@@ -37,21 +37,13 @@ class UpdateQuantityEvent extends BillingEvent {
 
 class ClearCartEvent extends BillingEvent {}
 
-class PrintReceiptEvent extends BillingEvent {
-  final String shopName;
-  final String address1;
-  final String address2;
-  final String phone;
-  final String footer;
+/// Saves the cart as a sale, and prints the receipt when [print] is true.
+class CheckoutEvent extends BillingEvent {
+  final bool print;
+  final Shop shop;
 
-  const PrintReceiptEvent({
-    required this.shopName,
-    required this.address1,
-    required this.address2,
-    required this.phone,
-    required this.footer,
-  });
+  const CheckoutEvent({required this.print, required this.shop});
 
   @override
-  List<Object> get props => [shopName, address1, address2, phone, footer];
+  List<Object> get props => [print, shop];
 }

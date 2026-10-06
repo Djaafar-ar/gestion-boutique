@@ -1,279 +1,214 @@
-import 'package:billing_app/core/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pretty_qr_code/pretty_qr_code.dart';
 
+import '../../../../core/l10n/app_localizations.dart';
+import '../../../../core/utils/money.dart';
+import '../../../../core/widgets/app_snack.dart';
+import '../../../shop/domain/entities/shop.dart';
 import '../../../shop/presentation/bloc/shop_bloc.dart';
+import '../../data/receipt_printer.dart';
 import '../bloc/billing_bloc.dart';
 
-class CheckoutPage extends StatefulWidget {
+class CheckoutPage extends StatelessWidget {
   const CheckoutPage({super.key});
 
   @override
-  State<CheckoutPage> createState() => _CheckoutPageState();
-}
-
-class _CheckoutPageState extends State<CheckoutPage> {
-  @override
   Widget build(BuildContext context) {
-    const borderColor = Color(0xFFE5E5EA);
+    final l10n = AppLocalizations.of(context);
 
     // Going back keeps the cart, so the cashier can add more items.
     return Scaffold(
-          appBar: AppBar(
-            title: const Text('Checkout',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-            centerTitle: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: Icon(Icons.chevron_left,
-                  size: 28, color: Theme.of(context).primaryColor),
-              onPressed: () => context.pop(),
-            ),
-          ),
-          body: BlocConsumer<BillingBloc, BillingState>(
-            listenWhen: (previous, current) =>
-                !previous.printSuccess && current.printSuccess,
-            listener: (context, state) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text('Printed successfully'),
-                  backgroundColor: Colors.green));
-              // Start fresh for the next customer.
-              context.read<BillingBloc>().add(ClearCartEvent());
-              context.pop();
-            },
-            builder: (context, billingState) {
-              return BlocBuilder<ShopBloc, ShopState>(
-                  builder: (context, shopState) {
-                String upiId = '';
-                String shopName = 'Shop';
-
-                if (shopState is ShopLoaded) {
-                  upiId = shopState.shop.upiId;
-                  shopName = shopState.shop.name;
-                }
-
-                return Column(
+      appBar: AppBar(title: Text(l10n.checkoutTitle)),
+      body: BlocConsumer<BillingBloc, BillingState>(
+        listenWhen: (previous, current) =>
+            current.completedSale != previous.completedSale ||
+            (current.error == BillingError.saveFailed &&
+                previous.error != current.error),
+        listener: (context, state) => _onResult(context, l10n, state),
+        builder: (context, billingState) {
+          final scheme = Theme.of(context).colorScheme;
+          return Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.all(16),
                   children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 16),
-                        child: Column(
-                          children: [
-                            // Table
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: borderColor),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.05),
-                                    blurRadius: 12,
-                                    offset: const Offset(0, 4),
-                                  )
-                                ],
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Table(
-                                  border: const TableBorder(
-                                    horizontalInside:
-                                        BorderSide(color: borderColor),
-                                    bottom: BorderSide(color: borderColor),
-                                  ),
-                                  children: [
-                                    // Header row
-                                    TableRow(
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFFF8FAFC),
-                                        border: Border(
-                                            bottom:
-                                                BorderSide(color: borderColor)),
-                                      ),
-                                      children: [
-                                        _buildHeaderCell(
-                                            'Product Name', TextAlign.left),
-                                        _buildHeaderCell(
-                                            'Price', TextAlign.right),
-                                        _buildHeaderCell(
-                                            'Total', TextAlign.right),
-                                      ],
-                                    ),
-                                    // Items rows
-                                    ...billingState.cartItems.map((item) {
-                                      return TableRow(
-                                        children: [
-                                          _buildDataCell(
-                                            '${item.quantity} x ${item.product.name}',
-                                            TextAlign.left,
-                                          ),
-                                          _buildDataCell(
-                                              '₹${item.product.price.toStringAsFixed(2)}',
-                                              TextAlign.right,
-                                              isSubtitle: true),
-                                          _buildDataCell(
-                                              '₹${item.total.toStringAsFixed(2)}',
-                                              TextAlign.right,
-                                              isBold: true),
-                                        ],
-                                      );
-                                    }),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 24),
-
-                            const SizedBox(
-                                height: 120), // padding for bottom fixed bar
-                          ],
+                    Card(
+                      clipBehavior: Clip.antiAlias,
+                      child: Table(
+                        columnWidths: const {
+                          0: FlexColumnWidth(),
+                          1: IntrinsicColumnWidth(),
+                          2: IntrinsicColumnWidth(),
+                        },
+                        border: TableBorder(
+                          horizontalInside:
+                              BorderSide(color: scheme.outlineVariant),
                         ),
-                      ),
-                    ),
-
-                    // Bottom Bar
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        borderRadius: const BorderRadius.horizontal(
-                            left: Radius.circular(24),
-                            right: Radius.circular(24)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, -4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                            ),
-                            child: Column(
+                          TableRow(
+                            decoration: BoxDecoration(
+                                color: scheme.surfaceContainerHighest),
+                            children: [
+                              _headerCell(context, l10n.columnProduct),
+                              _headerCell(context, l10n.columnPrice, end: true),
+                              _headerCell(context, l10n.columnTotal, end: true),
+                            ],
+                          ),
+                          ...billingState.cartItems.map((item) {
+                            return TableRow(
                               children: [
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                upiId.isNotEmpty
-                                    ? Column(
-                                        children: [
-                                          const Text(
-                                            'Scan to Pay',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black87,
-                                              letterSpacing: 1.1,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 12),
-                                          SizedBox(
-                                            width: 180,
-                                            height: 180,
-                                            child: PrettyQrView.data(
-                                              data:
-                                                  'upi://pay?pa=$upiId&pn=$shopName&am=${billingState.totalAmount.toStringAsFixed(2)}&cu=INR',
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    : const SizedBox.shrink(),
-                                const SizedBox(height: 15),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'GRAND TOTAL',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey[400],
-                                        letterSpacing: 1.2,
-                                      ),
-                                    ),
-                                    Text(
-                                      '₹${billingState.totalAmount.toStringAsFixed(2)}',
-                                      style: const TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: -0.5,
-                                        color: Color(0xFF0F172A),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                _dataCell(context,
+                                    '${item.quantity} × ${item.product.name}'),
+                                _dataCell(context,
+                                    formatDAForUi(item.product.sellPrice),
+                                    end: true, subtle: true),
+                                _dataCell(context, formatDAForUi(item.total),
+                                    end: true, bold: true),
                               ],
-                            ),
-                          ),
-                          PrimaryButton(
-                            onPressed: () {
-                              if (shopState is ShopLoaded) {
-                                context.read<BillingBloc>().add(
-                                    PrintReceiptEvent(
-                                        shopName: shopState.shop.name,
-                                        address1: shopState.shop.addressLine1,
-                                        address2: shopState.shop.addressLine2,
-                                        phone: shopState.shop.phoneNumber,
-                                        footer: shopState.shop.footerText));
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content:
-                                            Text('Shop details not loaded'),
-                                        backgroundColor: Colors.red));
-                              }
-                            },
-                            label: 'Print Receipt',
-                            icon: Icons.print,
-                            isLoading: billingState.isPrinting,
-                          ),
+                            );
+                          }),
                         ],
                       ),
                     ),
                   ],
-                );
-              });
-            },
-          ),
-        );
+                ),
+              ),
+
+              // Bottom bar: total and the two ways to confirm.
+              Material(
+                color: scheme.surfaceContainer,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(24)),
+                child: SafeArea(
+                  top: false,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                l10n.amountToPay,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: scheme.onSurfaceVariant,
+                                  letterSpacing: 1.1,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              formatDAForUi(billingState.totalAmount),
+                              style: const TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        FilledButton.icon(
+                          onPressed: billingState.isProcessing
+                              ? null
+                              : () => _checkout(context, print: true),
+                          icon: billingState.isProcessing
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child:
+                                      CircularProgressIndicator(strokeWidth: 2))
+                              : const Icon(Icons.print),
+                          label: Text(l10n.confirmAndPrint),
+                        ),
+                        const SizedBox(height: 10),
+                        OutlinedButton.icon(
+                          onPressed: billingState.isProcessing
+                              ? null
+                              : () => _checkout(context, print: false),
+                          icon: const Icon(Icons.check),
+                          label: Text(l10n.confirmWithoutPrint),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 
-  Widget _buildHeaderCell(String text, TextAlign align) {
+  void _checkout(BuildContext context, {required bool print}) {
+    final shopState = context.read<ShopBloc>().state;
+    final shop = shopState is ShopLoaded ? shopState.shop : const Shop();
+    context.read<BillingBloc>().add(CheckoutEvent(print: print, shop: shop));
+  }
+
+  void _onResult(
+      BuildContext context, AppLocalizations l10n, BillingState state) {
+    if (state.error == BillingError.saveFailed) {
+      showAppSnack(context, l10n.saleSaveFailed, kind: SnackKind.error);
+      return;
+    }
+    final sale = state.completedSale;
+    if (sale == null) return;
+
+    switch (state.printOutcome) {
+      case null:
+        showAppSnack(context, l10n.saleSaved(sale.number),
+            kind: SnackKind.success);
+      case PrintOutcome.printed:
+        showAppSnack(context, l10n.saleSavedAndPrinted(sale.number),
+            kind: SnackKind.success);
+      case PrintOutcome.noSavedPrinter:
+        _printProblem(context, l10n, sale.number, l10n.printNoPrinter);
+      case PrintOutcome.connectFailed:
+        _printProblem(context, l10n, sale.number, l10n.printConnectFailed);
+      case PrintOutcome.failed:
+        _printProblem(context, l10n, sale.number, l10n.printFailed);
+    }
+    context.pop();
+  }
+
+  void _printProblem(
+      BuildContext context, AppLocalizations l10n, int number, String problem) {
+    showAppSnack(
+        context, '${l10n.saleSaved(number)}. $problem ${l10n.printReprintHint}',
+        kind: SnackKind.error);
+  }
+
+  Widget _headerCell(BuildContext context, String text, {bool end = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       child: Text(
         text.toUpperCase(),
-        textAlign: align,
-        style: const TextStyle(
-          fontSize: 10,
+        textAlign: end ? TextAlign.end : TextAlign.start,
+        style: TextStyle(
+          fontSize: 11,
           fontWeight: FontWeight.bold,
-          letterSpacing: 1,
-          color: Colors.grey,
+          letterSpacing: 0.8,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
         ),
       ),
     );
   }
 
-  Widget _buildDataCell(String text, TextAlign align,
-      {bool isBold = false, bool isSubtitle = false}) {
+  Widget _dataCell(BuildContext context, String text,
+      {bool end = false, bool bold = false, bool subtle = false}) {
+    final scheme = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       child: Text(
         text,
-        textAlign: align,
+        textAlign: end ? TextAlign.end : TextAlign.start,
         style: TextStyle(
-          fontSize: isSubtitle ? 12 : 14,
-          fontWeight: isBold ? FontWeight.bold : FontWeight.w500,
-          color: isSubtitle ? Colors.grey[500] : Colors.black87,
+          fontSize: subtle ? 12 : 14,
+          fontWeight: bold ? FontWeight.bold : FontWeight.w500,
+          color: subtle ? scheme.onSurfaceVariant : scheme.onSurface,
         ),
       ),
     );

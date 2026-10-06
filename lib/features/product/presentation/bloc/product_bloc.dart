@@ -11,18 +11,18 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   final GetProductsUseCase getProductsUseCase;
   final AddProductUseCase addProductUseCase;
   final UpdateProductUseCase updateProductUseCase;
-  final DeleteProductUseCase deleteProductUseCase;
+  final ArchiveProductUseCase archiveProductUseCase;
 
   ProductBloc({
     required this.getProductsUseCase,
     required this.addProductUseCase,
     required this.updateProductUseCase,
-    required this.deleteProductUseCase,
+    required this.archiveProductUseCase,
   }) : super(const ProductState()) {
     on<LoadProducts>(_onLoadProducts);
     on<AddProduct>(_onAddProduct);
     on<UpdateProduct>(_onUpdateProduct);
-    on<DeleteProduct>(_onDeleteProduct);
+    on<ArchiveProduct>(_onArchiveProduct);
   }
 
   Future<void> _onLoadProducts(
@@ -46,8 +46,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           status: ProductStatus.error, message: failure.message)),
       (_) {
         emit(state.copyWith(
-            status: ProductStatus.success,
-            message: 'Product added successfully'));
+            status: ProductStatus.success, action: ProductAction.added));
         add(LoadProducts());
       },
     );
@@ -62,24 +61,22 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           status: ProductStatus.error, message: failure.message)),
       (_) {
         emit(state.copyWith(
-            status: ProductStatus.success,
-            message: 'Product updated successfully'));
+            status: ProductStatus.success, action: ProductAction.updated));
         add(LoadProducts());
       },
     );
   }
 
-  Future<void> _onDeleteProduct(
-      DeleteProduct event, Emitter<ProductState> emit) async {
+  Future<void> _onArchiveProduct(
+      ArchiveProduct event, Emitter<ProductState> emit) async {
     emit(state.copyWith(status: ProductStatus.loading));
-    final result = await deleteProductUseCase(event.id);
+    final result = await archiveProductUseCase(event.id);
     result.fold(
       (failure) => emit(state.copyWith(
           status: ProductStatus.error, message: failure.message)),
       (_) {
         emit(state.copyWith(
-            status: ProductStatus.success,
-            message: 'Product deleted successfully'));
+            status: ProductStatus.success, action: ProductAction.archived));
         add(LoadProducts());
       },
     );

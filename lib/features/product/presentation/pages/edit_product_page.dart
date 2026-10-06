@@ -6,8 +6,9 @@ import 'package:go_router/go_router.dart';
 
 import '../bloc/product_bloc.dart';
 import '../../domain/entities/product.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/utils/app_validators.dart';
+import '../../../../core/utils/money.dart';
 
 class EditProductPage extends StatefulWidget {
   final Product product;
@@ -20,25 +21,22 @@ class EditProductPage extends StatefulWidget {
 class _EditProductPageState extends State<EditProductPage> {
   final _formKey = GlobalKey<FormState>();
   late String _name;
-  late double _price;
+  late int _sellPrice;
 
   @override
   void initState() {
     super.initState();
     _name = widget.product.name;
-    _price = widget.product.price;
+    _sellPrice = widget.product.sellPrice;
   }
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      final updatedProduct = Product(
-        id: widget.product.id,
-        name: _name,
-        barcode: widget.product.barcode,
-        price: _price,
-      );
+      // copyWith keeps the fields this screen does not show.
+      final updatedProduct =
+          widget.product.copyWith(name: _name.trim(), sellPrice: _sellPrice);
 
       context.read<ProductBloc>().add(UpdateProduct(updatedProduct));
       context.pop();
@@ -47,87 +45,51 @@ class _EditProductPageState extends State<EditProductPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.chevron_left,
-                size: 32, color: Theme.of(context).primaryColor),
-            onPressed: () => context.pop(),
-          ),
-          title: const Text('Edit Product',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          centerTitle: true,
-        ),
+        appBar: AppBar(title: Text(l10n.editProduct)),
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Display Barcode details (immutable block)
-                  Container(
-                    padding: const EdgeInsets.all(16),
+                  // The barcode cannot be changed.
+                  Card(
                     margin: const EdgeInsets.only(bottom: 24),
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryColor.withValues(alpha: 0.05),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                          color: AppTheme.primaryColor.withValues(alpha: 0.1)),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.qr_code_scanner,
-                            color: AppTheme.primaryColor, size: 28),
-                        const SizedBox(width: 12),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('BARCODE',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppTheme.primaryColor
-                                        .withValues(alpha: 0.7))),
-                            const SizedBox(height: 2),
-                            Text(widget.product.barcode,
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: 'monospace')),
-                          ],
-                        ),
-                      ],
+                    child: ListTile(
+                      leading: Icon(Icons.qr_code_2,
+                          color: scheme.primary, size: 28),
+                      title: Text(l10n.barcodeLabel,
+                          style: TextStyle(
+                              fontSize: 12, color: scheme.onSurfaceVariant)),
+                      subtitle: Text(widget.product.barcode,
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: scheme.onSurface)),
                     ),
                   ),
-
-                  const InputLabel(text: 'Product Name'),
-
+                  InputLabel(text: l10n.productNameLabel),
                   TextFormField(
                     initialValue: _name,
-                    textCapitalization: TextCapitalization.words,
-                    validator: AppValidators.required('Please enter a name'),
+                    textCapitalization: TextCapitalization.sentences,
+                    validator: AppValidators.required(l10n.productNameRequired),
                     onSaved: (value) => _name = value!,
                   ),
                   const SizedBox(height: 24),
-
-                  const InputLabel(text: 'Price'),
-
+                  InputLabel(text: l10n.sellPriceLabel),
                   TextFormField(
-                    initialValue: _price.toStringAsFixed(2),
+                    initialValue: centimesToInput(_sellPrice),
                     keyboardType:
                         const TextInputType.numberWithOptions(decimal: true),
-                    decoration: const InputDecoration(
-                      prefixText: '₹ ',
-                      prefixStyle: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black),
-                    ),
-                    validator: AppValidators.price,
-                    onSaved: (value) => _price = double.parse(value!),
+                    decoration: const InputDecoration(suffixText: 'DA'),
+                    validator: AppValidators.price(l10n),
+                    onSaved: (value) => _sellPrice = parseDA(value)!,
                   ),
                 ],
               ),
@@ -137,7 +99,7 @@ class _EditProductPageState extends State<EditProductPage> {
         bottomNavigationBar: PrimaryButton(
           onPressed: _submit,
           icon: Icons.save,
-          label: 'Save Changes',
+          label: l10n.saveChanges,
         ));
   }
 }

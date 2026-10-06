@@ -1,97 +1,119 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  static const Color primaryColor = Color(0xFF6C63FF);
-  static const Color secondaryColor = Color(0xFF03DAC6);
-  static const Color backgroundColor = Color(0xFFF2F2F7);
-  static const Color surfaceColor = Colors.white;
-  static const Color errorColor = Color(0xFFB00020);
+  /// Every colour of the app is generated from this one colour.
+  static const Color seedColor = Color(0xFF5B5BD6);
 
- static final TextTheme textTheme = GoogleFonts.ibmPlexSansTextTheme().copyWith(
-  bodyLarge: GoogleFonts.ibmPlexSans(
-    fontSize: 15,
-    fontWeight: FontWeight.w500,
-    color: Colors.black,
-  ),
- 
-);
-  static ThemeData get lightTheme {
+  /// Green used for "it worked" messages, readable in light and dark mode.
+  static const Color success = Color(0xFF2E7D32);
+
+  // Latin text uses IBM Plex Sans; Arabic letters automatically fall back
+  // to IBM Plex Sans Arabic. Both are bundled in assets/fonts.
+  static const String fontFamily = 'IBMPlexSans';
+  static const List<String> fontFallback = ['IBMPlexSansArabic'];
+
+  static ThemeData get lightTheme => _build(Brightness.light);
+  static ThemeData get darkTheme => _build(Brightness.dark);
+
+  static ThemeData _build(Brightness brightness) {
+    final scheme =
+        ColorScheme.fromSeed(seedColor: seedColor, brightness: brightness);
+    final rounded12 = BorderRadius.circular(12);
+    final rounded16 = BorderRadius.circular(16);
+
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.light,
-      primaryColor: primaryColor,
-      scaffoldBackgroundColor: backgroundColor,
-      bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: Colors.transparent,
-      ),
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: primaryColor,
-        primary: primaryColor,
-        secondary: secondaryColor,
-        surface: surfaceColor,
-        error: errorColor,
-      ),
-      textTheme: textTheme.apply(
-        bodyColor: Colors.black87,
-        displayColor: Colors.black,
-      ),
-      
+      colorScheme: scheme,
+      fontFamily: fontFamily,
+      fontFamilyFallback: fontFallback,
+      scaffoldBackgroundColor: scheme.surface,
       appBarTheme: AppBarTheme(
-       backgroundColor: Colors.transparent,
-        elevation: 0,
         centerTitle: true,
-        titleTextStyle: textTheme.titleLarge?.copyWith(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-          fontSize: 18
+        backgroundColor: scheme.surface,
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 1,
+        titleTextStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontFamilyFallback: fontFallback,
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: scheme.onSurface,
         ),
-        iconTheme: const IconThemeData(color: Colors.black),
       ),
       cardTheme: CardThemeData(
-        elevation: 4,
-        shadowColor: Colors.black.withValues(alpha: 0.1),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        color: surfaceColor,
-      ) ,
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        color: scheme.surfaceContainerLow,
+        shape: RoundedRectangleBorder(
+          borderRadius: rounded16,
+          side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.6)),
+        ),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white,
-         hintStyle:
-            TextStyle(color: Colors.grey[400], fontWeight: FontWeight.normal,fontSize: 13),
-      
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey[300]!),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey[300]!),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: primaryColor, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: errorColor, width: 2),
-        ),
+        fillColor: scheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        hintStyle: TextStyle(color: scheme.onSurfaceVariant, fontSize: 14),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
-          elevation: 4,
-          shadowColor: primaryColor.withValues(alpha: 0.4),
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          textStyle:
-              textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
+        border: OutlineInputBorder(
+          borderRadius: rounded12,
+          borderSide: BorderSide(color: scheme.outlineVariant),
         ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: rounded12,
+          borderSide: BorderSide(color: scheme.outlineVariant),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: rounded12,
+          borderSide: BorderSide(color: scheme.primary, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: rounded12,
+          borderSide: BorderSide(color: scheme.error, width: 2),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          minimumSize: const Size.fromHeight(52),
+          shape: RoundedRectangleBorder(borderRadius: rounded16),
+          textStyle: const TextStyle(
+            fontFamily: fontFamily,
+            fontFamilyFallback: fontFallback,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          minimumSize: const Size.fromHeight(52),
+          shape: RoundedRectangleBorder(borderRadius: rounded16),
+          textStyle: const TextStyle(
+            fontFamily: fontFamily,
+            fontFamilyFallback: fontFallback,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: scheme.primaryContainer,
+        foregroundColor: scheme.onPrimaryContainer,
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        backgroundColor: scheme.surfaceContainer,
+        indicatorColor: scheme.secondaryContainer,
+      ),
+      snackBarTheme: const SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+      ),
+      listTileTheme: const ListTileThemeData(
+        contentPadding: EdgeInsetsDirectional.symmetric(horizontal: 16),
+      ),
+      dividerTheme: DividerThemeData(
+        color: scheme.outlineVariant.withValues(alpha: 0.5),
+        space: 1,
       ),
     );
   }

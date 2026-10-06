@@ -33,7 +33,7 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
       if (devices.isEmpty) {
         emit(state.copyWith(
           status: PrinterStatus.scanFailure,
-          errorMessage: 'No paired devices found.',
+          error: PrinterError.noPairedDevices,
           devices: [],
         ));
         return;
@@ -59,13 +59,14 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
       if (!connected) {
         emit(state.copyWith(
           status: PrinterStatus.scanFailure,
-          errorMessage: 'Could not connect to any paired device.',
+          error: PrinterError.connectAllFailed,
           devices: devices,
         ));
       }
     } catch (e) {
       emit(state.copyWith(
         status: PrinterStatus.scanFailure,
+        error: _errorFrom(e),
         errorMessage: e.toString(),
       ));
     }
@@ -83,6 +84,7 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     } catch (e) {
       emit(state.copyWith(
         status: PrinterStatus.scanFailure,
+        error: _errorFrom(e),
         errorMessage: e.toString(),
       ));
     }
@@ -102,7 +104,7 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     } else {
       emit(state.copyWith(
         status: PrinterStatus.connectionFailure,
-        errorMessage: 'Failed to connect to printer',
+        error: PrinterError.connectFailed,
       ));
     }
   }
@@ -123,4 +125,8 @@ class PrinterBloc extends Bloc<PrinterEvent, PrinterState> {
     await repository.testPrint(event.shopName);
     emit(state.copyWith(status: PrinterStatus.scanSuccess));
   }
+
+  PrinterError _errorFrom(Object e) => e.toString().contains('permission')
+      ? PrinterError.permissionDenied
+      : PrinterError.other;
 }

@@ -9,5 +9,10 @@ abstract class Failure extends Equatable {
 }
 
 class CacheFailure extends Failure {
-  const CacheFailure(String message) : super(message);
+  const CacheFailure(super.message);
+}
+
+/// The thing asked for does not exist (for example an unknown barcode).
+class NotFoundFailure extends Failure {
+  const NotFoundFailure(super.message);
 }

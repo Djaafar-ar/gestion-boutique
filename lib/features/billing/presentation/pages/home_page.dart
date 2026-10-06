@@ -4,11 +4,16 @@ import 'package:go_router/go_router.dart';
 import 'package:vibration/vibration.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-import '../../../billing/presentation/bloc/billing_bloc.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../config/routes/app_shell.dart';
+import '../../../../core/l10n/app_localizations.dart';
+import '../../../../core/utils/money.dart';
+import '../../../../core/widgets/app_snack.dart';
+import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/primary_button.dart';
+import '../../../billing/presentation/bloc/billing_bloc.dart';
 import '../../domain/entities/cart_item.dart';
 
+/// The Sell tab: camera scanner on top, current cart below.
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -29,9 +34,34 @@ class _HomePageState extends State<HomePage> {
   final Map<String, DateTime> _lastScanTimes = {};
 
   @override
+  void initState() {
+    super.initState();
+    currentTabIndex.addListener(_onTabChanged);
+  }
+
+  @override
   void dispose() {
+    currentTabIndex.removeListener(_onTabChanged);
     _scannerController.dispose();
     super.dispose();
+  }
+
+  /// The camera only runs while the Sell tab is visible.
+  void _onTabChanged() {
+    if (currentTabIndex.value == 0) {
+      if (_isCameraOn) _scannerController.start();
+    } else {
+      _scannerController.stop();
+    }
+  }
+
+  /// Stops the camera while another full-screen page is open.
+  Future<void> _openPage(String location) async {
+    _scannerController.stop();
+    await context.push(location);
+    if (_isCameraOn && mounted && currentTabIndex.value == 0) {
+      _scannerController.start();
+    }
   }
 
   void _onDetect(BarcodeCapture capture) async {
@@ -68,61 +98,54 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scannerHeight = MediaQuery.of(context).size.height * 0.36;
+
     return Scaffold(
       body: BlocListener<BillingBloc, BillingState>(
         listenWhen: (previous, current) =>
-            previous.error != current.error && current.error != null,
+            current.error == BillingError.productNotFound &&
+            previous.error != current.error,
         listener: (context, state) {
-          if (state.error != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.error!),
-                backgroundColor: Colors.red,
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-          }
+          showAppSnack(context, l10n.productNotFound(state.errorDetail ?? ''),
+              kind: SnackKind.error);
         },
         child: Stack(
           children: [
-            // SCANNER VIEW (TOP 50%)
             Positioned(
               top: 0,
               left: 0,
               right: 0,
-              height: MediaQuery.of(context).size.height * 0.4,
-              child: _buildScannerSection(),
+              height: scannerHeight,
+              child: _buildScannerSection(l10n),
             ),
-
-            // BOTTOM PANEL (BOTTOM 50% + OVERLAP)
             Positioned(
-              top: (MediaQuery.of(context).size.height * 0.4) - 24, // overlap
+              top: scannerHeight - 24, // overlap
               left: 0,
               right: 0,
               bottom: 0,
-              child: _buildBottomPanel(),
+              child: _buildBottomPanel(l10n),
             ),
           ],
         ),
       ),
       bottomSheet:
           BlocBuilder<BillingBloc, BillingState>(builder: (context, state) {
-        return PrimaryButton(
-          onPressed: state.cartItems.isEmpty
-              ? null
-              : () async {
-                  _scannerController.stop();
-                  await context.push('/checkout');
-                  if (_isCameraOn && mounted) _scannerController.start();
-                },
-          icon: Icons.payment,
-          label: 'Review Order',
+        return ColoredBox(
+          color: Theme.of(context).colorScheme.surface,
+          child: PrimaryButton(
+            onPressed: state.cartItems.isEmpty
+                ? null
+                : () => _openPage('/sell/checkout'),
+            icon: Icons.point_of_sale,
+            label: l10n.goToCheckout,
+          ),
         );
       }),
     );
   }
 
-  Widget _buildScannerSection() {
+  Widget _buildScannerSection(AppLocalizations l10n) {
     return Container(
       color: Colors.black,
       child: Stack(
@@ -132,23 +155,19 @@ class _HomePageState extends State<HomePage> {
             controller: _scannerController,
             onDetect: _onDetect,
           ),
-          if (!_isCameraOn) _buildCameraOffState(),
+          if (!_isCameraOn) _buildCameraOffState(l10n),
 
-          // Overlay Actions (Top Right)
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 16,
-            right: 16,
+          // Overlay actions, on the "end" side (right, or left in Arabic)
+          PositionedDirectional(
+            top: MediaQuery.of(context).padding.top + 12,
+            end: 12,
             child: Column(
               children: [
                 _buildOverlayButton(
-                  icon: Icons.settings,
-                  onPressed: () async {
-                    _scannerController.stop();
-                    await context.push('/settings');
-                    if (_isCameraOn && mounted) _scannerController.start();
-                  },
+                  icon: Icons.receipt_long,
+                  tooltip: l10n.historyTitle,
+                  onPressed: () => _openPage('/sell/history'),
                 ),
-                const SizedBox(height: 16),
                 if (_isCameraOn)
                   _buildOverlayButton(
                     icon:
@@ -158,10 +177,8 @@ class _HomePageState extends State<HomePage> {
                       _scannerController.toggleTorch();
                     },
                   ),
-                if (_isCameraOn) const SizedBox(height: 16),
                 _buildOverlayButton(
                   icon: _isCameraOn ? Icons.videocam : Icons.videocam_off,
-                  // color:  Colors.white24 ,
                   onPressed: () {
                     setState(() {
                       _isCameraOn = !_isCameraOn;
@@ -177,24 +194,15 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          // Central Overlay Bounding Box
+          // Central framing box
           if (_isCameraOn)
             Center(
               child: Container(
-                width: 250,
-                height: 250,
+                width: 230,
+                height: 150,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white24, width: 2),
+                  border: Border.all(color: Colors.white54, width: 2),
                   borderRadius: BorderRadius.circular(16),
-                ),
-                child: Stack(
-                  children: [
-                    // Corners
-                    _buildCorner(Alignment.topLeft),
-                    _buildCorner(Alignment.topRight),
-                    _buildCorner(Alignment.bottomLeft),
-                    _buildCorner(Alignment.bottomRight),
-                  ],
                 ),
               ),
             ),
@@ -203,50 +211,33 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildCameraOffState() {
-    return Container(
-      color: const Color(0xFF1E293B), // slate-800
+  Widget _buildCameraOffState(AppLocalizations l10n) {
+    return ColoredBox(
+      color: const Color(0xFF1E293B),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: const BoxDecoration(
-              color: Color(0xFF334155), // slate-700
-              shape: BoxShape.circle,
-            ),
-            alignment: Alignment.center,
-            child:
-                const Icon(Icons.videocam_off, color: Colors.white, size: 32),
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            'Camera is turned off',
-            style: TextStyle(
+          const Icon(Icons.videocam_off, color: Colors.white, size: 36),
+          const SizedBox(height: 12),
+          Text(
+            l10n.cameraOffTitle,
+            style: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
           ),
-          const SizedBox(height: 8),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 32),
+          const SizedBox(height: 6),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Text(
-              'Turn on your camera to start scanning barcodes and items automatically.',
+              l10n.cameraOffBody,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white70, fontSize: 12),
+              style: const TextStyle(color: Colors.white70, fontSize: 12),
             ),
           ),
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primaryColor,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            ),
+          const SizedBox(height: 16),
+          FilledButton.icon(
+            style: FilledButton.styleFrom(minimumSize: const Size(0, 44)),
             icon: const Icon(Icons.videocam),
-            label: const Text('Turn on Camera',
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            label: Text(l10n.turnOnCamera),
             onPressed: () {
               setState(() => _isCameraOn = true);
               _scannerController.start();
@@ -258,62 +249,32 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildOverlayButton(
-      {required IconData icon, required VoidCallback onPressed, Color? color}) {
+      {required IconData icon,
+      required VoidCallback onPressed,
+      String? tooltip}) {
     return Container(
       width: 44,
       height: 44,
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: color ?? Colors.black45,
+        color: Colors.black45,
         shape: BoxShape.circle,
         border: Border.all(color: Colors.white24),
       ),
       child: IconButton(
         icon: Icon(icon, color: Colors.white),
+        tooltip: tooltip,
         onPressed: onPressed,
       ),
     );
   }
 
-  Widget _buildCorner(Alignment alignment) {
-    return Align(
-      alignment: alignment,
-      child: Container(
-        width: 32,
-        height: 32,
-        decoration: BoxDecoration(
-          border: Border(
-            top: (alignment == Alignment.topLeft ||
-                    alignment == Alignment.topRight)
-                ? const BorderSide(color: Colors.greenAccent, width: 4)
-                : BorderSide.none,
-            bottom: (alignment == Alignment.bottomLeft ||
-                    alignment == Alignment.bottomRight)
-                ? const BorderSide(color: Colors.greenAccent, width: 4)
-                : BorderSide.none,
-            left: (alignment == Alignment.topLeft ||
-                    alignment == Alignment.bottomLeft)
-                ? const BorderSide(color: Colors.greenAccent, width: 4)
-                : BorderSide.none,
-            right: (alignment == Alignment.topRight ||
-                    alignment == Alignment.bottomRight)
-                ? const BorderSide(color: Colors.greenAccent, width: 4)
-                : BorderSide.none,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBottomPanel() {
+  Widget _buildBottomPanel(AppLocalizations l10n) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: scheme.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        boxShadow: const [
-          BoxShadow(
-              color: Colors.black26, blurRadius: 15, offset: Offset(0, -5))
-        ],
       ),
       child: Column(
         children: [
@@ -323,7 +284,7 @@ class _HomePageState extends State<HomePage> {
             height: 4,
             margin: const EdgeInsets.symmetric(vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.grey.withValues(alpha: 0.3),
+              color: scheme.outlineVariant,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -331,40 +292,40 @@ class _HomePageState extends State<HomePage> {
           // Header
           BlocBuilder<BillingBloc, BillingState>(
             builder: (context, state) {
-              final totalItems =
-                  state.cartItems.fold<int>(0, (sum, i) => sum + i.quantity);
               return Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('Scanned Items',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w600)),
-                        Text('$totalItems items total',
-                            style: const TextStyle(
-                                fontSize: 12, color: Colors.grey)),
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(l10n.cartTitle,
+                              style: const TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w600)),
+                          Text(l10n.itemCount(state.itemCount),
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: scheme.onSurfaceVariant)),
+                        ],
+                      ),
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const Text('TOTAL PRICE',
+                        Text(l10n.totalLabel,
                             style: TextStyle(
-                                fontSize: 10,
+                                fontSize: 11,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.grey,
+                                color: scheme.onSurfaceVariant,
                                 letterSpacing: 1.2)),
                         Text(
-                          '₹${state.totalAmount.toStringAsFixed(2)}',
+                          formatDAForUi(state.totalAmount),
                           style: TextStyle(
                               fontSize: 20,
-                              fontWeight: FontWeight.w900,
-                              color: Theme.of(context).primaryColor),
+                              fontWeight: FontWeight.w700,
+                              color: scheme.primary),
                         ),
                       ],
                     ),
@@ -373,63 +334,34 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
-          const Divider(height: 1),
+          const SizedBox(height: 8),
+          const Divider(),
 
           // List View
           Expanded(
-            child: Stack(children: [
-              BlocBuilder<BillingBloc, BillingState>(
-                builder: (context, state) {
-                  if (state.cartItems.isEmpty) {
-                    return _buildEmptyCart();
-                  }
-
-                  return ListView.separated(
-                    padding: const EdgeInsets.only(
-                        left: 15, right: 15, top: 16, bottom: 100),
-                    itemCount: state.cartItems.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 12),
-                    itemBuilder: (context, index) {
-                      final item = state.cartItems[index];
-                      return _buildCartItemCard(context, item);
-                    },
+            child: BlocBuilder<BillingBloc, BillingState>(
+              builder: (context, state) {
+                if (state.cartItems.isEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 80),
+                    child: EmptyState(
+                      icon: Icons.shopping_basket_outlined,
+                      title: l10n.cartEmptyTitle,
+                      message: l10n.cartEmptyBody,
+                    ),
                   );
-                },
-              ),
-            ]),
-          ),
-        ],
-      ),
-    );
-  }
+                }
 
-  Widget _buildEmptyCart() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              shape: BoxShape.circle,
-            ),
-            alignment: Alignment.center,
-            child:
-                Icon(Icons.shopping_basket, size: 40, color: Colors.grey[300]),
-          ),
-          const SizedBox(height: 16),
-          const Text('List is empty',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          const SizedBox(height: 8),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 40),
-            child: Text(
-              'Scanned items will appear here as you scan them with the camera above.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey, fontSize: 14),
+                return ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
+                  itemCount: state.cartItems.length,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 10),
+                  itemBuilder: (context, index) {
+                    return _buildCartItemCard(context, state.cartItems[index]);
+                  },
+                );
+              },
             ),
           ),
         ],
@@ -437,101 +369,77 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildCartItemCard(
-    BuildContext context,
-    CartItem item,
-  ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))
-        ],
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        spacing: 1,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.product.name,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w600, fontSize: 14),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '₹${item.product.price.toStringAsFixed(2)}',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: Colors.grey[600]),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(8),
-            ),
-            padding: const EdgeInsets.all(4),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _circularIconButton(
-                    icon: Icons.remove,
-                    onPressed: () {
-                      if (item.quantity > 1) {
-                        context.read<BillingBloc>().add(UpdateQuantityEvent(
-                            item.product.id, item.quantity - 1));
-                      } else {
-                        context
-                            .read<BillingBloc>()
-                            .add(RemoveProductFromCartEvent(item.product.id));
-                      }
-                    }),
-                SizedBox(
-                  width: 32,
-                  child: Text(
-                    '${item.quantity}',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+  Widget _buildCartItemCard(BuildContext context, CartItem item) {
+    final scheme = Theme.of(context).colorScheme;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.product.name,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w600, fontSize: 14),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                _circularIconButton(
-                    icon: Icons.add,
+                  const SizedBox(height: 4),
+                  Text(
+                    formatDAForUi(item.product.sellPrice),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 13,
+                        color: scheme.onSurfaceVariant),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: const EdgeInsets.all(2),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    visualDensity: VisualDensity.compact,
+                    icon: Icon(
+                        item.quantity > 1 ? Icons.remove : Icons.delete_outline,
+                        size: 20),
+                    onPressed: () {
+                      context.read<BillingBloc>().add(UpdateQuantityEvent(
+                          item.product.id, item.quantity - 1));
+                    },
+                  ),
+                  SizedBox(
+                    width: 28,
+                    child: Text(
+                      '${item.quantity}',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  IconButton(
+                    visualDensity: VisualDensity.compact,
+                    icon: const Icon(Icons.add, size: 20),
                     onPressed: () {
                       context.read<BillingBloc>().add(UpdateQuantityEvent(
                           item.product.id, item.quantity + 1));
-                    }),
-              ],
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
-
-  Widget _circularIconButton(
-      {required IconData icon, required VoidCallback onPressed}) {
-    return InkWell(
-      onTap: onPressed,
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Icon(icon, size: 20, color: Colors.grey[600]),
-      ),
-    );
-  }
-
-  // A floating Details/Checkout Button at the very bottom
-  // Added a Stack wrapper below to overlay this button
 }

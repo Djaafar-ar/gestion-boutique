@@ -1,0 +1,815 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations_ar.dart';
+import 'app_localizations_en.dart';
+import 'app_localizations_fr.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
+///
+/// Applications need to include `AppLocalizations.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'l10n/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppLocalizations.localizationsDelegates,
+///   supportedLocales: AppLocalizations.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
+abstract class AppLocalizations {
+  AppLocalizations(String locale)
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static AppLocalizations of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+  }
+
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('ar'),
+    Locale('en'),
+    Locale('fr')
+  ];
+
+  /// No description provided for @appTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gestion Boutique'**
+  String get appTitle;
+
+  /// No description provided for @navSell.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vendre'**
+  String get navSell;
+
+  /// No description provided for @navStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock'**
+  String get navStock;
+
+  /// No description provided for @navStats.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stats'**
+  String get navStats;
+
+  /// No description provided for @navAlerts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alertes'**
+  String get navAlerts;
+
+  /// No description provided for @navMore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus'**
+  String get navMore;
+
+  /// No description provided for @commonCancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get commonCancel;
+
+  /// No description provided for @commonSave.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer'**
+  String get commonSave;
+
+  /// No description provided for @commonRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Champ obligatoire'**
+  String get commonRequired;
+
+  /// No description provided for @errorWithDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur : {detail}'**
+  String errorWithDetail(String detail);
+
+  /// No description provided for @comingSoonTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bientôt disponible'**
+  String get comingSoonTitle;
+
+  /// No description provided for @comingSoonStats.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les statistiques arrivent dans une prochaine étape.'**
+  String get comingSoonStats;
+
+  /// No description provided for @comingSoonAlerts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les alertes et notifications arrivent dans une prochaine étape.'**
+  String get comingSoonAlerts;
+
+  /// No description provided for @priceRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrez un prix'**
+  String get priceRequired;
+
+  /// No description provided for @priceInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix invalide (ex : 1250 ou 1250,50)'**
+  String get priceInvalid;
+
+  /// No description provided for @priceNegative.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le prix ne peut pas être négatif'**
+  String get priceNegative;
+
+  /// No description provided for @cartTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Panier'**
+  String get cartTitle;
+
+  /// No description provided for @itemCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Aucun article} =1{1 article} other{{count} articles}}'**
+  String itemCount(int count);
+
+  /// No description provided for @totalLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'TOTAL'**
+  String get totalLabel;
+
+  /// No description provided for @cartEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Panier vide'**
+  String get cartEmptyTitle;
+
+  /// No description provided for @cartEmptyBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scannez un code-barres avec la caméra pour ajouter des articles.'**
+  String get cartEmptyBody;
+
+  /// No description provided for @goToCheckout.
+  ///
+  /// In fr, this message translates to:
+  /// **'Passer à l\'encaissement'**
+  String get goToCheckout;
+
+  /// No description provided for @cameraOffTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caméra éteinte'**
+  String get cameraOffTitle;
+
+  /// No description provided for @cameraOffBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Allumez la caméra pour scanner les codes-barres.'**
+  String get cameraOffBody;
+
+  /// No description provided for @turnOnCamera.
+  ///
+  /// In fr, this message translates to:
+  /// **'Allumer la caméra'**
+  String get turnOnCamera;
+
+  /// No description provided for @productNotFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit introuvable : {barcode}'**
+  String productNotFound(String barcode);
+
+  /// No description provided for @checkoutTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaissement'**
+  String get checkoutTitle;
+
+  /// No description provided for @columnProduct.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit'**
+  String get columnProduct;
+
+  /// No description provided for @columnPrice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix'**
+  String get columnPrice;
+
+  /// No description provided for @columnTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total'**
+  String get columnTotal;
+
+  /// No description provided for @amountToPay.
+  ///
+  /// In fr, this message translates to:
+  /// **'TOTAL À PAYER'**
+  String get amountToPay;
+
+  /// No description provided for @confirmWithoutPrint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valider sans imprimer'**
+  String get confirmWithoutPrint;
+
+  /// No description provided for @confirmAndPrint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valider et imprimer'**
+  String get confirmAndPrint;
+
+  /// No description provided for @saleSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente n°{number} enregistrée'**
+  String saleSaved(int number);
+
+  /// No description provided for @saleSavedAndPrinted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente n°{number} enregistrée et imprimée'**
+  String saleSavedAndPrinted(int number);
+
+  /// No description provided for @saleSaveFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'La vente n\'a pas pu être enregistrée.'**
+  String get saleSaveFailed;
+
+  /// No description provided for @printNoPrinter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune imprimante enregistrée. Connectez-en une dans Plus.'**
+  String get printNoPrinter;
+
+  /// No description provided for @printConnectFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de se connecter à l\'imprimante.'**
+  String get printConnectFailed;
+
+  /// No description provided for @printFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'impression a échoué.'**
+  String get printFailed;
+
+  /// No description provided for @printReprintHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'La vente est enregistrée : réimprimez-la depuis l\'historique.'**
+  String get printReprintHint;
+
+  /// No description provided for @historyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Historique des ventes'**
+  String get historyTitle;
+
+  /// No description provided for @historyEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune vente'**
+  String get historyEmptyTitle;
+
+  /// No description provided for @historyEmptyBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les ventes validées apparaîtront ici.'**
+  String get historyEmptyBody;
+
+  /// No description provided for @saleTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente n°{number}'**
+  String saleTitle(int number);
+
+  /// No description provided for @salesCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Aucune vente} =1{1 vente} other{{count} ventes}}'**
+  String salesCount(int count);
+
+  /// No description provided for @today.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aujourd\'hui'**
+  String get today;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In fr, this message translates to:
+  /// **'Hier'**
+  String get yesterday;
+
+  /// No description provided for @reprint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réimprimer'**
+  String get reprint;
+
+  /// No description provided for @receiptPrinted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ticket imprimé'**
+  String get receiptPrinted;
+
+  /// No description provided for @productsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits'**
+  String get productsTitle;
+
+  /// No description provided for @productSearchHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom ou code-barres'**
+  String get productSearchHint;
+
+  /// No description provided for @productsEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun produit'**
+  String get productsEmptyTitle;
+
+  /// No description provided for @productsEmptyBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoutez votre premier produit avec le bouton +.'**
+  String get productsEmptyBody;
+
+  /// No description provided for @productsNoMatch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun produit ne correspond à la recherche.'**
+  String get productsNoMatch;
+
+  /// No description provided for @addProduct.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un produit'**
+  String get addProduct;
+
+  /// No description provided for @editProduct.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le produit'**
+  String get editProduct;
+
+  /// No description provided for @barcodeLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code-barres'**
+  String get barcodeLabel;
+
+  /// No description provided for @barcodeHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scannez ou tapez le code-barres'**
+  String get barcodeHint;
+
+  /// No description provided for @barcodeRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrez un code-barres'**
+  String get barcodeRequired;
+
+  /// No description provided for @scanHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Touchez l\'icône pour scanner avec la caméra'**
+  String get scanHelp;
+
+  /// No description provided for @productNameLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom du produit (en français)'**
+  String get productNameLabel;
+
+  /// No description provided for @productNameHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : Jus Rouiba 1L'**
+  String get productNameHint;
+
+  /// No description provided for @productNameRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrez un nom'**
+  String get productNameRequired;
+
+  /// No description provided for @sellPriceLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix de vente'**
+  String get sellPriceLabel;
+
+  /// No description provided for @barcodeExists.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un produit avec le code-barres « {barcode} » existe déjà.'**
+  String barcodeExists(String barcode);
+
+  /// No description provided for @productAdded.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit ajouté'**
+  String get productAdded;
+
+  /// No description provided for @productUpdated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit modifié'**
+  String get productUpdated;
+
+  /// No description provided for @productArchived.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit archivé'**
+  String get productArchived;
+
+  /// No description provided for @archiveProductTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archiver ce produit ?'**
+  String get archiveProductTitle;
+
+  /// No description provided for @archiveProductBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'« {name} » ne sera plus proposé à la vente. L\'historique des ventes est conservé.'**
+  String archiveProductBody(String name);
+
+  /// No description provided for @archive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archiver'**
+  String get archive;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer les modifications'**
+  String get saveChanges;
+
+  /// No description provided for @scanBarcodeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scanner un code-barres'**
+  String get scanBarcodeTitle;
+
+  /// No description provided for @alignBarcode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Placez le code-barres dans le cadre'**
+  String get alignBarcode;
+
+  /// No description provided for @moreTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus'**
+  String get moreTitle;
+
+  /// No description provided for @shopNameFallback.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ma boutique'**
+  String get shopNameFallback;
+
+  /// No description provided for @sectionShop.
+  ///
+  /// In fr, this message translates to:
+  /// **'Boutique'**
+  String get sectionShop;
+
+  /// No description provided for @shopDetails.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations de la boutique'**
+  String get shopDetails;
+
+  /// No description provided for @shopDetailsSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom, adresse, téléphone, bas du ticket'**
+  String get shopDetailsSub;
+
+  /// No description provided for @sectionPreferences.
+  ///
+  /// In fr, this message translates to:
+  /// **'Préférences'**
+  String get sectionPreferences;
+
+  /// No description provided for @language.
+  ///
+  /// In fr, this message translates to:
+  /// **'Langue'**
+  String get language;
+
+  /// No description provided for @languageSystem.
+  ///
+  /// In fr, this message translates to:
+  /// **'Langue du téléphone'**
+  String get languageSystem;
+
+  /// No description provided for @theme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Thème'**
+  String get theme;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comme le téléphone'**
+  String get themeSystem;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clair'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sombre'**
+  String get themeDark;
+
+  /// No description provided for @sectionPrinter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimante'**
+  String get sectionPrinter;
+
+  /// No description provided for @printerDevice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimante Bluetooth'**
+  String get printerDevice;
+
+  /// No description provided for @printerNone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune imprimante connectée'**
+  String get printerNone;
+
+  /// No description provided for @printerConnectedBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'CONNECTÉE'**
+  String get printerConnectedBadge;
+
+  /// No description provided for @printerConnected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimante connectée'**
+  String get printerConnected;
+
+  /// No description provided for @printerHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle imprimante : touchez l\'engrenage pour l\'appairer dans les réglages Bluetooth du téléphone, revenez, puis touchez Actualiser.'**
+  String get printerHelp;
+
+  /// No description provided for @printerErrNoPaired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun appareil appairé trouvé.'**
+  String get printerErrNoPaired;
+
+  /// No description provided for @printerErrConnectAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de se connecter à un appareil appairé.'**
+  String get printerErrConnectAll;
+
+  /// No description provided for @printerErrConnect.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion à l\'imprimante impossible.'**
+  String get printerErrConnect;
+
+  /// No description provided for @printerErrPermission.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autorisation Bluetooth refusée.'**
+  String get printerErrPermission;
+
+  /// No description provided for @testPrint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimer un ticket test'**
+  String get testPrint;
+
+  /// No description provided for @refresh.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actualiser'**
+  String get refresh;
+
+  /// No description provided for @bluetoothSettings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réglages Bluetooth'**
+  String get bluetoothSettings;
+
+  /// No description provided for @shopInfoTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations générales'**
+  String get shopInfoTitle;
+
+  /// No description provided for @shopInfoHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ces informations apparaissent sur les tickets imprimés.'**
+  String get shopInfoHint;
+
+  /// No description provided for @shopNameLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom de la boutique'**
+  String get shopNameLabel;
+
+  /// No description provided for @shopNameHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : Épicerie El Baraka'**
+  String get shopNameHint;
+
+  /// No description provided for @address1Label.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse'**
+  String get address1Label;
+
+  /// No description provided for @address1Hint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : Rue 5, Bab Ezzouar'**
+  String get address1Hint;
+
+  /// No description provided for @address2Label.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse, suite (facultatif)'**
+  String get address2Label;
+
+  /// No description provided for @address2Hint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : Alger 16000'**
+  String get address2Hint;
+
+  /// No description provided for @phoneLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone'**
+  String get phoneLabel;
+
+  /// No description provided for @phoneHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : 0555 12 34 56'**
+  String get phoneHint;
+
+  /// No description provided for @footerLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Message en bas du ticket'**
+  String get footerLabel;
+
+  /// No description provided for @footerHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : Merci, à bientôt !'**
+  String get footerHint;
+
+  /// No description provided for @maxChars.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} caractères max'**
+  String maxChars(int count);
+
+  /// No description provided for @shopSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations enregistrées'**
+  String get shopSaved;
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['ar', 'en', 'fr'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'ar':
+      return AppLocalizationsAr();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'fr':
+      return AppLocalizationsFr();
+  }
+
+  throw FlutterError(
+      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
+}
