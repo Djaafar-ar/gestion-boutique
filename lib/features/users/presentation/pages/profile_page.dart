@@ -382,36 +382,11 @@ class _RecoveryCodeTileState extends State<_RecoveryCodeTile> {
   }
 
   Future<String?> _askPin(AppLocalizations l10n) {
-    final formKey = GlobalKey<FormState>();
-    final controller = TextEditingController();
     return showDialog<String>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.recoveryTile),
-        content: Form(
-          key: formKey,
-          child: PinField(
-            controller: controller,
-            length: widget.owner.pinLength,
-            label: l10n.confirmWithPin,
-          ),
-        ),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: Text(l10n.commonCancel)),
-          FilledButton(
-            style: FilledButton.styleFrom(minimumSize: const Size(88, 40)),
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                Navigator.pop(dialogContext, controller.text);
-              }
-            },
-            child: Text(l10n.continueLabel),
-          ),
-        ],
-      ),
-    ).whenComplete(controller.dispose);
+      builder: (_) => _AskPinDialog(
+          title: l10n.recoveryTile, pinLength: widget.owner.pinLength),
+    );
   }
 
   @override
@@ -431,6 +406,58 @@ class _RecoveryCodeTileState extends State<_RecoveryCodeTile> {
           onTap: _create,
         );
       },
+    );
+  }
+}
+
+/// Asks for the current PIN. The dialog owns its controller, so it is only
+/// thrown away after the closing animation (disposing it earlier crashes).
+class _AskPinDialog extends StatefulWidget {
+  final String title;
+  final int pinLength;
+  const _AskPinDialog({required this.title, required this.pinLength});
+
+  @override
+  State<_AskPinDialog> createState() => _AskPinDialogState();
+}
+
+class _AskPinDialogState extends State<_AskPinDialog> {
+  final _formKey = GlobalKey<FormState>();
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return AlertDialog(
+      title: Text(widget.title),
+      content: Form(
+        key: _formKey,
+        child: PinField(
+          controller: _controller,
+          length: widget.pinLength,
+          label: l10n.confirmWithPin,
+        ),
+      ),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.commonCancel)),
+        FilledButton(
+          style: FilledButton.styleFrom(minimumSize: const Size(88, 40)),
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              Navigator.pop(context, _controller.text);
+            }
+          },
+          child: Text(l10n.continueLabel),
+        ),
+      ],
     );
   }
 }

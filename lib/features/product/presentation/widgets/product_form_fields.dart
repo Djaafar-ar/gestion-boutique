@@ -6,6 +6,7 @@ import '../../../../core/service_locator.dart';
 import '../../../../core/utils/app_validators.dart';
 import '../../../../core/utils/money.dart';
 import '../../../../core/widgets/input_label.dart';
+import '../../../../core/widgets/text_prompt_dialog.dart';
 import '../../domain/entities/category.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/repositories/product_repository.dart';
@@ -37,6 +38,9 @@ class _ProductFormFieldsState extends State<ProductFormFields> {
   List<Category> _categories = [];
   late String? _categoryId = widget.initial?.categoryId;
 
+  /// Bumped to rebuild the menu when a new category is cancelled.
+  int _resets = 0;
+
   @override
   void initState() {
     super.initState();
@@ -50,37 +54,26 @@ class _ProductFormFieldsState extends State<ProductFormFields> {
 
   Future<void> _createCategory() async {
     final l10n = AppLocalizations.of(context);
-    final controller = TextEditingController();
-    final name = await showDialog<String>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.categoryLabel),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          textCapitalization: TextCapitalization.sentences,
-          decoration: InputDecoration(hintText: l10n.categoryNameHint),
-          onSubmitted: (value) => Navigator.pop(dialogContext, value),
-        ),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: Text(l10n.commonCancel)),
-          FilledButton(
-              style: FilledButton.styleFrom(minimumSize: const Size(88, 40)),
-              onPressed: () => Navigator.pop(dialogContext, controller.text),
-              child: Text(l10n.commonAdd)),
-        ],
-      ),
-    );
-    controller.dispose();
-    if (name == null || name.trim().isEmpty) return;
+    final name = await showTextPrompt(context,
+        title: l10n.categoryLabel,
+        hint: l10n.categoryNameHint,
+        confirmLabel: l10n.commonAdd);
+    if (!mounted) return;
+    if (name == null || name.trim().isEmpty) {
+      // The menu already shows "New category…": put the old choice back.
+      setState(() => _resets++);
+      return;
+    }
 
     final result = await sl<ProductRepository>().addCategory(name);
     final category = result.toNullable();
-    if (category == null || !mounted) return;
+    if (!mounted) return;
+    if (category == null) {
+      setState(() => _resets++);
+      return;
+    }
     await _loadCategories();
-    setState(() => _categoryId = category.id);
+    if (mounted) setState(() => _categoryId = category.id);
   }
 
   @override
@@ -152,7 +145,7 @@ class _ProductFormFieldsState extends State<ProductFormFields> {
         InputLabel(text: l10n.categoryLabel),
         DropdownButtonFormField<String?>(
           // A new key rebuilds the field after a category is created.
-          key: ValueKey('category-$_categoryId-${_categories.length}'),
+          key: ValueKey('category-$_categoryId-${_categories.length}-$_resets'),
           initialValue: _categoryId,
           isExpanded: true,
           items: [
