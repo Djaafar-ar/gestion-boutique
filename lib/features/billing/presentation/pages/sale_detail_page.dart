@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/service_locator.dart';
@@ -25,12 +26,17 @@ class SaleDetailPage extends StatefulWidget {
 }
 
 class _SaleDetailPageState extends State<SaleDetailPage> {
-  late final Future<Sale> _sale = _load();
+  late Future<Sale> _sale = _load();
   bool _printing = false;
 
   Future<Sale> _load() async {
     final result = await sl<SaleRepository>().getSale(widget.saleId);
     return result.fold((failure) => throw failure.message, (sale) => sale);
+  }
+
+  Future<void> _openReturn(Sale sale) async {
+    final done = await context.push<bool>('/sell/history/${sale.id}/return');
+    if (done == true && mounted) setState(() => _sale = _load());
   }
 
   Future<void> _reprint(Sale sale) async {
@@ -92,8 +98,11 @@ class _SaleDetailPageState extends State<SaleDetailPage> {
                                 if (index > 0) const Divider(),
                                 ListTile(
                                   title: Text(line.productName),
-                                  subtitle: Text(
-                                      '${line.quantity} × ${formatDAForUi(line.sellPrice)}'),
+                                  subtitle: Text([
+                                    '${line.quantity} × ${formatDAForUi(line.sellPrice)}',
+                                    if (line.returned > 0)
+                                      l10n.returnedQty(line.returned),
+                                  ].join(' · ')),
                                   trailing: Text(formatDAForUi(line.total),
                                       style: const TextStyle(
                                           fontWeight: FontWeight.w600)),
@@ -103,6 +112,13 @@ class _SaleDetailPageState extends State<SaleDetailPage> {
                           ),
                         ),
                         const SizedBox(height: 16),
+                        if (sale.discount > 0) ...[
+                          _AmountRow(
+                              label: l10n.subtotalLabel, amount: sale.subtotal),
+                          _AmountRow(
+                              label: l10n.discountLabel,
+                              amount: -sale.discount),
+                        ],
                         Row(
                           children: [
                             Expanded(
@@ -115,6 +131,19 @@ class _SaleDetailPageState extends State<SaleDetailPage> {
                                     fontSize: 22, fontWeight: FontWeight.bold)),
                           ],
                         ),
+                        if (sale.refunded > 0)
+                          _AmountRow(
+                              label: l10n.refundedLabel,
+                              amount: -sale.refunded,
+                              color: scheme.error),
+                        if (sale.hasReturnableItems) ...[
+                          const SizedBox(height: 20),
+                          OutlinedButton.icon(
+                            onPressed: () => _openReturn(sale),
+                            icon: const Icon(Icons.assignment_return_outlined),
+                            label: Text(l10n.returnButton),
+                          ),
+                        ],
                       ],
                     ),
           bottomNavigationBar: sale == null
@@ -127,6 +156,28 @@ class _SaleDetailPageState extends State<SaleDetailPage> {
                 ),
         );
       },
+    );
+  }
+}
+
+class _AmountRow extends StatelessWidget {
+  final String label;
+  final int amount;
+  final Color? color;
+
+  const _AmountRow({required this.label, required this.amount, this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        children: [
+          Expanded(child: Text(label, style: TextStyle(color: color))),
+          Text(formatDAForUi(amount),
+              style: TextStyle(fontWeight: FontWeight.w600, color: color)),
+        ],
+      ),
     );
   }
 }

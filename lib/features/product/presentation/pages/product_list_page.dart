@@ -8,6 +8,8 @@ import '../../../../core/widgets/app_snack.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../bloc/product_bloc.dart';
 import '../../domain/entities/product.dart';
+import '../../../stock/domain/entities/stock_batch.dart';
+import '../../../stock/presentation/widgets/stock_badges.dart';
 
 /// The Stock tab: every product, with search and scan.
 class ProductListPage extends StatefulWidget {
@@ -59,7 +61,16 @@ class _ProductListPageState extends State<ProductListPage> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.productsTitle)),
+      appBar: AppBar(
+        title: Text(l10n.productsTitle),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.trending_down),
+            tooltip: l10n.lossesTitle,
+            onPressed: () => context.push('/stock/losses'),
+          ),
+        ],
+      ),
       body: BlocConsumer<ProductBloc, ProductState>(
         listener: (context, state) {
           if (state.status == ProductStatus.success && state.action != null) {
@@ -95,9 +106,38 @@ class _ProductListPageState extends State<ProductListPage> {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/stock/add'),
+        onPressed: () => _showActions(context, l10n),
         icon: const Icon(Icons.add),
-        label: Text(l10n.addProduct),
+        label: Text(l10n.addDelivery),
+      ),
+    );
+  }
+
+  /// The "+" button: receive stock, record a loss or add a product.
+  void _showActions(BuildContext context, AppLocalizations l10n) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final (icon, label, location) in [
+              (Icons.add_box_outlined, l10n.addDelivery, '/stock/delivery'),
+              (Icons.report_outlined, l10n.recordLoss, '/stock/loss'),
+              (Icons.add_circle_outline, l10n.addProduct, '/stock/add'),
+            ])
+              ListTile(
+                leading: Icon(icon),
+                title: Text(label),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  context.push(location);
+                },
+              ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
@@ -131,16 +171,18 @@ class _ProductListPageState extends State<ProductListPage> {
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
       itemCount: filteredProducts.length,
       separatorBuilder: (context, index) => const SizedBox(height: 10),
-      itemBuilder: (context, index) =>
-          _ProductCard(product: filteredProducts[index]),
+      itemBuilder: (context, index) => _ProductCard(
+          product: filteredProducts[index],
+          stock: state.stockOf(filteredProducts[index].id)),
     );
   }
 }
 
 class _ProductCard extends StatelessWidget {
   final Product product;
+  final ProductStock stock;
 
-  const _ProductCard({required this.product});
+  const _ProductCard({required this.product, required this.stock});
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +192,7 @@ class _ProductCard extends StatelessWidget {
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () => context.push('/stock/edit/${product.id}', extra: product),
+        onTap: () => context.push('/stock/product/${product.id}'),
         child: Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 4, 12),
           child: Row(
@@ -164,11 +206,17 @@ class _ProductCard extends StatelessWidget {
                       style: const TextStyle(
                           fontWeight: FontWeight.w600, fontSize: 15),
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      product.barcode,
-                      style: TextStyle(
-                          fontSize: 12, color: scheme.onSurfaceVariant),
+                    const SizedBox(height: 6),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      children: [
+                        StockBadge(
+                            quantity: stock.quantity,
+                            lowThreshold: product.lowStockThreshold),
+                        if (stock.nextExpiry != null)
+                          ExpiryBadge(expiry: stock.nextExpiry),
+                      ],
                     ),
                   ],
                 ),

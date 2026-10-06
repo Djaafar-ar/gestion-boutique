@@ -11,6 +11,7 @@ import '../../../../core/widgets/app_snack.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/primary_button.dart';
 import '../../../billing/presentation/bloc/billing_bloc.dart';
+import '../../../product/presentation/bloc/product_bloc.dart';
 import '../../domain/entities/cart_item.dart';
 
 /// The Sell tab: camera scanner on top, current cart below.
@@ -395,6 +396,23 @@ class _HomePageState extends State<HomePage> {
                         fontSize: 13,
                         color: scheme.onSurfaceVariant),
                   ),
+                  // Stock left; red when selling more than what is there.
+                  Builder(builder: (context) {
+                    final stock = context
+                        .watch<ProductBloc>()
+                        .state
+                        .stockOf(item.product.id)
+                        .quantity;
+                    final short = item.quantity > stock;
+                    return Text(
+                      AppLocalizations.of(context).stockLabel(stock),
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: short ? FontWeight.bold : null,
+                          color:
+                              short ? scheme.error : scheme.onSurfaceVariant),
+                    );
+                  }),
                 ],
               ),
             ),

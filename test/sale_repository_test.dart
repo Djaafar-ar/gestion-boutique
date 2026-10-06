@@ -6,6 +6,7 @@ import 'package:billing_app/features/billing/domain/entities/cart_item.dart';
 import 'package:billing_app/features/billing/domain/entities/sale.dart';
 import 'package:billing_app/features/product/data/repositories/product_repository_impl.dart';
 import 'package:billing_app/features/product/domain/entities/product.dart';
+import 'package:billing_app/features/stock/data/stock_ledger.dart';
 import 'package:billing_app/features/users/domain/entities/app_user.dart';
 import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
@@ -36,7 +37,7 @@ void main() {
     final settings = SettingsStore(db);
     await settings.load();
     session = SessionCubit(hasOwner: true)..login(amine);
-    repo = SaleRepositoryImpl(db, settings, session);
+    repo = SaleRepositoryImpl(db, settings, session, StockLedger(db));
     products = ProductRepositoryImpl(db, settings, session);
   });
 

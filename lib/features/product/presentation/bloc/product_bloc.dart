@@ -2,6 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/usecases/product_usecases.dart';
+import '../../../stock/domain/entities/stock_batch.dart';
+import '../../../stock/domain/repositories/stock_repository.dart';
 import '../../../../core/usecase/usecase.dart';
 
 part 'product_event.dart';
@@ -12,12 +14,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   final AddProductUseCase addProductUseCase;
   final UpdateProductUseCase updateProductUseCase;
   final ArchiveProductUseCase archiveProductUseCase;
+  final StockRepository stockRepository;
 
   ProductBloc({
     required this.getProductsUseCase,
     required this.addProductUseCase,
     required this.updateProductUseCase,
     required this.archiveProductUseCase,
+    required this.stockRepository,
   }) : super(const ProductState()) {
     on<LoadProducts>(_onLoadProducts);
     on<AddProduct>(_onAddProduct);
@@ -29,11 +33,13 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       LoadProducts event, Emitter<ProductState> emit) async {
     emit(state.copyWith(status: ProductStatus.loading));
     final result = await getProductsUseCase(NoParams());
+    // Stock is loaded with the products so every screen shows it.
+    final stock = (await stockRepository.getOverview()).getOrElse((_) => {});
     result.fold(
       (failure) => emit(state.copyWith(
           status: ProductStatus.error, message: failure.message)),
-      (products) => emit(
-          state.copyWith(status: ProductStatus.loaded, products: products)),
+      (products) => emit(state.copyWith(
+          status: ProductStatus.loaded, products: products, stock: stock)),
     );
   }
 

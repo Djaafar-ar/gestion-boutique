@@ -9,6 +9,11 @@ import '../../core/session/session_cubit.dart';
 import '../../core/widgets/coming_soon_page.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../features/billing/presentation/pages/home_page.dart';
+import '../../features/billing/presentation/pages/return_page.dart';
+import '../../features/stock/presentation/pages/add_delivery_page.dart';
+import '../../features/stock/presentation/pages/losses_page.dart';
+import '../../features/stock/presentation/pages/product_detail_page.dart';
+import '../../features/stock/presentation/pages/record_loss_page.dart';
 import '../../features/billing/presentation/pages/sale_detail_page.dart';
 import '../../features/billing/presentation/pages/sales_history_page.dart';
 import '../../features/product/presentation/bloc/product_bloc.dart';
@@ -71,6 +76,14 @@ final router = GoRouter(
                     parentNavigatorKey: rootNavigatorKey,
                     builder: (context, state) =>
                         SaleDetailPage(saleId: state.pathParameters['saleId']!),
+                    routes: [
+                      GoRoute(
+                        path: 'return',
+                        parentNavigatorKey: rootNavigatorKey,
+                        builder: (context, state) =>
+                            ReturnPage(saleId: state.pathParameters['saleId']!),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -86,6 +99,29 @@ final router = GoRouter(
                 path: 'add',
                 parentNavigatorKey: rootNavigatorKey,
                 builder: (context, state) => const AddProductPage(),
+              ),
+              GoRoute(
+                path: 'product/:id',
+                parentNavigatorKey: rootNavigatorKey,
+                builder: (context, state) =>
+                    ProductDetailPage(productId: state.pathParameters['id']!),
+              ),
+              GoRoute(
+                path: 'delivery',
+                parentNavigatorKey: rootNavigatorKey,
+                builder: (context, state) =>
+                    AddDeliveryPage(productId: state.extra as String?),
+              ),
+              GoRoute(
+                path: 'loss',
+                parentNavigatorKey: rootNavigatorKey,
+                builder: (context, state) =>
+                    RecordLossPage(productId: state.extra as String?),
+              ),
+              GoRoute(
+                path: 'losses',
+                parentNavigatorKey: rootNavigatorKey,
+                builder: (context, state) => const LossesPage(),
               ),
               GoRoute(
                 path: 'edit/:id',

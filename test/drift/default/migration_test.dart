@@ -9,6 +9,7 @@ import 'generated/schema.dart';
 import 'generated/schema_v1.dart' as v1;
 import 'generated/schema_v2.dart' as v2;
 import 'generated/schema_v3.dart' as v3;
+import 'generated/schema_v4.dart' as v4;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -123,6 +124,52 @@ void main() {
         expect(user.lockedOut, 0); // 0 = false in the snapshot
         expect(user.recoveryHash, isNull);
         expect(await newDb.select(newDb.failedLogins).get(), isEmpty);
+      },
+    );
+  });
+
+  // Phase 2b phones hold deliveries (opening stock) and sales: the
+  // upgrade to v4 keeps them and starts with no losses or returns.
+  test('migration from v3 to v4 keeps deliveries and sales', () async {
+    const at = '2026-10-06T14:32:00.000';
+    const delivery = v3.DeliveriesData(
+        id: 'd1',
+        createdAt: at,
+        updatedAt: at,
+        deviceId: 'phone-1',
+        deleted: 0,
+        productId: 'p1',
+        quantity: 7,
+        buyPrice: 0,
+        receivedAt: at);
+    const sale = v3.SalesData(
+        id: 's1',
+        createdAt: at,
+        updatedAt: at,
+        deviceId: 'phone-1',
+        deleted: 0,
+        number: 1,
+        subtotal: 100,
+        discount: 0,
+        total: 100,
+        paidNow: 100);
+
+    await verifier.testWithDataIntegrity(
+      oldVersion: 3,
+      newVersion: 4,
+      createOld: v3.DatabaseAtV3.new,
+      createNew: v4.DatabaseAtV4.new,
+      openTestedDatabase: AppDatabase.new,
+      createItems: (batch, oldDb) {
+        batch.insert(oldDb.deliveries, delivery);
+        batch.insert(oldDb.sales, sale);
+      },
+      validateItems: (newDb) async {
+        final deliveries = await newDb.select(newDb.deliveries).get();
+        expect(deliveries.map((d) => (d.id, d.quantity)), [('d1', 7)]);
+        expect((await newDb.select(newDb.sales).get()).single.id, 's1');
+        expect(await newDb.select(newDb.losses).get(), isEmpty);
+        expect(await newDb.select(newDb.stockAllocations).get(), isEmpty);
       },
     );
   });

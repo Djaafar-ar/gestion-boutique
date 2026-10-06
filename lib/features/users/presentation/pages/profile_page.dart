@@ -13,6 +13,8 @@ import '../../../auth/presentation/widgets/recovery_code_dialog.dart';
 import '../../../billing/domain/entities/sale.dart';
 import '../../../billing/domain/repositories/sale_repository.dart';
 import '../../../billing/presentation/bloc/billing_bloc.dart';
+import '../../../stock/domain/entities/loss.dart';
+import '../../../stock/domain/repositories/stock_repository.dart';
 import '../../domain/entities/app_user.dart';
 import '../../domain/repositories/user_repository.dart';
 import '../widgets/user_avatar.dart';
@@ -29,7 +31,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   _Period _period = _Period.today;
-  late Future<SalesSummary> _summary;
+  late Future<(SalesSummary, LossSummary)> _summary;
 
   @override
   void initState() {
@@ -37,16 +39,22 @@ class _ProfilePageState extends State<ProfilePage> {
     _summary = _load();
   }
 
-  Future<SalesSummary> _load() async {
+  Future<(SalesSummary, LossSummary)> _load() async {
     final now = DateTime.now();
     final from = switch (_period) {
       _Period.today => startOfDay(now),
       _Period.week => startOfWeek(now),
       _Period.month => startOfMonth(now),
     };
-    final result = await sl<SaleRepository>()
-        .getSummary(from: from, userId: context.read<SessionCubit>().userId);
-    return result.getOrElse((_) => SalesSummary.empty);
+    final userId = context.read<SessionCubit>().userId;
+    final sales =
+        await sl<SaleRepository>().getSummary(from: from, userId: userId);
+    final losses =
+        await sl<StockRepository>().getLossSummary(from: from, userId: userId);
+    return (
+      sales.getOrElse((_) => SalesSummary.empty),
+      losses.getOrElse((_) => LossSummary.empty),
+    );
   }
 
   void _switchUser() {
@@ -96,10 +104,11 @@ class _ProfilePageState extends State<ProfilePage> {
             }),
           ),
           const SizedBox(height: 12),
-          FutureBuilder<SalesSummary>(
+          FutureBuilder<(SalesSummary, LossSummary)>(
             future: _summary,
             builder: (context, snapshot) {
-              final summary = snapshot.data;
+              final summary = snapshot.data?.$1;
+              final losses = snapshot.data?.$2;
               String show(String Function(SalesSummary s) value) =>
                   summary == null ? '…' : value(summary);
               return GridView.count(
@@ -125,8 +134,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   _StatTile(
                       icon: Icons.report_gmailerrorred_outlined,
                       label: l10n.statLosses,
-                      value: '0',
-                      note: l10n.lossesComingSoon),
+                      value: losses == null ? '…' : '${losses.count}',
+                      note: losses == null || losses.value == 0
+                          ? null
+                          : formatDAForUi(losses.value)),
                 ],
               );
             },

@@ -540,9 +540,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statLosses => 'Losses recorded';
 
   @override
-  String get lossesComingSoon => 'Loss tracking comes in step 3.';
-
-  @override
   String get changePin => 'Change my PIN';
 
   @override
@@ -756,4 +753,266 @@ class AppLocalizationsEn extends AppLocalizations {
   String accountLabel(String name) {
     return 'Account: $name';
   }
+
+  @override
+  String stockLabel(int count) {
+    return 'Stock: $count';
+  }
+
+  @override
+  String get outOfStock => 'Out of stock';
+
+  @override
+  String get lowStockBadge => 'Low stock';
+
+  @override
+  String expiresOn(String date) {
+    return 'Exp. $date';
+  }
+
+  @override
+  String get expiredBadge => 'Expired';
+
+  @override
+  String get expiresSoonBadge => 'Expires soon';
+
+  @override
+  String get noExpiry => 'No expiry date';
+
+  @override
+  String get addDelivery => 'Receive stock';
+
+  @override
+  String get recordLoss => 'Record a loss';
+
+  @override
+  String get lossesTitle => 'Losses';
+
+  @override
+  String get inStockLabel => 'In stock';
+
+  @override
+  String get batchesTitle => 'Batches';
+
+  @override
+  String get batchesEmpty => 'No stock yet. Add a stock delivery.';
+
+  @override
+  String batchRemaining(int remaining, int quantity) {
+    return '$remaining of $quantity';
+  }
+
+  @override
+  String receivedBy(String date, String name) {
+    return 'Received $date by $name';
+  }
+
+  @override
+  String receivedOn(String date) {
+    return 'Received $date';
+  }
+
+  @override
+  String get showEmptyBatches => 'Also show empty batches';
+
+  @override
+  String missingStock(int count) {
+    return '$count sold with no stock recorded: add the forgotten delivery.';
+  }
+
+  @override
+  String get chooseProduct => 'Choose a product';
+
+  @override
+  String get quantityLabel => 'Quantity';
+
+  @override
+  String get quantityRequired => 'Enter a quantity (at least 1)';
+
+  @override
+  String get buyPriceUnitLabel => 'Buying price per item';
+
+  @override
+  String get expiryLabel => 'Expiry date (optional)';
+
+  @override
+  String get pickDate => 'Pick a date';
+
+  @override
+  String get noExpiryHelp => 'Leave empty for products that do not expire.';
+
+  @override
+  String get updateBuyPrice => 'Use it as the product\'s buying price';
+
+  @override
+  String get noteOptional => 'Note (optional)';
+
+  @override
+  String deliverySaved(int count, String name) {
+    return '$count × $name added to stock';
+  }
+
+  @override
+  String get saveDelivery => 'Add to stock';
+
+  @override
+  String get lossReasonLabel => 'Reason';
+
+  @override
+  String get reasonDamaged => 'Damaged';
+
+  @override
+  String get reasonExpired => 'Expired';
+
+  @override
+  String get reasonStaff => 'Eaten/used by staff';
+
+  @override
+  String get reasonStolen => 'Stolen';
+
+  @override
+  String get reasonOther => 'Other';
+
+  @override
+  String get lossBatchLabel => 'Which batch';
+
+  @override
+  String get lossBatchAuto => 'Automatic (the one expiring first)';
+
+  @override
+  String batchOption(String date, int remaining) {
+    return 'Exp. $date · $remaining left';
+  }
+
+  @override
+  String batchOptionNoDate(String date, int remaining) {
+    return 'Received $date · $remaining left';
+  }
+
+  @override
+  String lossValuePreview(String amount) {
+    return 'Estimated money lost: $amount';
+  }
+
+  @override
+  String lossSaved(String amount) {
+    return 'Loss recorded: $amount';
+  }
+
+  @override
+  String get saveLoss => 'Record the loss';
+
+  @override
+  String get lossesEmpty => 'No losses recorded.';
+
+  @override
+  String lossesTotal(String amount) {
+    return 'Total lost: $amount';
+  }
+
+  @override
+  String get lossFromReturn => 'Customer return';
+
+  @override
+  String moreThanStock(int count) {
+    return 'Only $count left in stock. It will still be saved.';
+  }
+
+  @override
+  String get discountLabel => 'Discount';
+
+  @override
+  String get addDiscount => 'Add a discount';
+
+  @override
+  String get discountAmount => 'Amount';
+
+  @override
+  String get discountPercent => 'Percentage';
+
+  @override
+  String get removeDiscount => 'Remove the discount';
+
+  @override
+  String get subtotalLabel => 'Subtotal';
+
+  @override
+  String discountTooHigh(int max) {
+    return 'Discount too high: workers may give at most $max %.';
+  }
+
+  @override
+  String get discountInvalid => 'Invalid discount';
+
+  @override
+  String get applyLabel => 'Apply';
+
+  @override
+  String get stockWarningTitle => 'Not enough stock';
+
+  @override
+  String get stockWarningBody => 'The sale will still be saved.';
+
+  @override
+  String get searchTicketHint => 'Ticket number';
+
+  @override
+  String get noSaleFound => 'No sale found.';
+
+  @override
+  String get returnButton => 'Customer return';
+
+  @override
+  String get refundedLabel => 'Already refunded';
+
+  @override
+  String returnedQty(int count) {
+    return '$count returned';
+  }
+
+  @override
+  String returnTitle(int number) {
+    return 'Return for sale #$number';
+  }
+
+  @override
+  String get returnIntro =>
+      'Choose the items brought back and say whether they go back on the shelf or are damaged.';
+
+  @override
+  String get backOnShelf => 'Back on the shelf';
+
+  @override
+  String get returnReasonLabel => 'Reason for the return (optional)';
+
+  @override
+  String refundToGive(String amount) {
+    return 'Give back to the customer: $amount';
+  }
+
+  @override
+  String get confirmReturn => 'Confirm the return';
+
+  @override
+  String returnSaved(String amount) {
+    return 'Return saved. Give $amount back to the customer.';
+  }
+
+  @override
+  String get returnNothing => 'Choose at least one item.';
+
+  @override
+  String get rulesSection => 'Shop rules';
+
+  @override
+  String get maxDiscountLabel => 'Workers\' maximum discount (%)';
+
+  @override
+  String get expiryWarnLabel => 'Expiry warning: days before';
+
+  @override
+  String get percentInvalid => 'Between 0 and 100';
+
+  @override
+  String get daysInvalid => 'Between 0 and 60';
 }

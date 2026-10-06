@@ -26,6 +26,9 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
     on<RemoveProductFromCartEvent>(_onRemoveProductFromCart);
     on<UpdateQuantityEvent>(_onUpdateQuantity);
     on<ClearCartEvent>(_onClearCart);
+    on<SetDiscountEvent>((event, emit) => emit(event.discount == null
+        ? state.copyWith(clearDiscount: true)
+        : state.copyWith(discount: event.discount)));
     on<CheckoutEvent>(_onCheckout);
   }
 
@@ -92,12 +95,18 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
     if (state.cartItems.isEmpty || state.isProcessing) return;
     emit(state.copyWith(isProcessing: true));
 
-    final saved = await saleRepository.saveSale(state.cartItems);
+    final saved = await saleRepository.saveSale(state.cartItems,
+        discount: state.discountAmount);
     if (saved.isLeft()) {
+      final failure = saved.getLeft().toNullable();
       emit(state.copyWith(
         isProcessing: false,
-        error: BillingError.saveFailed,
-        errorDetail: saved.getLeft().toNullable()?.message,
+        error: failure is DiscountLimitFailure
+            ? BillingError.discountTooHigh
+            : BillingError.saveFailed,
+        errorDetail: failure is DiscountLimitFailure
+            ? '${failure.maxPercent}'
+            : failure?.message,
       ));
       return;
     }

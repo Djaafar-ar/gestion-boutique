@@ -1066,12 +1066,6 @@ abstract class AppLocalizations {
   /// **'Pertes enregistrées'**
   String get statLosses;
 
-  /// No description provided for @lossesComingSoon.
-  ///
-  /// In fr, this message translates to:
-  /// **'Le suivi des pertes arrive à l\'étape 3.'**
-  String get lossesComingSoon;
-
   /// No description provided for @changePin.
   ///
   /// In fr, this message translates to:
@@ -1437,6 +1431,456 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Compte : {name}'**
   String accountLabel(String name);
+
+  /// No description provided for @stockLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock : {count}'**
+  String stockLabel(int count);
+
+  /// No description provided for @outOfStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rupture'**
+  String get outOfStock;
+
+  /// No description provided for @lowStockBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock bas'**
+  String get lowStockBadge;
+
+  /// No description provided for @expiresOn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Exp. {date}'**
+  String expiresOn(String date);
+
+  /// No description provided for @expiredBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Périmé'**
+  String get expiredBadge;
+
+  /// No description provided for @expiresSoonBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bientôt périmé'**
+  String get expiresSoonBadge;
+
+  /// No description provided for @noExpiry.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans date de péremption'**
+  String get noExpiry;
+
+  /// No description provided for @addDelivery.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réception de stock'**
+  String get addDelivery;
+
+  /// No description provided for @recordLoss.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déclarer une perte'**
+  String get recordLoss;
+
+  /// No description provided for @lossesTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pertes'**
+  String get lossesTitle;
+
+  /// No description provided for @inStockLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'En stock'**
+  String get inStockLabel;
+
+  /// No description provided for @batchesTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lots'**
+  String get batchesTitle;
+
+  /// No description provided for @batchesEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun stock pour l\'instant. Ajoutez une réception de stock.'**
+  String get batchesEmpty;
+
+  /// No description provided for @batchRemaining.
+  ///
+  /// In fr, this message translates to:
+  /// **'{remaining} sur {quantity}'**
+  String batchRemaining(int remaining, int quantity);
+
+  /// No description provided for @receivedBy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reçu le {date} par {name}'**
+  String receivedBy(String date, String name);
+
+  /// No description provided for @receivedOn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reçu le {date}'**
+  String receivedOn(String date);
+
+  /// No description provided for @showEmptyBatches.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir aussi les lots épuisés'**
+  String get showEmptyBatches;
+
+  /// No description provided for @missingStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} vendu(s) sans stock enregistré : ajoutez la réception oubliée.'**
+  String missingStock(int count);
+
+  /// No description provided for @chooseProduct.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un produit'**
+  String get chooseProduct;
+
+  /// No description provided for @quantityLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quantité'**
+  String get quantityLabel;
+
+  /// No description provided for @quantityRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrez une quantité (au moins 1)'**
+  String get quantityRequired;
+
+  /// No description provided for @buyPriceUnitLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix d\'achat par article'**
+  String get buyPriceUnitLabel;
+
+  /// No description provided for @expiryLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date de péremption (facultatif)'**
+  String get expiryLabel;
+
+  /// No description provided for @pickDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir une date'**
+  String get pickDate;
+
+  /// No description provided for @noExpiryHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Laissez vide pour les produits qui ne périment pas.'**
+  String get noExpiryHelp;
+
+  /// No description provided for @updateBuyPrice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utiliser ce prix comme prix d\'achat du produit'**
+  String get updateBuyPrice;
+
+  /// No description provided for @noteOptional.
+  ///
+  /// In fr, this message translates to:
+  /// **'Note (facultatif)'**
+  String get noteOptional;
+
+  /// No description provided for @deliverySaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} × {name} ajouté(s) au stock'**
+  String deliverySaved(int count, String name);
+
+  /// No description provided for @saveDelivery.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter au stock'**
+  String get saveDelivery;
+
+  /// No description provided for @lossReasonLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Raison'**
+  String get lossReasonLabel;
+
+  /// No description provided for @reasonDamaged.
+  ///
+  /// In fr, this message translates to:
+  /// **'Abîmé'**
+  String get reasonDamaged;
+
+  /// No description provided for @reasonExpired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Périmé'**
+  String get reasonExpired;
+
+  /// No description provided for @reasonStaff.
+  ///
+  /// In fr, this message translates to:
+  /// **'Consommé par le personnel'**
+  String get reasonStaff;
+
+  /// No description provided for @reasonStolen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Volé'**
+  String get reasonStolen;
+
+  /// No description provided for @reasonOther.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autre'**
+  String get reasonOther;
+
+  /// No description provided for @lossBatchLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lot concerné'**
+  String get lossBatchLabel;
+
+  /// No description provided for @lossBatchAuto.
+  ///
+  /// In fr, this message translates to:
+  /// **'Automatique (celui qui expire en premier)'**
+  String get lossBatchAuto;
+
+  /// No description provided for @batchOption.
+  ///
+  /// In fr, this message translates to:
+  /// **'Exp. {date} · reste {remaining}'**
+  String batchOption(String date, int remaining);
+
+  /// No description provided for @batchOptionNoDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reçu le {date} · reste {remaining}'**
+  String batchOptionNoDate(String date, int remaining);
+
+  /// No description provided for @lossValuePreview.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur perdue estimée : {amount}'**
+  String lossValuePreview(String amount);
+
+  /// No description provided for @lossSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Perte enregistrée : {amount}'**
+  String lossSaved(String amount);
+
+  /// No description provided for @saveLoss.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer la perte'**
+  String get saveLoss;
+
+  /// No description provided for @lossesEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune perte enregistrée.'**
+  String get lossesEmpty;
+
+  /// No description provided for @lossesTotal.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total perdu : {amount}'**
+  String lossesTotal(String amount);
+
+  /// No description provided for @lossFromReturn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour client'**
+  String get lossFromReturn;
+
+  /// No description provided for @moreThanStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Il n\'en reste que {count} en stock. Ce sera quand même enregistré.'**
+  String moreThanStock(int count);
+
+  /// No description provided for @discountLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remise'**
+  String get discountLabel;
+
+  /// No description provided for @addDiscount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter une remise'**
+  String get addDiscount;
+
+  /// No description provided for @discountAmount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant'**
+  String get discountAmount;
+
+  /// No description provided for @discountPercent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pourcentage'**
+  String get discountPercent;
+
+  /// No description provided for @removeDiscount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer la remise'**
+  String get removeDiscount;
+
+  /// No description provided for @subtotalLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous-total'**
+  String get subtotalLabel;
+
+  /// No description provided for @discountTooHigh.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remise trop élevée : maximum {max} % pour les employés.'**
+  String discountTooHigh(int max);
+
+  /// No description provided for @discountInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remise invalide'**
+  String get discountInvalid;
+
+  /// No description provided for @applyLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquer'**
+  String get applyLabel;
+
+  /// No description provided for @stockWarningTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock insuffisant'**
+  String get stockWarningTitle;
+
+  /// No description provided for @stockWarningBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'La vente sera quand même enregistrée.'**
+  String get stockWarningBody;
+
+  /// No description provided for @searchTicketHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'N° de ticket'**
+  String get searchTicketHint;
+
+  /// No description provided for @noSaleFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune vente trouvée.'**
+  String get noSaleFound;
+
+  /// No description provided for @returnButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour client'**
+  String get returnButton;
+
+  /// No description provided for @refundedLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà remboursé'**
+  String get refundedLabel;
+
+  /// No description provided for @returnedQty.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} retourné(s)'**
+  String returnedQty(int count);
+
+  /// No description provided for @returnTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour du ticket n°{number}'**
+  String returnTitle(int number);
+
+  /// No description provided for @returnIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez les articles rapportés et dites s\'ils retournent en rayon ou s\'ils sont abîmés.'**
+  String get returnIntro;
+
+  /// No description provided for @backOnShelf.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remis en rayon'**
+  String get backOnShelf;
+
+  /// No description provided for @returnReasonLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Raison du retour (facultatif)'**
+  String get returnReasonLabel;
+
+  /// No description provided for @refundToGive.
+  ///
+  /// In fr, this message translates to:
+  /// **'À rendre au client : {amount}'**
+  String refundToGive(String amount);
+
+  /// No description provided for @confirmReturn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valider le retour'**
+  String get confirmReturn;
+
+  /// No description provided for @returnSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour enregistré. Rendez {amount} au client.'**
+  String returnSaved(String amount);
+
+  /// No description provided for @returnNothing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez au moins un article.'**
+  String get returnNothing;
+
+  /// No description provided for @rulesSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Règles de la boutique'**
+  String get rulesSection;
+
+  /// No description provided for @maxDiscountLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remise maximale des employés (%)'**
+  String get maxDiscountLabel;
+
+  /// No description provided for @expiryWarnLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alerte péremption : jours avant'**
+  String get expiryWarnLabel;
+
+  /// No description provided for @percentInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entre 0 et 100'**
+  String get percentInvalid;
+
+  /// No description provided for @daysInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entre 0 et 60'**
+  String get daysInvalid;
 }
 
 class _AppLocalizationsDelegate

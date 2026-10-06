@@ -238,7 +238,6 @@
   "statSales": "Ventes",
   "statItems": "Articles vendus",
   "statLosses": "Pertes enregistrées",
-  "lossesComingSoon": "Le suivi des pertes arrive à l'étape 3.",
   "changePin": "Changer mon code PIN",
   "currentPinLabel": "Code PIN actuel",
   "currentPinWrong": "Le code PIN actuel est incorrect",
@@ -355,5 +354,221 @@
         "type": "String"
       }
     }
-  }
+  },
+  "stockLabel": "Stock : {count}",
+  "@stockLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "outOfStock": "Rupture",
+  "lowStockBadge": "Stock bas",
+  "expiresOn": "Exp. {date}",
+  "@expiresOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "expiredBadge": "Périmé",
+  "expiresSoonBadge": "Bientôt périmé",
+  "noExpiry": "Sans date de péremption",
+  "addDelivery": "Réception de stock",
+  "recordLoss": "Déclarer une perte",
+  "lossesTitle": "Pertes",
+  "inStockLabel": "En stock",
+  "batchesTitle": "Lots",
+  "batchesEmpty": "Aucun stock pour l'instant. Ajoutez une réception de stock.",
+  "batchRemaining": "{remaining} sur {quantity}",
+  "@batchRemaining": {
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      },
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "receivedBy": "Reçu le {date} par {name}",
+  "@receivedBy": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "receivedOn": "Reçu le {date}",
+  "@receivedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "showEmptyBatches": "Voir aussi les lots épuisés",
+  "missingStock": "{count} vendu(s) sans stock enregistré : ajoutez la réception oubliée.",
+  "@missingStock": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chooseProduct": "Choisir un produit",
+  "quantityLabel": "Quantité",
+  "quantityRequired": "Entrez une quantité (au moins 1)",
+  "buyPriceUnitLabel": "Prix d'achat par article",
+  "expiryLabel": "Date de péremption (facultatif)",
+  "pickDate": "Choisir une date",
+  "noExpiryHelp": "Laissez vide pour les produits qui ne périment pas.",
+  "updateBuyPrice": "Utiliser ce prix comme prix d'achat du produit",
+  "noteOptional": "Note (facultatif)",
+  "deliverySaved": "{count} × {name} ajouté(s) au stock",
+  "@deliverySaved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "saveDelivery": "Ajouter au stock",
+  "lossReasonLabel": "Raison",
+  "reasonDamaged": "Abîmé",
+  "reasonExpired": "Périmé",
+  "reasonStaff": "Consommé par le personnel",
+  "reasonStolen": "Volé",
+  "reasonOther": "Autre",
+  "lossBatchLabel": "Lot concerné",
+  "lossBatchAuto": "Automatique (celui qui expire en premier)",
+  "batchOption": "Exp. {date} · reste {remaining}",
+  "@batchOption": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "batchOptionNoDate": "Reçu le {date} · reste {remaining}",
+  "@batchOptionNoDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "lossValuePreview": "Valeur perdue estimée : {amount}",
+  "@lossValuePreview": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "lossSaved": "Perte enregistrée : {amount}",
+  "@lossSaved": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "saveLoss": "Enregistrer la perte",
+  "lossesEmpty": "Aucune perte enregistrée.",
+  "lossesTotal": "Total perdu : {amount}",
+  "@lossesTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "lossFromReturn": "Retour client",
+  "moreThanStock": "Il n'en reste que {count} en stock. Ce sera quand même enregistré.",
+  "@moreThanStock": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discountLabel": "Remise",
+  "addDiscount": "Ajouter une remise",
+  "discountAmount": "Montant",
+  "discountPercent": "Pourcentage",
+  "removeDiscount": "Retirer la remise",
+  "subtotalLabel": "Sous-total",
+  "discountTooHigh": "Remise trop élevée : maximum {max} % pour les employés.",
+  "@discountTooHigh": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "discountInvalid": "Remise invalide",
+  "applyLabel": "Appliquer",
+  "stockWarningTitle": "Stock insuffisant",
+  "stockWarningBody": "La vente sera quand même enregistrée.",
+  "searchTicketHint": "N° de ticket",
+  "noSaleFound": "Aucune vente trouvée.",
+  "returnButton": "Retour client",
+  "refundedLabel": "Déjà remboursé",
+  "returnedQty": "{count} retourné(s)",
+  "@returnedQty": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "returnTitle": "Retour du ticket n°{number}",
+  "@returnTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "returnIntro": "Choisissez les articles rapportés et dites s'ils retournent en rayon ou s'ils sont abîmés.",
+  "backOnShelf": "Remis en rayon",
+  "returnReasonLabel": "Raison du retour (facultatif)",
+  "refundToGive": "À rendre au client : {amount}",
+  "@refundToGive": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmReturn": "Valider le retour",
+  "returnSaved": "Retour enregistré. Rendez {amount} au client.",
+  "@returnSaved": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "returnNothing": "Choisissez au moins un article.",
+  "rulesSection": "Règles de la boutique",
+  "maxDiscountLabel": "Remise maximale des employés (%)",
+  "expiryWarnLabel": "Alerte péremption : jours avant",
+  "percentInvalid": "Entre 0 et 100",
+  "daysInvalid": "Entre 0 et 60"
 }

@@ -16,6 +16,9 @@ import '../../features/shop/domain/repositories/shop_repository.dart';
 import '../../features/shop/domain/usecases/shop_usecases.dart';
 import '../../features/shop/presentation/bloc/shop_bloc.dart';
 import '../../features/settings/data/repositories/printer_repository_impl.dart';
+import '../../features/stock/data/repositories/stock_repository_impl.dart';
+import '../../features/stock/data/stock_ledger.dart';
+import '../../features/stock/domain/repositories/stock_repository.dart';
 import '../../features/settings/domain/repositories/printer_repository.dart';
 import '../../features/settings/presentation/bloc/printer_bloc.dart';
 import '../../features/settings/presentation/cubit/app_preferences_cubit.dart';
@@ -60,6 +63,7 @@ Future<void> init() async {
       addProductUseCase: sl(),
       updateProductUseCase: sl(),
       archiveProductUseCase: sl(),
+      stockRepository: sl(),
     ),
   );
 
@@ -110,9 +114,15 @@ Future<void> init() async {
 
   // Features - Billing / Sales
   sl.registerLazySingleton<SaleRepository>(
-    () => SaleRepositoryImpl(sl(), sl(), sl()),
+    () => SaleRepositoryImpl(sl(), sl(), sl(), sl()),
   );
   sl.registerLazySingleton(() => ReceiptPrinter(sl()));
+
+  // Features - Stock (deliveries, batches, losses)
+  sl.registerLazySingleton(() => StockLedger(sl()));
+  sl.registerLazySingleton<StockRepository>(
+    () => StockRepositoryImpl(sl(), sl(), sl(), sl(), sl()),
+  );
 
   // Features - Settings / Printer
   sl.registerLazySingleton<PrinterRepository>(

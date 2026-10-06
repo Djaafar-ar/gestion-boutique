@@ -37,6 +37,14 @@ class UpdateQuantityEvent extends BillingEvent {
 
 class ClearCartEvent extends BillingEvent {}
 
+/// Sets (or with null removes) the discount on the whole ticket.
+class SetDiscountEvent extends BillingEvent {
+  final Discount? discount;
+  const SetDiscountEvent(this.discount);
+  @override
+  List<Object> get props => [discount ?? 'none'];
+}
+
 /// Saves the cart as a sale, and prints the receipt when [print] is true.
 class CheckoutEvent extends BillingEvent {
   final bool print;

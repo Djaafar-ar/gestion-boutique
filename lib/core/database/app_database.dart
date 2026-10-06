@@ -13,6 +13,10 @@ part 'app_database.g.dart';
   Deliveries,
   Sales,
   SaleItems,
+  StockAllocations,
+  Losses,
+  Returns,
+  ReturnItems,
   Users,
   ChangeLogs,
   FailedLogins,
@@ -31,7 +35,7 @@ class AppDatabase extends _$AppDatabase {
   // 2. run: dart run drift_dev make-migrations
   // 3. add the new step below (the generated tests check it).
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -51,6 +55,18 @@ class AppDatabase extends _$AppDatabase {
             await m.addColumn(schema.users, schema.users.recoverySalt);
             await m.createTable(schema.failedLogins);
             await m.createIndex(schema.failedLoginsSeen);
+          },
+          // Phase 3: stock per batch, losses and returns.
+          from3To4: (m, schema) async {
+            await m.createTable(schema.stockAllocations);
+            await m.createIndex(schema.stockAllocationsProduct);
+            await m.createIndex(schema.stockAllocationsSource);
+            await m.createTable(schema.losses);
+            await m.createIndex(schema.lossesProduct);
+            await m.createTable(schema.returns);
+            await m.createIndex(schema.returnsSale);
+            await m.createTable(schema.returnItems);
+            await m.createIndex(schema.returnItemsSaleItem);
           },
         ),
       );

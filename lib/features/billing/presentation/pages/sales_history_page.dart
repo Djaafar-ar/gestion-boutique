@@ -21,6 +21,10 @@ class SalesHistoryPage extends StatefulWidget {
 
 class _SalesHistoryPageState extends State<SalesHistoryPage> {
   late Future<List<Sale>> _sales;
+  final _search = TextEditingController();
+
+  /// Only this day, or null for every day.
+  DateTime? _day;
 
   @override
   void initState() {
@@ -31,71 +35,147 @@ class _SalesHistoryPageState extends State<SalesHistoryPage> {
   /// The owner sees every sale, a worker only their own.
   Future<List<Sale>> _load() async {
     final session = context.read<SessionCubit>().state;
-    final result = await sl<SaleRepository>()
-        .getSales(userId: session.isOwner ? null : session.user?.id);
+    final day = _day;
+    final result = await sl<SaleRepository>().getSales(
+      userId: session.isOwner ? null : session.user?.id,
+      number: int.tryParse(_search.text.trim()),
+      from: day,
+      to: day?.add(const Duration(days: 1)),
+    );
     return result.fold((failure) => throw failure.message, (sales) => sales);
+  }
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
+  void _reload() => setState(() => _sales = _load());
+
+  Future<void> _pickDay() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _day ?? now,
+      firstDate: DateTime(2020),
+      lastDate: now,
+    );
+    if (picked == null) return;
+    _day = startOfDay(picked);
+    _reload();
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final filtered = _day != null || _search.text.trim().isNotEmpty;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.historyTitle)),
-      body: FutureBuilder<List<Sale>>(
-        future: _sales,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return EmptyState(
-              icon: Icons.error_outline,
-              title: l10n.errorWithDetail('${snapshot.error}'),
-            );
-          }
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final sales = snapshot.data!;
-          if (sales.isEmpty) {
-            return EmptyState(
-              icon: Icons.receipt_long_outlined,
-              title: l10n.historyEmptyTitle,
-              message: l10n.historyEmptyBody,
-            );
-          }
-
-          final days = <DateTime, List<Sale>>{};
-          for (final sale in sales) {
-            days.putIfAbsent(startOfDay(sale.createdAt), () => []).add(sale);
-          }
-
-          return RefreshIndicator(
-            onRefresh: () async {
-              final next = _load();
-              setState(() => _sales = next);
-              await next;
-            },
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+            child: Row(
               children: [
-                for (final day in days.entries) ...[
-                  _DayHeader(day: day.key, sales: day.value),
-                  Card(
-                    clipBehavior: Clip.antiAlias,
-                    child: Column(
-                      children: [
-                        for (final (index, sale) in day.value.indexed) ...[
-                          if (index > 0) const Divider(),
-                          _SaleTile(sale: sale),
-                        ],
-                      ],
+                Expanded(
+                  child: TextField(
+                    controller: _search,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: l10n.searchTicketHint,
+                      prefixIcon: const Icon(Icons.search),
                     ),
+                    onChanged: (_) => _reload(),
                   ),
-                  const SizedBox(height: 12),
-                ],
+                ),
+                const SizedBox(width: 8),
+                IconButton.filledTonal(
+                  tooltip: l10n.pickDate,
+                  icon: const Icon(Icons.calendar_month),
+                  onPressed: _pickDay,
+                ),
               ],
             ),
-          );
-        },
+          ),
+          if (filtered)
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(start: 16),
+                child: InputChip(
+                  label: Text(_day == null ? l10n.seeAll : formatDate(_day!)),
+                  onDeleted: () {
+                    _search.clear();
+                    _day = null;
+                    _reload();
+                  },
+                ),
+              ),
+            ),
+          Expanded(child: _list(l10n, filtered)),
+        ],
       ),
+    );
+  }
+
+  Widget _list(AppLocalizations l10n, bool filtered) {
+    return FutureBuilder<List<Sale>>(
+      future: _sales,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return EmptyState(
+            icon: Icons.error_outline,
+            title: l10n.errorWithDetail('${snapshot.error}'),
+          );
+        }
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final sales = snapshot.data!;
+        if (sales.isEmpty) {
+          return EmptyState(
+            icon: filtered
+                ? Icons.search_off_rounded
+                : Icons.receipt_long_outlined,
+            title: filtered ? l10n.noSaleFound : l10n.historyEmptyTitle,
+            message: filtered ? null : l10n.historyEmptyBody,
+          );
+        }
+
+        final days = <DateTime, List<Sale>>{};
+        for (final sale in sales) {
+          days.putIfAbsent(startOfDay(sale.createdAt), () => []).add(sale);
+        }
+
+        return RefreshIndicator(
+          onRefresh: () async {
+            final next = _load();
+            setState(() => _sales = next);
+            await next;
+          },
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            children: [
+              for (final day in days.entries) ...[
+                _DayHeader(day: day.key, sales: day.value),
+                Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    children: [
+                      for (final (index, sale) in day.value.indexed) ...[
+                        if (index > 0) const Divider(),
+                        _SaleTile(sale: sale),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 }

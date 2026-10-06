@@ -1,6 +1,7 @@
 import 'package:billing_app/core/widgets/input_label.dart';
 import 'package:billing_app/core/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../domain/entities/shop.dart';
@@ -25,6 +26,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
   final _address2Controller = TextEditingController();
   final _phoneController = TextEditingController();
   final _footerController = TextEditingController();
+  final _maxDiscountController = TextEditingController(text: '10');
+  final _expiryDaysController = TextEditingController(text: '3');
 
   @override
   void initState() {
@@ -44,6 +47,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
       _address2Controller.text = shop.addressLine2;
       _phoneController.text = shop.phoneNumber;
       _footerController.text = shop.footerText;
+      _maxDiscountController.text = '${shop.maxWorkerDiscountPct}';
+      _expiryDaysController.text = '${shop.expiryWarnDays}';
     }
   }
 
@@ -54,6 +59,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
     _address2Controller.dispose();
     _phoneController.dispose();
     _footerController.dispose();
+    _maxDiscountController.dispose();
+    _expiryDaysController.dispose();
     super.dispose();
   }
 
@@ -65,6 +72,8 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
         addressLine2: _address2Controller.text.trim(),
         phoneNumber: _phoneController.text.trim(),
         footerText: _footerController.text.trim(),
+        maxWorkerDiscountPct: int.parse(_maxDiscountController.text),
+        expiryWarnDays: int.parse(_expiryDaysController.text),
       );
 
       context.read<ShopBloc>().add(UpdateShopEvent(shop));
@@ -162,6 +171,22 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
                       maxLines: 2,
                       maxLength: _footerMaxLength,
                     ),
+                    const SizedBox(height: 24),
+                    Text(l10n.rulesSection,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.6,
+                          color: scheme.primary,
+                        )),
+                    const SizedBox(height: 16),
+                    InputLabel(text: l10n.maxDiscountLabel),
+                    _numberField(_maxDiscountController,
+                        max: 100, error: l10n.percentInvalid, suffix: '%'),
+                    const SizedBox(height: 16),
+                    InputLabel(text: l10n.expiryWarnLabel),
+                    _numberField(_expiryDaysController,
+                        max: 60, error: l10n.daysInvalid),
                   ],
                 ),
               ),
@@ -173,6 +198,20 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
           icon: Icons.save,
           label: l10n.commonSave,
         ));
+  }
+
+  Widget _numberField(TextEditingController controller,
+      {required int max, required String error, String? suffix}) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      decoration: InputDecoration(suffixText: suffix),
+      validator: (value) {
+        final number = int.tryParse(value ?? '');
+        return number == null || number > max ? error : null;
+      },
+    );
   }
 
   Widget _buildTextField({

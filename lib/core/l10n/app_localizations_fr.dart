@@ -549,9 +549,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get statLosses => 'Pertes enregistrées';
 
   @override
-  String get lossesComingSoon => 'Le suivi des pertes arrive à l\'étape 3.';
-
-  @override
   String get changePin => 'Changer mon code PIN';
 
   @override
@@ -767,4 +764,269 @@ class AppLocalizationsFr extends AppLocalizations {
   String accountLabel(String name) {
     return 'Compte : $name';
   }
+
+  @override
+  String stockLabel(int count) {
+    return 'Stock : $count';
+  }
+
+  @override
+  String get outOfStock => 'Rupture';
+
+  @override
+  String get lowStockBadge => 'Stock bas';
+
+  @override
+  String expiresOn(String date) {
+    return 'Exp. $date';
+  }
+
+  @override
+  String get expiredBadge => 'Périmé';
+
+  @override
+  String get expiresSoonBadge => 'Bientôt périmé';
+
+  @override
+  String get noExpiry => 'Sans date de péremption';
+
+  @override
+  String get addDelivery => 'Réception de stock';
+
+  @override
+  String get recordLoss => 'Déclarer une perte';
+
+  @override
+  String get lossesTitle => 'Pertes';
+
+  @override
+  String get inStockLabel => 'En stock';
+
+  @override
+  String get batchesTitle => 'Lots';
+
+  @override
+  String get batchesEmpty =>
+      'Aucun stock pour l\'instant. Ajoutez une réception de stock.';
+
+  @override
+  String batchRemaining(int remaining, int quantity) {
+    return '$remaining sur $quantity';
+  }
+
+  @override
+  String receivedBy(String date, String name) {
+    return 'Reçu le $date par $name';
+  }
+
+  @override
+  String receivedOn(String date) {
+    return 'Reçu le $date';
+  }
+
+  @override
+  String get showEmptyBatches => 'Voir aussi les lots épuisés';
+
+  @override
+  String missingStock(int count) {
+    return '$count vendu(s) sans stock enregistré : ajoutez la réception oubliée.';
+  }
+
+  @override
+  String get chooseProduct => 'Choisir un produit';
+
+  @override
+  String get quantityLabel => 'Quantité';
+
+  @override
+  String get quantityRequired => 'Entrez une quantité (au moins 1)';
+
+  @override
+  String get buyPriceUnitLabel => 'Prix d\'achat par article';
+
+  @override
+  String get expiryLabel => 'Date de péremption (facultatif)';
+
+  @override
+  String get pickDate => 'Choisir une date';
+
+  @override
+  String get noExpiryHelp =>
+      'Laissez vide pour les produits qui ne périment pas.';
+
+  @override
+  String get updateBuyPrice =>
+      'Utiliser ce prix comme prix d\'achat du produit';
+
+  @override
+  String get noteOptional => 'Note (facultatif)';
+
+  @override
+  String deliverySaved(int count, String name) {
+    return '$count × $name ajouté(s) au stock';
+  }
+
+  @override
+  String get saveDelivery => 'Ajouter au stock';
+
+  @override
+  String get lossReasonLabel => 'Raison';
+
+  @override
+  String get reasonDamaged => 'Abîmé';
+
+  @override
+  String get reasonExpired => 'Périmé';
+
+  @override
+  String get reasonStaff => 'Consommé par le personnel';
+
+  @override
+  String get reasonStolen => 'Volé';
+
+  @override
+  String get reasonOther => 'Autre';
+
+  @override
+  String get lossBatchLabel => 'Lot concerné';
+
+  @override
+  String get lossBatchAuto => 'Automatique (celui qui expire en premier)';
+
+  @override
+  String batchOption(String date, int remaining) {
+    return 'Exp. $date · reste $remaining';
+  }
+
+  @override
+  String batchOptionNoDate(String date, int remaining) {
+    return 'Reçu le $date · reste $remaining';
+  }
+
+  @override
+  String lossValuePreview(String amount) {
+    return 'Valeur perdue estimée : $amount';
+  }
+
+  @override
+  String lossSaved(String amount) {
+    return 'Perte enregistrée : $amount';
+  }
+
+  @override
+  String get saveLoss => 'Enregistrer la perte';
+
+  @override
+  String get lossesEmpty => 'Aucune perte enregistrée.';
+
+  @override
+  String lossesTotal(String amount) {
+    return 'Total perdu : $amount';
+  }
+
+  @override
+  String get lossFromReturn => 'Retour client';
+
+  @override
+  String moreThanStock(int count) {
+    return 'Il n\'en reste que $count en stock. Ce sera quand même enregistré.';
+  }
+
+  @override
+  String get discountLabel => 'Remise';
+
+  @override
+  String get addDiscount => 'Ajouter une remise';
+
+  @override
+  String get discountAmount => 'Montant';
+
+  @override
+  String get discountPercent => 'Pourcentage';
+
+  @override
+  String get removeDiscount => 'Retirer la remise';
+
+  @override
+  String get subtotalLabel => 'Sous-total';
+
+  @override
+  String discountTooHigh(int max) {
+    return 'Remise trop élevée : maximum $max % pour les employés.';
+  }
+
+  @override
+  String get discountInvalid => 'Remise invalide';
+
+  @override
+  String get applyLabel => 'Appliquer';
+
+  @override
+  String get stockWarningTitle => 'Stock insuffisant';
+
+  @override
+  String get stockWarningBody => 'La vente sera quand même enregistrée.';
+
+  @override
+  String get searchTicketHint => 'N° de ticket';
+
+  @override
+  String get noSaleFound => 'Aucune vente trouvée.';
+
+  @override
+  String get returnButton => 'Retour client';
+
+  @override
+  String get refundedLabel => 'Déjà remboursé';
+
+  @override
+  String returnedQty(int count) {
+    return '$count retourné(s)';
+  }
+
+  @override
+  String returnTitle(int number) {
+    return 'Retour du ticket n°$number';
+  }
+
+  @override
+  String get returnIntro =>
+      'Choisissez les articles rapportés et dites s\'ils retournent en rayon ou s\'ils sont abîmés.';
+
+  @override
+  String get backOnShelf => 'Remis en rayon';
+
+  @override
+  String get returnReasonLabel => 'Raison du retour (facultatif)';
+
+  @override
+  String refundToGive(String amount) {
+    return 'À rendre au client : $amount';
+  }
+
+  @override
+  String get confirmReturn => 'Valider le retour';
+
+  @override
+  String returnSaved(String amount) {
+    return 'Retour enregistré. Rendez $amount au client.';
+  }
+
+  @override
+  String get returnNothing => 'Choisissez au moins un article.';
+
+  @override
+  String get rulesSection => 'Règles de la boutique';
+
+  @override
+  String get maxDiscountLabel => 'Remise maximale des employés (%)';
+
+  @override
+  String get expiryWarnLabel => 'Alerte péremption : jours avant';
+
+  @override
+  String get percentInvalid => 'Entre 0 et 100';
+
+  @override
+  String get daysInvalid => 'Entre 0 et 60';
 }

@@ -546,9 +546,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get statLosses => 'الخسائر المسجلة';
 
   @override
-  String get lossesComingSoon => 'تتبع الخسائر سيتوفر في المرحلة 3.';
-
-  @override
   String get changePin => 'تغيير رمزي السري';
 
   @override
@@ -762,4 +759,266 @@ class AppLocalizationsAr extends AppLocalizations {
   String accountLabel(String name) {
     return 'الحساب: $name';
   }
+
+  @override
+  String stockLabel(int count) {
+    return 'المخزون: $count';
+  }
+
+  @override
+  String get outOfStock => 'نفد';
+
+  @override
+  String get lowStockBadge => 'مخزون منخفض';
+
+  @override
+  String expiresOn(String date) {
+    return 'ينتهي $date';
+  }
+
+  @override
+  String get expiredBadge => 'منتهي الصلاحية';
+
+  @override
+  String get expiresSoonBadge => 'قارب على الانتهاء';
+
+  @override
+  String get noExpiry => 'بدون تاريخ انتهاء';
+
+  @override
+  String get addDelivery => 'استلام سلعة';
+
+  @override
+  String get recordLoss => 'تسجيل خسارة';
+
+  @override
+  String get lossesTitle => 'الخسائر';
+
+  @override
+  String get inStockLabel => 'في المخزون';
+
+  @override
+  String get batchesTitle => 'الدفعات';
+
+  @override
+  String get batchesEmpty => 'لا يوجد مخزون بعد. أضف استلام سلعة.';
+
+  @override
+  String batchRemaining(int remaining, int quantity) {
+    return '$remaining من $quantity';
+  }
+
+  @override
+  String receivedBy(String date, String name) {
+    return 'استُلم في $date من طرف $name';
+  }
+
+  @override
+  String receivedOn(String date) {
+    return 'استُلم في $date';
+  }
+
+  @override
+  String get showEmptyBatches => 'عرض الدفعات المنتهية أيضًا';
+
+  @override
+  String missingStock(int count) {
+    return '$count بيعت دون مخزون مسجل: أضف الاستلام المنسي.';
+  }
+
+  @override
+  String get chooseProduct => 'اختر منتجًا';
+
+  @override
+  String get quantityLabel => 'الكمية';
+
+  @override
+  String get quantityRequired => 'أدخل كمية (1 على الأقل)';
+
+  @override
+  String get buyPriceUnitLabel => 'سعر الشراء للوحدة';
+
+  @override
+  String get expiryLabel => 'تاريخ انتهاء الصلاحية (اختياري)';
+
+  @override
+  String get pickDate => 'اختر تاريخًا';
+
+  @override
+  String get noExpiryHelp => 'اتركه فارغًا للمنتجات التي لا تنتهي صلاحيتها.';
+
+  @override
+  String get updateBuyPrice => 'استعمله كسعر شراء المنتج';
+
+  @override
+  String get noteOptional => 'ملاحظة (اختياري)';
+
+  @override
+  String deliverySaved(int count, String name) {
+    return 'تمت إضافة $count × $name إلى المخزون';
+  }
+
+  @override
+  String get saveDelivery => 'إضافة إلى المخزون';
+
+  @override
+  String get lossReasonLabel => 'السبب';
+
+  @override
+  String get reasonDamaged => 'تالف';
+
+  @override
+  String get reasonExpired => 'منتهي الصلاحية';
+
+  @override
+  String get reasonStaff => 'استهلكه العمال';
+
+  @override
+  String get reasonStolen => 'مسروق';
+
+  @override
+  String get reasonOther => 'أخرى';
+
+  @override
+  String get lossBatchLabel => 'الدفعة المعنية';
+
+  @override
+  String get lossBatchAuto => 'تلقائي (الأقرب انتهاءً)';
+
+  @override
+  String batchOption(String date, int remaining) {
+    return 'ينتهي $date · متبقي $remaining';
+  }
+
+  @override
+  String batchOptionNoDate(String date, int remaining) {
+    return 'استُلم $date · متبقي $remaining';
+  }
+
+  @override
+  String lossValuePreview(String amount) {
+    return 'القيمة المفقودة تقريبًا: $amount';
+  }
+
+  @override
+  String lossSaved(String amount) {
+    return 'تم تسجيل الخسارة: $amount';
+  }
+
+  @override
+  String get saveLoss => 'تسجيل الخسارة';
+
+  @override
+  String get lossesEmpty => 'لا توجد خسائر مسجلة.';
+
+  @override
+  String lossesTotal(String amount) {
+    return 'إجمالي الخسارة: $amount';
+  }
+
+  @override
+  String get lossFromReturn => 'إرجاع زبون';
+
+  @override
+  String moreThanStock(int count) {
+    return 'لم يتبق سوى $count في المخزون. سيُسجل رغم ذلك.';
+  }
+
+  @override
+  String get discountLabel => 'تخفيض';
+
+  @override
+  String get addDiscount => 'إضافة تخفيض';
+
+  @override
+  String get discountAmount => 'مبلغ';
+
+  @override
+  String get discountPercent => 'نسبة';
+
+  @override
+  String get removeDiscount => 'إزالة التخفيض';
+
+  @override
+  String get subtotalLabel => 'المجموع الفرعي';
+
+  @override
+  String discountTooHigh(int max) {
+    return 'التخفيض مرتفع: الحد الأقصى للعمال $max %.';
+  }
+
+  @override
+  String get discountInvalid => 'تخفيض غير صالح';
+
+  @override
+  String get applyLabel => 'تطبيق';
+
+  @override
+  String get stockWarningTitle => 'مخزون غير كافٍ';
+
+  @override
+  String get stockWarningBody => 'سيتم تسجيل البيع رغم ذلك.';
+
+  @override
+  String get searchTicketHint => 'رقم التذكرة';
+
+  @override
+  String get noSaleFound => 'لم يتم العثور على أي بيع.';
+
+  @override
+  String get returnButton => 'إرجاع زبون';
+
+  @override
+  String get refundedLabel => 'تم استرجاعه';
+
+  @override
+  String returnedQty(int count) {
+    return '$count مُرجع';
+  }
+
+  @override
+  String returnTitle(int number) {
+    return 'إرجاع البيع رقم $number';
+  }
+
+  @override
+  String get returnIntro =>
+      'اختر المواد المُرجعة وحدد هل تعود إلى الرف أم أنها تالفة.';
+
+  @override
+  String get backOnShelf => 'أُعيد إلى الرف';
+
+  @override
+  String get returnReasonLabel => 'سبب الإرجاع (اختياري)';
+
+  @override
+  String refundToGive(String amount) {
+    return 'المبلغ المسترجع للزبون: $amount';
+  }
+
+  @override
+  String get confirmReturn => 'تأكيد الإرجاع';
+
+  @override
+  String returnSaved(String amount) {
+    return 'تم تسجيل الإرجاع. أرجع $amount للزبون.';
+  }
+
+  @override
+  String get returnNothing => 'اختر مادة واحدة على الأقل.';
+
+  @override
+  String get rulesSection => 'قواعد المحل';
+
+  @override
+  String get maxDiscountLabel => 'أقصى تخفيض للعمال (%)';
+
+  @override
+  String get expiryWarnLabel => 'تنبيه انتهاء الصلاحية: أيام قبل';
+
+  @override
+  String get percentInvalid => 'بين 0 و 100';
+
+  @override
+  String get daysInvalid => 'بين 0 و 60';
 }

@@ -72,6 +72,78 @@ class Deliveries extends Table with SyncColumns {
   Set<Column> get primaryKey => {id};
 }
 
+/// Where items left the stock from: one row per batch touched by a sale,
+/// a loss or a return. Positive quantity = taken out, negative = put back.
+/// [deliveryId] is null when there was no stock left (sold anyway).
+///
+/// Stock of a product = delivered - sum of these quantities.
+@DataClassName('StockAllocationRow')
+@TableIndex(name: 'stock_allocations_product', columns: {#productId})
+@TableIndex(name: 'stock_allocations_source', columns: {#sourceId})
+class StockAllocations extends Table with SyncColumns {
+  TextColumn get productId => text()();
+  TextColumn get deliveryId => text().nullable()();
+  IntColumn get quantity => integer()();
+  TextColumn get source => text()(); // 'sale', 'loss' or 'return'
+  /// The sale line (for 'sale' and 'return') or the loss.
+  TextColumn get sourceId => text()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Items thrown away, eaten, stolen... valued at their buying price.
+@DataClassName('LossRow')
+@TableIndex(name: 'losses_product', columns: {#productId})
+class Losses extends Table with SyncColumns {
+  TextColumn get productId => text()();
+  IntColumn get quantity => integer()();
+  TextColumn get reason => text()(); // damaged, expired, staff, stolen, other
+  TextColumn get note => text().nullable()();
+
+  /// Buying price per item at the time (centimes).
+  IntColumn get unitCost => integer()();
+
+  /// The batch chosen by the person (for example the expired one).
+  TextColumn get deliveryId => text().nullable()();
+
+  /// Set when a customer brought back a damaged item: the item already
+  /// left the stock with the sale, so this loss does not touch the stock.
+  TextColumn get returnItemId => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// A customer bringing items back.
+@DataClassName('ReturnRow')
+@TableIndex(name: 'returns_sale', columns: {#saleId})
+class Returns extends Table with SyncColumns {
+  TextColumn get saleId => text()();
+  IntColumn get total => integer()(); // money given back, centimes
+  TextColumn get refundMode => text().withDefault(const Constant('cash'))();
+  TextColumn get reason => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DataClassName('ReturnItemRow')
+@TableIndex(name: 'return_items_sale_item', columns: {#saleItemId})
+class ReturnItems extends Table with SyncColumns {
+  TextColumn get returnId => text()();
+  TextColumn get saleItemId => text()();
+  TextColumn get productId => text()();
+  IntColumn get quantity => integer()();
+
+  /// True: back on the shelf. False: damaged, recorded as a loss.
+  BoolColumn get backToStock => boolean()();
+  IntColumn get refund => integer()(); // centimes
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DataClassName('SaleRow')
 @TableIndex(name: 'sales_created', columns: {#createdAt})
 class Sales extends Table with SyncColumns {
