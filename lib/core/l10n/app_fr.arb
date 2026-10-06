@@ -1385,5 +1385,19 @@
   "merge": "Fusionner",
   "merged": "Fusionné",
   "hubServiceTitle": "Hub de la boutique actif",
-  "hubServiceText": "Les autres téléphones peuvent se synchroniser."
+  "hubServiceText": "Les autres téléphones peuvent se synchroniser.",
+  "stockShortBlocked": "Stock insuffisant. Ajoutez d'abord la réception de stock.",
+  "stockShortDetail": "{product} : il reste {count} en stock.",
+  "@stockShortDetail": {
+    "placeholders": {
+      "product": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workersSellWithoutStock": "Les employés peuvent vendre sans stock",
+  "workersSellWithoutStockHelp": "Désactivé : un employé ne peut pas vendre plus que le stock enregistré. Le patron peut toujours vendre."
 }

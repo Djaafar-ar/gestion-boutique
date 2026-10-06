@@ -229,3 +229,24 @@ class ReturnResult extends Equatable {
 class OwnerApprovalFailure extends Failure {
   const OwnerApprovalFailure() : super('Owner approval needed');
 }
+
+/// A worker tried to sell more than the stock recorded, and the owner's
+/// rule does not allow it ("Les employés peuvent vendre sans stock" off).
+class StockShortFailure extends Failure {
+  final String productId;
+  final String productName;
+
+  /// What is left in stock (can be below zero).
+  final int available;
+  final int wanted;
+
+  const StockShortFailure({
+    required this.productId,
+    required this.productName,
+    required this.available,
+    required this.wanted,
+  }) : super('Not enough stock');
+
+  @override
+  List<Object> get props => [productId, available, wanted];
+}

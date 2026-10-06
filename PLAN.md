@@ -372,6 +372,18 @@ At the **end of every phase**:
   - **Duplicates:** the same barcode, or the same customer phone number, created on two phones raises an owner alert. "Fusionner avec…" moves sales, stock, payments and debt to the record kept and archives the other.
   - **Not done:** no automatic sync just because the phone connected to Wi-Fi (it syncs every 2 minutes, 5 seconds after a change, and on "Sync now").
 
+### Phase 7b: Release key and stock rule (requested after Phase 7)
+- **Selling without enough stock:**
+  - **Workers are blocked.** In the data layer, inside the same transaction as the sale, a worker's sale (or the items taken in an exchange) is refused when a product has less stock than the quantity sold. All the cart lines of the same product count together.
+  - **What the worker sees:** the checkout shows "Stock insuffisant. Ajoutez d'abord la réception de stock." with a "Réception de stock" button for that product. The red stock card already says so before they confirm.
+  - **The owner can always sell,** with the red warning and the "Stock négatif" alert.
+  - **The switch:** Plus → Informations de la boutique → Règles → "Les employés peuvent vendre sans stock", off by default. It is stored on the shop record (database v9), so it syncs to worker phones.
+- **Release signing:**
+  - **The key:** release APKs are signed with the app's own release key, kept outside the project in `C:\Users\Medvich\keys\` and set up in `android/key.properties` (never committed).
+  - **Why rotation:** the phones already had the app signed with the old debug key, and Android only updates an app signed by the same key. Changing keys would have meant uninstalling and losing the data. So the old key is "rotated" to the new one: the APK carries the signed proof (`gestion-boutique-lineage.bin`), and `adb install -r` keeps working and keeps the data.
+  - **How to build:** always with `.\tool\build_release.ps1`.
+  - **What to keep safe:** both keystores, the lineage file and the password, on a USB stick.
+
 ### Phase 8: Google Sheets and live sales (added after Phase 2)
 **Idea in simple words:** your Google Sheet becomes a live copy of the shop, for viewing and reports. Every phone with internet (mobile data) posts its own new records to a small Google Apps Script attached to the sheet, so you don't need your own server. Wi-Fi sync (Phase 7) stays the main way data reaches the owner's phone; the sheet is an extra.
 
@@ -408,6 +420,15 @@ At the **end of every phase**:
   - "Restore": pick a `.zip`. The app checks it belongs to this shop and is not from a newer app version, shows its date, and asks for confirmation + the owner PIN. It makes a backup of the current data first ("just in case"), replaces the database, and restarts the app.
   - After a restore on the owner's phone: worker phones re-send anything newer at the next sync (same UUIDs, so no duplicates).
   - Tests: backup → restore round trip gives identical data; wrong-shop or newer-version files are refused.
+- **Easy to send off the phone (requested after Phase 7):**
+  - Every backup can be sent off the phone in two taps: Google Drive, WhatsApp, e-mail, or copied to a USB stick or a computer.
+  - The app remembers when a backup last left the phone. When that is more than 7 days ago, the owner sees a reminder (banner in Plus, plus an alert) until a new backup is sent.
+- **"Remplacer le téléphone principal" (owner only, requested after Phase 7):** for when the owner's phone (the hub) is lost, stolen or broken.
+  - **Way 1, from a backup:** install the app on a new phone, restore the last backup, and it becomes the new hub. The worker phones then send everything newer than the backup; records keep their ids, so nothing is counted twice.
+  - **Way 2, from a worker phone:** make a worker phone the new main phone. It already holds every synced record; it gets the hub role, the old hub is marked as removed, and the other phones re-pair to it with a new QR code.
+  - **Safety:** the owner PIN is required. The shop secret is renewed so the lost phone can no longer sync. Tickets keep their phone letters, so no number is reused.
+  - **Tests:** a hub replaced by a backup or by a worker phone ends with the same sales, stock and debts as before, without duplicates.
+- **Build tools upgrade (requested after Phase 7):** move Gradle, the Android Gradle Plugin and Kotlin to the versions the current Flutter fully supports (today Flutter warns that 8.11.1 / 2.2.20 will soon be unsupported). Keep Java 21 working, keep the release key rotation, and check that a release APK still updates the phones with `adb install -r`.
 - Final pass: Arabic right-to-left check on every screen, dark mode check, empty states, small-screen overflow check.
 - Remove the old Hive code (the import stays one more version if you prefer).
 - Update the README in simple words.

@@ -14,6 +14,7 @@ import 'generated/schema_v5.dart' as v5;
 import 'generated/schema_v6.dart' as v6;
 import 'generated/schema_v7.dart' as v7;
 import 'generated/schema_v8.dart' as v8;
+import 'generated/schema_v9.dart' as v9;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -335,6 +336,40 @@ void main() {
         final log = await newDb.select(newDb.syncLog).get();
         expect(log.map((l) => (l.entity, l.rowId)), [('products', 'p1')]);
         expect(await newDb.select(newDb.devices).get(), isEmpty);
+      },
+    );
+  });
+
+  // The stock rule: existing shops start with workers NOT allowed to sell
+  // without stock.
+  test('migration from v8 to v9 keeps the shop, rule off', () async {
+    const at = '2026-10-07T09:00:00.000';
+    const shop = v8.ShopsData(
+        id: 'shop1',
+        createdAt: at,
+        updatedAt: at,
+        deviceId: 'phone-1',
+        deleted: 0,
+        name: 'Épicerie El Baraka',
+        address1: '',
+        address2: '',
+        phone: '',
+        footer: '',
+        shopSecret: 'secret',
+        expiryWarnDays: 3,
+        maxWorkerDiscountPct: 10);
+
+    await verifier.testWithDataIntegrity(
+      oldVersion: 8,
+      newVersion: 9,
+      createOld: v8.DatabaseAtV8.new,
+      createNew: v9.DatabaseAtV9.new,
+      openTestedDatabase: AppDatabase.new,
+      createItems: (batch, oldDb) => batch.insert(oldDb.shops, shop),
+      validateItems: (newDb) async {
+        final row = await newDb.select(newDb.shops).getSingle();
+        expect((row.name, row.shopSecret, row.workersSellWithoutStock),
+            ('Épicerie El Baraka', 'secret', 0));
       },
     );
   });

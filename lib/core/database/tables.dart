@@ -28,6 +28,11 @@ class Shops extends Table with SyncColumns {
   IntColumn get maxWorkerDiscountPct =>
       integer().withDefault(const Constant(10))();
 
+  /// When false (the default), a worker cannot sell more than the stock
+  /// recorded. The owner always can.
+  BoolColumn get workersSellWithoutStock =>
+      boolean().withDefault(const Constant(false))();
+
   @override
   Set<Column> get primaryKey => {id};
 }

@@ -44,6 +44,7 @@ class ShopRepositoryImpl implements ShopRepository {
               footer: Value(shop.footerText),
               expiryWarnDays: Value(shop.expiryWarnDays),
               maxWorkerDiscountPct: Value(shop.maxWorkerDiscountPct),
+              workersSellWithoutStock: Value(shop.workersSellWithoutStock),
               shopSecret: newShopSecret(),
             ));
       } else {
@@ -57,6 +58,7 @@ class ShopRepositoryImpl implements ShopRepository {
           footer: Value(shop.footerText),
           expiryWarnDays: Value(shop.expiryWarnDays),
           maxWorkerDiscountPct: Value(shop.maxWorkerDiscountPct),
+          workersSellWithoutStock: Value(shop.workersSellWithoutStock),
         ));
       }
       return const Right(null);
@@ -80,6 +82,7 @@ Shop shopFromRow(ShopRow row) => Shop(
       footerText: row.footer,
       expiryWarnDays: row.expiryWarnDays,
       maxWorkerDiscountPct: row.maxWorkerDiscountPct,
+      workersSellWithoutStock: row.workersSellWithoutStock,
     );
 
 /// 32 random bytes as hex. Paired phones use it to prove they belong

@@ -551,5 +551,9 @@
   "merge": "دمج",
   "merged": "تم الدمج",
   "hubServiceTitle": "محور المتجر يعمل",
-  "hubServiceText": "يمكن للهواتف الأخرى المزامنة."
+  "hubServiceText": "يمكن للهواتف الأخرى المزامنة.",
+  "stockShortBlocked": "المخزون غير كافٍ. أضف استلام المخزون أولاً.",
+  "stockShortDetail": "{product}: تبقى {count} في المخزون.",
+  "workersSellWithoutStock": "يمكن للعمال البيع دون مخزون",
+  "workersSellWithoutStockHelp": "عند التعطيل: لا يمكن للعامل بيع أكثر من المخزون المسجّل. يمكن للمالك البيع دائماً."
 }

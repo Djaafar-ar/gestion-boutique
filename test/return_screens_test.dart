@@ -242,4 +242,3 @@ void main() {
         find.text('Ajoutez les articles pris par le client.'), findsOneWidget);
   });
 }
-

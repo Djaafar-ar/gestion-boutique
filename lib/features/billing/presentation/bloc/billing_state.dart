@@ -10,6 +10,9 @@ enum BillingError {
 
   /// Over the customer's credit limit (see [BillingState.creditLimit]).
   creditLimit,
+
+  /// A worker selling more than the stock (see [BillingState.stockShort]).
+  stockShort,
 }
 
 class BillingState extends Equatable {
@@ -32,6 +35,9 @@ class BillingState extends Equatable {
   /// Details of a [BillingError.creditLimit].
   final CreditLimitFailure? creditLimit;
 
+  /// Details of a [BillingError.stockShort].
+  final StockShortFailure? stockShort;
+
   /// Set right after a successful checkout.
   final Sale? completedSale;
 
@@ -48,6 +54,7 @@ class BillingState extends Equatable {
     this.error,
     this.errorDetail,
     this.creditLimit,
+    this.stockShort,
     this.completedSale,
     this.printOutcome,
   });
@@ -95,6 +102,7 @@ class BillingState extends Equatable {
     BillingError? error,
     String? errorDetail,
     CreditLimitFailure? creditLimit,
+    StockShortFailure? stockShort,
   }) {
     return BillingState(
       cartItems: cartItems ?? this.cartItems,
@@ -106,6 +114,7 @@ class BillingState extends Equatable {
       error: error,
       errorDetail: errorDetail,
       creditLimit: creditLimit,
+      stockShort: stockShort,
     );
   }
 
@@ -120,6 +129,7 @@ class BillingState extends Equatable {
         error,
         errorDetail,
         creditLimit,
+        stockShort,
         completedSale,
         printOutcome
       ];

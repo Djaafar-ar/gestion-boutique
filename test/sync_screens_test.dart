@@ -97,8 +97,8 @@ void main() {
         .getOrElse((f) => fail(f.message))
         .owner;
     owner.session.login(karim);
-    await ShopRepositoryImpl(owner.db, owner.settings)
-        .updateShop(const Shop(name: 'Épicerie El Baraka'));
+    await ShopRepositoryImpl(owner.db, owner.settings).updateShop(
+        const Shop(name: 'Épicerie El Baraka', workersSellWithoutStock: true));
     await ProductRepositoryImpl(owner.db, owner.settings, owner.session)
         .addProduct(soda);
   });

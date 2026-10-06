@@ -7,6 +7,7 @@ import 'package:billing_app/features/billing/data/repositories/sale_repository_i
 import 'package:billing_app/features/alerts/data/alert_repository.dart';
 import 'package:billing_app/features/alerts/domain/alert.dart';
 import 'package:billing_app/features/billing/domain/entities/cart_item.dart';
+import 'package:billing_app/features/billing/domain/entities/sale.dart';
 import 'package:billing_app/features/customers/data/repositories/customer_repository_impl.dart';
 import 'package:billing_app/features/product/data/repositories/product_repository_impl.dart';
 import 'package:billing_app/features/product/domain/entities/product.dart';
@@ -317,14 +318,33 @@ void main() {
     expect(tickets, {'1', 'B-1'});
   });
 
+  test("the owner's stock rule reaches the worker phone", () async {
+    final (worker, client) = await joinWorker();
+    // Off by default: the worker phone refuses a sale beyond the stock.
+    final refused = await worker.sales
+        .saveSale(const [CartItem(product: soda, quantity: 30)]);
+    expect(refused.getLeft().toNullable(), isA<StockShortFailure>());
+
+    await ShopRepositoryImpl(hubPhone.db, hubPhone.settings).updateShop(
+        const Shop(name: 'Épicerie El Baraka', workersSellWithoutStock: true));
+    await client.sync();
+    final allowed = await worker.sales
+        .saveSale(const [CartItem(product: soda, quantity: 30)]);
+    expect(allowed.isRight(), isTrue);
+  });
+
   group('duplicates', () {
-    test('the same barcode made on two phones: alert, then merge',
-        () async {
+    test('the same barcode made on two phones: alert, then merge', () async {
       final (worker, client) = await joinWorker();
       const hubCola = Product(
           id: 'cola-hub', name: 'Cola 1L', barcode: '999', sellPrice: 15000);
       const workerCola = Product(
           id: 'cola-worker', name: 'Coca 1L', barcode: '999', sellPrice: 15000);
+      // The owner lets workers sell without stock; the rule syncs.
+      await ShopRepositoryImpl(hubPhone.db, hubPhone.settings).updateShop(
+          const Shop(
+              name: 'Épicerie El Baraka', workersSellWithoutStock: true));
+      await client.sync();
       await hubPhone.products.addProduct(hubCola);
       await worker.products.addProduct(workerCola);
       await worker.sales.saveSale(const [CartItem(product: workerCola)]);

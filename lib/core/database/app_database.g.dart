@@ -326,6 +326,16 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, ShopRow> {
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(10));
+  static const VerificationMeta _workersSellWithoutStockMeta =
+      const VerificationMeta('workersSellWithoutStock');
+  @override
+  late final GeneratedColumn<bool> workersSellWithoutStock =
+      GeneratedColumn<bool>('workers_sell_without_stock', aliasedName, false,
+          type: DriftSqlType.bool,
+          requiredDuringInsert: false,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'CHECK ("workers_sell_without_stock" IN (0, 1))'),
+          defaultValue: const Constant(false));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -341,7 +351,8 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, ShopRow> {
         footer,
         shopSecret,
         expiryWarnDays,
-        maxWorkerDiscountPct
+        maxWorkerDiscountPct,
+        workersSellWithoutStock
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -426,6 +437,13 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, ShopRow> {
           maxWorkerDiscountPct.isAcceptableOrUnknown(
               data['max_worker_discount_pct']!, _maxWorkerDiscountPctMeta));
     }
+    if (data.containsKey('workers_sell_without_stock')) {
+      context.handle(
+          _workersSellWithoutStockMeta,
+          workersSellWithoutStock.isAcceptableOrUnknown(
+              data['workers_sell_without_stock']!,
+              _workersSellWithoutStockMeta));
+    }
     return context;
   }
 
@@ -463,6 +481,9 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, ShopRow> {
           .read(DriftSqlType.int, data['${effectivePrefix}expiry_warn_days'])!,
       maxWorkerDiscountPct: attachedDatabase.typeMapping.read(
           DriftSqlType.int, data['${effectivePrefix}max_worker_discount_pct'])!,
+      workersSellWithoutStock: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool,
+          data['${effectivePrefix}workers_sell_without_stock'])!,
     );
   }
 
@@ -489,6 +510,10 @@ class ShopRow extends DataClass implements Insertable<ShopRow> {
   final String shopSecret;
   final int expiryWarnDays;
   final int maxWorkerDiscountPct;
+
+  /// When false (the default), a worker cannot sell more than the stock
+  /// recorded. The owner always can.
+  final bool workersSellWithoutStock;
   const ShopRow(
       {required this.id,
       required this.createdAt,
@@ -503,7 +528,8 @@ class ShopRow extends DataClass implements Insertable<ShopRow> {
       required this.footer,
       required this.shopSecret,
       required this.expiryWarnDays,
-      required this.maxWorkerDiscountPct});
+      required this.maxWorkerDiscountPct,
+      required this.workersSellWithoutStock});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -523,6 +549,7 @@ class ShopRow extends DataClass implements Insertable<ShopRow> {
     map['shop_secret'] = Variable<String>(shopSecret);
     map['expiry_warn_days'] = Variable<int>(expiryWarnDays);
     map['max_worker_discount_pct'] = Variable<int>(maxWorkerDiscountPct);
+    map['workers_sell_without_stock'] = Variable<bool>(workersSellWithoutStock);
     return map;
   }
 
@@ -543,6 +570,7 @@ class ShopRow extends DataClass implements Insertable<ShopRow> {
       shopSecret: Value(shopSecret),
       expiryWarnDays: Value(expiryWarnDays),
       maxWorkerDiscountPct: Value(maxWorkerDiscountPct),
+      workersSellWithoutStock: Value(workersSellWithoutStock),
     );
   }
 
@@ -565,6 +593,8 @@ class ShopRow extends DataClass implements Insertable<ShopRow> {
       expiryWarnDays: serializer.fromJson<int>(json['expiryWarnDays']),
       maxWorkerDiscountPct:
           serializer.fromJson<int>(json['maxWorkerDiscountPct']),
+      workersSellWithoutStock:
+          serializer.fromJson<bool>(json['workersSellWithoutStock']),
     );
   }
   @override
@@ -585,6 +615,8 @@ class ShopRow extends DataClass implements Insertable<ShopRow> {
       'shopSecret': serializer.toJson<String>(shopSecret),
       'expiryWarnDays': serializer.toJson<int>(expiryWarnDays),
       'maxWorkerDiscountPct': serializer.toJson<int>(maxWorkerDiscountPct),
+      'workersSellWithoutStock':
+          serializer.toJson<bool>(workersSellWithoutStock),
     };
   }
 
@@ -602,7 +634,8 @@ class ShopRow extends DataClass implements Insertable<ShopRow> {
           String? footer,
           String? shopSecret,
           int? expiryWarnDays,
-          int? maxWorkerDiscountPct}) =>
+          int? maxWorkerDiscountPct,
+          bool? workersSellWithoutStock}) =>
       ShopRow(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
@@ -618,6 +651,8 @@ class ShopRow extends DataClass implements Insertable<ShopRow> {
         shopSecret: shopSecret ?? this.shopSecret,
         expiryWarnDays: expiryWarnDays ?? this.expiryWarnDays,
         maxWorkerDiscountPct: maxWorkerDiscountPct ?? this.maxWorkerDiscountPct,
+        workersSellWithoutStock:
+            workersSellWithoutStock ?? this.workersSellWithoutStock,
       );
   ShopRow copyWithCompanion(ShopsCompanion data) {
     return ShopRow(
@@ -640,6 +675,9 @@ class ShopRow extends DataClass implements Insertable<ShopRow> {
       maxWorkerDiscountPct: data.maxWorkerDiscountPct.present
           ? data.maxWorkerDiscountPct.value
           : this.maxWorkerDiscountPct,
+      workersSellWithoutStock: data.workersSellWithoutStock.present
+          ? data.workersSellWithoutStock.value
+          : this.workersSellWithoutStock,
     );
   }
 
@@ -659,7 +697,8 @@ class ShopRow extends DataClass implements Insertable<ShopRow> {
           ..write('footer: $footer, ')
           ..write('shopSecret: $shopSecret, ')
           ..write('expiryWarnDays: $expiryWarnDays, ')
-          ..write('maxWorkerDiscountPct: $maxWorkerDiscountPct')
+          ..write('maxWorkerDiscountPct: $maxWorkerDiscountPct, ')
+          ..write('workersSellWithoutStock: $workersSellWithoutStock')
           ..write(')'))
         .toString();
   }
@@ -679,7 +718,8 @@ class ShopRow extends DataClass implements Insertable<ShopRow> {
       footer,
       shopSecret,
       expiryWarnDays,
-      maxWorkerDiscountPct);
+      maxWorkerDiscountPct,
+      workersSellWithoutStock);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -697,7 +737,8 @@ class ShopRow extends DataClass implements Insertable<ShopRow> {
           other.footer == this.footer &&
           other.shopSecret == this.shopSecret &&
           other.expiryWarnDays == this.expiryWarnDays &&
-          other.maxWorkerDiscountPct == this.maxWorkerDiscountPct);
+          other.maxWorkerDiscountPct == this.maxWorkerDiscountPct &&
+          other.workersSellWithoutStock == this.workersSellWithoutStock);
 }
 
 class ShopsCompanion extends UpdateCompanion<ShopRow> {
@@ -715,6 +756,7 @@ class ShopsCompanion extends UpdateCompanion<ShopRow> {
   final Value<String> shopSecret;
   final Value<int> expiryWarnDays;
   final Value<int> maxWorkerDiscountPct;
+  final Value<bool> workersSellWithoutStock;
   final Value<int> rowid;
   const ShopsCompanion({
     this.id = const Value.absent(),
@@ -731,6 +773,7 @@ class ShopsCompanion extends UpdateCompanion<ShopRow> {
     this.shopSecret = const Value.absent(),
     this.expiryWarnDays = const Value.absent(),
     this.maxWorkerDiscountPct = const Value.absent(),
+    this.workersSellWithoutStock = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ShopsCompanion.insert({
@@ -748,6 +791,7 @@ class ShopsCompanion extends UpdateCompanion<ShopRow> {
     required String shopSecret,
     this.expiryWarnDays = const Value.absent(),
     this.maxWorkerDiscountPct = const Value.absent(),
+    this.workersSellWithoutStock = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdAt = Value(createdAt),
@@ -770,6 +814,7 @@ class ShopsCompanion extends UpdateCompanion<ShopRow> {
     Expression<String>? shopSecret,
     Expression<int>? expiryWarnDays,
     Expression<int>? maxWorkerDiscountPct,
+    Expression<bool>? workersSellWithoutStock,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -788,6 +833,8 @@ class ShopsCompanion extends UpdateCompanion<ShopRow> {
       if (expiryWarnDays != null) 'expiry_warn_days': expiryWarnDays,
       if (maxWorkerDiscountPct != null)
         'max_worker_discount_pct': maxWorkerDiscountPct,
+      if (workersSellWithoutStock != null)
+        'workers_sell_without_stock': workersSellWithoutStock,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -807,6 +854,7 @@ class ShopsCompanion extends UpdateCompanion<ShopRow> {
       Value<String>? shopSecret,
       Value<int>? expiryWarnDays,
       Value<int>? maxWorkerDiscountPct,
+      Value<bool>? workersSellWithoutStock,
       Value<int>? rowid}) {
     return ShopsCompanion(
       id: id ?? this.id,
@@ -823,6 +871,8 @@ class ShopsCompanion extends UpdateCompanion<ShopRow> {
       shopSecret: shopSecret ?? this.shopSecret,
       expiryWarnDays: expiryWarnDays ?? this.expiryWarnDays,
       maxWorkerDiscountPct: maxWorkerDiscountPct ?? this.maxWorkerDiscountPct,
+      workersSellWithoutStock:
+          workersSellWithoutStock ?? this.workersSellWithoutStock,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -873,6 +923,10 @@ class ShopsCompanion extends UpdateCompanion<ShopRow> {
       map['max_worker_discount_pct'] =
           Variable<int>(maxWorkerDiscountPct.value);
     }
+    if (workersSellWithoutStock.present) {
+      map['workers_sell_without_stock'] =
+          Variable<bool>(workersSellWithoutStock.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -896,6 +950,7 @@ class ShopsCompanion extends UpdateCompanion<ShopRow> {
           ..write('shopSecret: $shopSecret, ')
           ..write('expiryWarnDays: $expiryWarnDays, ')
           ..write('maxWorkerDiscountPct: $maxWorkerDiscountPct, ')
+          ..write('workersSellWithoutStock: $workersSellWithoutStock, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -12047,6 +12102,7 @@ typedef $$ShopsTableCreateCompanionBuilder = ShopsCompanion Function({
   required String shopSecret,
   Value<int> expiryWarnDays,
   Value<int> maxWorkerDiscountPct,
+  Value<bool> workersSellWithoutStock,
   Value<int> rowid,
 });
 typedef $$ShopsTableUpdateCompanionBuilder = ShopsCompanion Function({
@@ -12064,6 +12120,7 @@ typedef $$ShopsTableUpdateCompanionBuilder = ShopsCompanion Function({
   Value<String> shopSecret,
   Value<int> expiryWarnDays,
   Value<int> maxWorkerDiscountPct,
+  Value<bool> workersSellWithoutStock,
   Value<int> rowid,
 });
 
@@ -12117,6 +12174,10 @@ class $$ShopsTableFilterComposer extends Composer<_$AppDatabase, $ShopsTable> {
 
   ColumnFilters<int> get maxWorkerDiscountPct => $composableBuilder(
       column: $table.maxWorkerDiscountPct,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get workersSellWithoutStock => $composableBuilder(
+      column: $table.workersSellWithoutStock,
       builder: (column) => ColumnFilters(column));
 }
 
@@ -12172,6 +12233,10 @@ class $$ShopsTableOrderingComposer
   ColumnOrderings<int> get maxWorkerDiscountPct => $composableBuilder(
       column: $table.maxWorkerDiscountPct,
       builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get workersSellWithoutStock => $composableBuilder(
+      column: $table.workersSellWithoutStock,
+      builder: (column) => ColumnOrderings(column));
 }
 
 class $$ShopsTableAnnotationComposer
@@ -12224,6 +12289,9 @@ class $$ShopsTableAnnotationComposer
 
   GeneratedColumn<int> get maxWorkerDiscountPct => $composableBuilder(
       column: $table.maxWorkerDiscountPct, builder: (column) => column);
+
+  GeneratedColumn<bool> get workersSellWithoutStock => $composableBuilder(
+      column: $table.workersSellWithoutStock, builder: (column) => column);
 }
 
 class $$ShopsTableTableManager extends RootTableManager<
@@ -12263,6 +12331,7 @@ class $$ShopsTableTableManager extends RootTableManager<
             Value<String> shopSecret = const Value.absent(),
             Value<int> expiryWarnDays = const Value.absent(),
             Value<int> maxWorkerDiscountPct = const Value.absent(),
+            Value<bool> workersSellWithoutStock = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ShopsCompanion(
@@ -12280,6 +12349,7 @@ class $$ShopsTableTableManager extends RootTableManager<
             shopSecret: shopSecret,
             expiryWarnDays: expiryWarnDays,
             maxWorkerDiscountPct: maxWorkerDiscountPct,
+            workersSellWithoutStock: workersSellWithoutStock,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -12297,6 +12367,7 @@ class $$ShopsTableTableManager extends RootTableManager<
             required String shopSecret,
             Value<int> expiryWarnDays = const Value.absent(),
             Value<int> maxWorkerDiscountPct = const Value.absent(),
+            Value<bool> workersSellWithoutStock = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ShopsCompanion.insert(
@@ -12314,6 +12385,7 @@ class $$ShopsTableTableManager extends RootTableManager<
             shopSecret: shopSecret,
             expiryWarnDays: expiryWarnDays,
             maxWorkerDiscountPct: maxWorkerDiscountPct,
+            workersSellWithoutStock: workersSellWithoutStock,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

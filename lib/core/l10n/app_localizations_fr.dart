@@ -1949,4 +1949,21 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get hubServiceText => 'Les autres téléphones peuvent se synchroniser.';
+
+  @override
+  String get stockShortBlocked =>
+      'Stock insuffisant. Ajoutez d\'abord la réception de stock.';
+
+  @override
+  String stockShortDetail(String product, int count) {
+    return '$product : il reste $count en stock.';
+  }
+
+  @override
+  String get workersSellWithoutStock =>
+      'Les employés peuvent vendre sans stock';
+
+  @override
+  String get workersSellWithoutStockHelp =>
+      'Désactivé : un employé ne peut pas vendre plus que le stock enregistré. Le patron peut toujours vendre.';
 }

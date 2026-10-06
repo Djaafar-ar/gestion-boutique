@@ -13,6 +13,10 @@ class Shop extends Equatable {
   /// Highest discount a worker may give, in percent.
   final int maxWorkerDiscountPct;
 
+  /// When false (the default), a worker cannot sell more than the stock
+  /// recorded. The owner always can.
+  final bool workersSellWithoutStock;
+
   const Shop({
     this.name = '',
     this.addressLine1 = '',
@@ -21,6 +25,7 @@ class Shop extends Equatable {
     this.footerText = '',
     this.expiryWarnDays = 3,
     this.maxWorkerDiscountPct = 10,
+    this.workersSellWithoutStock = false,
   });
 
   Shop copyWith({
@@ -31,6 +36,7 @@ class Shop extends Equatable {
     String? footerText,
     int? expiryWarnDays,
     int? maxWorkerDiscountPct,
+    bool? workersSellWithoutStock,
   }) {
     return Shop(
       name: name ?? this.name,
@@ -40,6 +46,8 @@ class Shop extends Equatable {
       footerText: footerText ?? this.footerText,
       expiryWarnDays: expiryWarnDays ?? this.expiryWarnDays,
       maxWorkerDiscountPct: maxWorkerDiscountPct ?? this.maxWorkerDiscountPct,
+      workersSellWithoutStock:
+          workersSellWithoutStock ?? this.workersSellWithoutStock,
     );
   }
 
@@ -51,6 +59,7 @@ class Shop extends Equatable {
         phoneNumber,
         footerText,
         expiryWarnDays,
-        maxWorkerDiscountPct
+        maxWorkerDiscountPct,
+        workersSellWithoutStock
       ];
 }

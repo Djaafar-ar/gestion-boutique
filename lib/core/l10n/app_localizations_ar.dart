@@ -1935,4 +1935,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get hubServiceText => 'يمكن للهواتف الأخرى المزامنة.';
+
+  @override
+  String get stockShortBlocked => 'المخزون غير كافٍ. أضف استلام المخزون أولاً.';
+
+  @override
+  String stockShortDetail(String product, int count) {
+    return '$product: تبقى $count في المخزون.';
+  }
+
+  @override
+  String get workersSellWithoutStock => 'يمكن للعمال البيع دون مخزون';
+
+  @override
+  String get workersSellWithoutStockHelp =>
+      'عند التعطيل: لا يمكن للعامل بيع أكثر من المخزون المسجّل. يمكن للمالك البيع دائماً.';
 }

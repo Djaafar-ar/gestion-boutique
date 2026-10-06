@@ -551,5 +551,9 @@
   "merge": "Merge",
   "merged": "Merged",
   "hubServiceTitle": "Shop hub on",
-  "hubServiceText": "The other phones can sync."
+  "hubServiceText": "The other phones can sync.",
+  "stockShortBlocked": "Not enough stock. Add the stock delivery first.",
+  "stockShortDetail": "{product}: {count} left in stock.",
+  "workersSellWithoutStock": "Workers can sell without stock",
+  "workersSellWithoutStockHelp": "Off: a worker cannot sell more than the recorded stock. The owner always can."
 }

@@ -6,6 +6,8 @@ import 'package:billing_app/features/billing/domain/entities/cart_item.dart';
 import 'package:billing_app/features/billing/domain/entities/sale.dart';
 import 'package:billing_app/features/product/data/repositories/product_repository_impl.dart';
 import 'package:billing_app/features/product/domain/entities/product.dart';
+import 'package:billing_app/features/shop/data/repositories/shop_repository_impl.dart';
+import 'package:billing_app/features/shop/domain/entities/shop.dart';
 import 'package:billing_app/features/stock/data/stock_ledger.dart';
 import 'package:billing_app/features/users/domain/entities/app_user.dart';
 import 'package:drift/drift.dart' show driftRuntimeOptions;
@@ -39,6 +41,10 @@ void main() {
     session = SessionCubit(hasOwner: true)..login(amine);
     repo = SaleRepositoryImpl(db, settings, session, StockLedger(db));
     products = ProductRepositoryImpl(db, settings, session);
+    // These tests are about saving sales; nothing is delivered, so the
+    // owner lets workers sell without stock (tested in stock_rule_test).
+    await ShopRepositoryImpl(db, settings)
+        .updateShop(const Shop(name: 'Test', workersSellWithoutStock: true));
   });
 
   tearDown(() async {

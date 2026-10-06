@@ -295,6 +295,7 @@ void main() {
     test('a worker cannot pass the owner\'s limit', () async {
       await ShopRepositoryImpl(db, SettingsStore(db))
           .updateShop(const Shop(name: 'Test', maxWorkerDiscountPct: 10));
+      await deliver(10);
       session.login(worker);
 
       // 10 % of 120 DA = 12 DA is fine, 12,01 DA is not.

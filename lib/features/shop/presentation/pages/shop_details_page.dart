@@ -26,6 +26,9 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
   final _address2Controller = TextEditingController();
   final _phoneController = TextEditingController();
   final _footerController = TextEditingController();
+
+  /// The owner's rule: may workers sell more than the stock?
+  bool _workersSellWithoutStock = false;
   final _maxDiscountController = TextEditingController(text: '10');
   final _expiryDaysController = TextEditingController(text: '3');
 
@@ -49,6 +52,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
       _footerController.text = shop.footerText;
       _maxDiscountController.text = '${shop.maxWorkerDiscountPct}';
       _expiryDaysController.text = '${shop.expiryWarnDays}';
+      _workersSellWithoutStock = shop.workersSellWithoutStock;
     }
   }
 
@@ -74,6 +78,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
         footerText: _footerController.text.trim(),
         maxWorkerDiscountPct: int.parse(_maxDiscountController.text),
         expiryWarnDays: int.parse(_expiryDaysController.text),
+        workersSellWithoutStock: _workersSellWithoutStock,
       );
 
       context.read<ShopBloc>().add(UpdateShopEvent(shop));
@@ -187,6 +192,15 @@ class _ShopDetailsPageState extends State<ShopDetailsPage> {
                     InputLabel(text: l10n.expiryWarnLabel),
                     _numberField(_expiryDaysController,
                         max: 60, error: l10n.daysInvalid),
+                    const SizedBox(height: 8),
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(l10n.workersSellWithoutStock),
+                      subtitle: Text(l10n.workersSellWithoutStockHelp),
+                      value: _workersSellWithoutStock,
+                      onChanged: (on) =>
+                          setState(() => _workersSellWithoutStock = on),
+                    ),
                   ],
                 ),
               ),

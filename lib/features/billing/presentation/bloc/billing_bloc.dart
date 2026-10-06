@@ -122,12 +122,14 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
         error: switch (failure) {
           DiscountLimitFailure() => BillingError.discountTooHigh,
           CreditLimitFailure() => BillingError.creditLimit,
+          StockShortFailure() => BillingError.stockShort,
           _ => BillingError.saveFailed,
         },
         errorDetail: failure is DiscountLimitFailure
             ? '${failure.maxPercent}'
             : failure?.message,
         creditLimit: failure is CreditLimitFailure ? failure : null,
+        stockShort: failure is StockShortFailure ? failure : null,
       ));
       return;
     }

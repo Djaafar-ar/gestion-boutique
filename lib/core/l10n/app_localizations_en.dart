@@ -1931,4 +1931,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hubServiceText => 'The other phones can sync.';
+
+  @override
+  String get stockShortBlocked =>
+      'Not enough stock. Add the stock delivery first.';
+
+  @override
+  String stockShortDetail(String product, int count) {
+    return '$product: $count left in stock.';
+  }
+
+  @override
+  String get workersSellWithoutStock => 'Workers can sell without stock';
+
+  @override
+  String get workersSellWithoutStockHelp =>
+      'Off: a worker cannot sell more than the recorded stock. The owner always can.';
 }

@@ -79,6 +79,7 @@ class SaleRepositoryImpl implements SaleRepository {
         }
       }
 
+      final checkStock = await _workerNeedsStock();
       // Everything is saved together, or nothing is saved.
       final saleId = await db.transaction(() => _insertSale(
             items: items,
@@ -87,8 +88,11 @@ class SaleRepositoryImpl implements SaleRepository {
             paid: paid,
             customerId: customerId,
             at: DateTime.now(),
+            checkStock: checkStock,
           ));
       return await getSale(saleId);
+    } on StockShortFailure catch (failure) {
+      return Left(failure);
     } catch (e) {
       return Left(CacheFailure(e.toString()));
     }
@@ -237,6 +241,7 @@ class SaleRepositoryImpl implements SaleRepository {
         }
       }
 
+      final checkStock = await _workerNeedsStock();
       final (refund, exchangeSaleId) = await db.transaction(() async {
         final now = DateTime.now();
         final deviceId = settings.deviceId;
@@ -360,6 +365,7 @@ class SaleRepositoryImpl implements SaleRepository {
             paid: subtotal,
             customerId: null,
             at: nextTime(),
+            checkStock: checkStock,
           );
         }
 
@@ -384,6 +390,8 @@ class SaleRepositoryImpl implements SaleRepository {
           : (await getSale(exchangeSaleId)).toNullable();
       return Right(ReturnResult(
           refund: refund, toCredit: toCredit, exchangeSale: exchangeSale));
+    } on StockShortFailure catch (failure) {
+      return Left(failure);
     } catch (e) {
       return Left(CacheFailure(e.toString()));
     }
@@ -413,8 +421,18 @@ class SaleRepositoryImpl implements SaleRepository {
             returnItemId: Value(returnItemId),
           ));
 
+  /// True when the logged-in person may only sell what is in stock: a
+  /// worker, unless the owner allowed selling without stock.
+  Future<bool> _workerNeedsStock() async {
+    if (session.state.isOwner) return false;
+    final shop = await currentShopRow(db);
+    return !(shop?.workersSellWithoutStock ?? false);
+  }
+
   /// Writes a ticket and takes its items out of the stock. Call it inside
-  /// a transaction. Returns the new sale id.
+  /// a transaction. Returns the new sale id. With [checkStock], throws a
+  /// [StockShortFailure] (and the transaction saves nothing) when a
+  /// product does not have enough stock.
   Future<String> _insertSale({
     required List<CartItem> items,
     required int subtotal,
@@ -422,7 +440,27 @@ class SaleRepositoryImpl implements SaleRepository {
     required int paid,
     required String? customerId,
     required DateTime at,
+    bool checkStock = false,
   }) async {
+    if (checkStock) {
+      final wanted = <String, int>{};
+      for (final item in items) {
+        wanted[item.product.id] =
+            (wanted[item.product.id] ?? 0) + item.quantity;
+      }
+      for (final MapEntry(key: productId, value: quantity) in wanted.entries) {
+        final stock = (await ledger.batchesOf(productId)).stock;
+        if (quantity > stock) {
+          throw StockShortFailure(
+            productId: productId,
+            productName:
+                items.firstWhere((i) => i.product.id == productId).product.name,
+            available: stock,
+            wanted: quantity,
+          );
+        }
+      }
+    }
     final now = at;
     final deviceId = settings.deviceId;
     final userId = session.userId;

@@ -16,6 +16,7 @@ import '../../../stock/presentation/widgets/product_picker.dart';
 import '../../domain/entities/cart_item.dart';
 import '../../domain/entities/sale.dart';
 import '../../domain/repositories/sale_repository.dart';
+import 'checkout_page.dart' show showStockShortDialog;
 
 /// A customer brings items back:
 /// - from a ticket ([saleId]) or without one (refunded at today's price,
@@ -159,6 +160,10 @@ class _ReturnPageState extends State<ReturnPage> {
     );
     if (!mounted) return;
     setState(() => _saving = false);
+    if (result.getLeft().toNullable() case final StockShortFailure short) {
+      await showStockShortDialog(context, short);
+      return;
+    }
     result.fold(
       (failure) => showAppSnack(
           context,

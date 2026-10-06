@@ -233,6 +233,10 @@ class CheckoutPage extends StatelessWidget {
       showAppSnack(context, l10n.saleSaveFailed, kind: SnackKind.error);
       return;
     }
+    if (state.error == BillingError.stockShort && state.stockShort != null) {
+      showStockShortDialog(context, state.stockShort!);
+      return;
+    }
     if (state.error == BillingError.customerMissing) {
       showAppSnack(context, l10n.customerRequired, kind: SnackKind.error);
       return;
@@ -355,6 +359,10 @@ class _StockWarning extends StatelessWidget {
         .where((i) => i.quantity > stock.stockOf(i.product.id).quantity)
         .toList();
     if (short.isEmpty) return const SizedBox.shrink();
+    // A worker may not sell without stock, unless the owner allows it.
+    final shopState = context.watch<ShopBloc>().state;
+    final allowed = context.watch<SessionCubit>().state.isOwner ||
+        (shopState is ShopLoaded && shopState.shop.workersSellWithoutStock);
     return Padding(
       padding: const EdgeInsets.only(top: 12),
       child: Card(
@@ -377,13 +385,27 @@ class _StockWarning extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               for (final item in short)
-                Text(
-                    '${item.product.name} : ${l10n.stockLabel(stock.stockOf(item.product.id).quantity)}',
-                    style: TextStyle(color: scheme.onErrorContainer)),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                          '${item.product.name} : ${l10n.stockLabel(stock.stockOf(item.product.id).quantity)}',
+                          style: TextStyle(color: scheme.onErrorContainer)),
+                    ),
+                    if (!allowed)
+                      TextButton(
+                        onPressed: () => context.push('/stock/delivery',
+                            extra: item.product.id),
+                        child: Text(l10n.addDelivery),
+                      ),
+                  ],
+                ),
               const SizedBox(height: 4),
-              Text(l10n.stockWarningBody,
-                  style:
-                      TextStyle(fontSize: 12, color: scheme.onErrorContainer)),
+              Text(allowed ? l10n.stockWarningBody : l10n.stockShortBlocked,
+                  style: TextStyle(
+                      fontSize: allowed ? 12 : 14,
+                      fontWeight: allowed ? null : FontWeight.bold,
+                      color: scheme.onErrorContainer)),
             ],
           ),
         ),
@@ -646,4 +668,34 @@ class _DiscountDialogState extends State<_DiscountDialog> {
       ],
     );
   }
+}
+
+/// "Stock insuffisant. Ajoutez d'abord la réception de stock." with a
+/// button that opens the stock delivery of that product.
+Future<void> showStockShortDialog(
+    BuildContext context, StockShortFailure failure) {
+  final l10n = AppLocalizations.of(context);
+  return showDialog<void>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      icon: Icon(Icons.inventory_2_outlined,
+          color: Theme.of(dialogContext).colorScheme.error),
+      title: Text(l10n.stockWarningTitle),
+      content: Text(
+          '${l10n.stockShortBlocked}\n\n${l10n.stockShortDetail(failure.productName, failure.available)}'),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l10n.commonCancel)),
+        FilledButton.icon(
+          onPressed: () {
+            Navigator.pop(dialogContext);
+            context.push('/stock/delivery', extra: failure.productId);
+          },
+          icon: const Icon(Icons.add_box_outlined),
+          label: Text(l10n.addDelivery),
+        ),
+      ],
+    ),
+  );
 }

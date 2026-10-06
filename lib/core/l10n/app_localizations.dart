@@ -3411,6 +3411,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Les autres téléphones peuvent se synchroniser.'**
   String get hubServiceText;
+
+  /// No description provided for @stockShortBlocked.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock insuffisant. Ajoutez d\'abord la réception de stock.'**
+  String get stockShortBlocked;
+
+  /// No description provided for @stockShortDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'{product} : il reste {count} en stock.'**
+  String stockShortDetail(String product, int count);
+
+  /// No description provided for @workersSellWithoutStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les employés peuvent vendre sans stock'**
+  String get workersSellWithoutStock;
+
+  /// No description provided for @workersSellWithoutStockHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Désactivé : un employé ne peut pas vendre plus que le stock enregistré. Le patron peut toujours vendre.'**
+  String get workersSellWithoutStockHelp;
 }
 
 class _AppLocalizationsDelegate

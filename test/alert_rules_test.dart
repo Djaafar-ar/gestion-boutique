@@ -294,6 +294,7 @@ void main() {
     session.login(amine);
     await suppliers.recordPayment(supplierId: hamoud.id, amount: 100);
     await alerts.refresh();
+    session.login(karim);
     await sell(1);
     await alerts.refresh();
     await alerts.markRead('lowStock:soda', karim.id);

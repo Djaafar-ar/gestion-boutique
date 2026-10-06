@@ -176,9 +176,9 @@ void main() {
     });
 
     test('a worker phone never rings for owner alerts', () async {
+      await sellWithoutStock(); // by the owner
       session.login(amine);
       await workerPays();
-      await sellWithoutStock();
       await cubit.check();
 
       expect(

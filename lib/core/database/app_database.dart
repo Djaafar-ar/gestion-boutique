@@ -45,7 +45,7 @@ class AppDatabase extends _$AppDatabase {
   // 2. run: dart run drift_dev make-migrations
   // 3. add the new step below (the generated tests check it).
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -106,6 +106,11 @@ class AppDatabase extends _$AppDatabase {
             await m.createIndex(schema.returnsExchangeSale);
             await m.alterTable(TableMigration(schema.returnItems,
                 newColumns: [schema.returnItems.unitCost]));
+          },
+          // After Phase 7: may workers sell without stock (owner rule)?
+          from8To9: (m, schema) async {
+            await m.addColumn(
+                schema.shops, schema.shops.workersSellWithoutStock);
           },
           // Phase 7: Wi-Fi sync. Phones get letters, and every change of a
           // shared row is written to the change log by triggers.
