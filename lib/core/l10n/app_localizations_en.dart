@@ -1611,4 +1611,102 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get myStatsNote => 'You only see your own figures.';
+
+  @override
+  String get noReceiptReturn => 'Return without receipt';
+
+  @override
+  String get noReceiptExchange => 'Exchange without receipt';
+
+  @override
+  String get exchangeButton => 'Exchange';
+
+  @override
+  String exchangeTitle(int number) {
+    return 'Exchange of ticket #$number';
+  }
+
+  @override
+  String get exchangeSwitch => 'The customer takes other items (exchange)';
+
+  @override
+  String get returnedItemsSection => 'Items brought back';
+
+  @override
+  String get takenItemsSection => 'Items the customer takes';
+
+  @override
+  String get addReturnedProduct => 'Add a product brought back';
+
+  @override
+  String get addTakenProduct => 'Add an item taken';
+
+  @override
+  String get noReceiptPriceNote =>
+      'Without a receipt, the refund uses today\'s sell price.';
+
+  @override
+  String get returnValueLabel => 'Value of items brought back';
+
+  @override
+  String get takenValueLabel => 'Value of items taken';
+
+  @override
+  String customerPays(String amount) {
+    return 'The customer pays: $amount';
+  }
+
+  @override
+  String giveBack(String amount) {
+    return 'Give back to the customer: $amount';
+  }
+
+  @override
+  String get nothingToSettle => 'Nothing to pay or give back.';
+
+  @override
+  String debtReduced(String amount) {
+    return '$amount taken off the customer\'s debt';
+  }
+
+  @override
+  String get confirmExchange => 'Confirm the exchange';
+
+  @override
+  String get exchangeNothingTaken => 'Add the items the customer takes.';
+
+  @override
+  String exchangeSaved(int number) {
+    return 'Exchange saved: ticket #$number.';
+  }
+
+  @override
+  String get ownerApprovalTitle => 'Owner approval';
+
+  @override
+  String ownerApprovalBody(String name) {
+    return 'A return without a receipt must be approved by $name. $name, type your PIN:';
+  }
+
+  @override
+  String get ownerApprovalRefused => 'The owner must approve this return.';
+
+  @override
+  String get exchangeCreditLabel => 'Credit (items brought back)';
+
+  @override
+  String get fromExchangeNote => 'Exchange ticket';
+
+  @override
+  String alertReturnNoReceiptBody(String by, String amount) {
+    return '$by took back items without a receipt: $amount.';
+  }
+
+  @override
+  String get alertExchangeTitle => 'Exchange';
+
+  @override
+  String alertExchangeBody(String by, String amount, String taken) {
+    return '$by made an exchange: brought back $amount, taken $taken.';
+  }
 }

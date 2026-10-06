@@ -1106,5 +1106,97 @@
     }
   },
   "noSalesPeriod": "Aucune vente sur cette période.",
-  "myStatsNote": "Vous voyez seulement vos propres chiffres."
+  "myStatsNote": "Vous voyez seulement vos propres chiffres.",
+  "noReceiptReturn": "Retour sans ticket",
+  "noReceiptExchange": "Échange sans ticket",
+  "exchangeButton": "Échange",
+  "exchangeTitle": "Échange du ticket n°{number}",
+  "@exchangeTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "exchangeSwitch": "Le client prend d'autres articles (échange)",
+  "returnedItemsSection": "Articles rendus",
+  "takenItemsSection": "Articles pris par le client",
+  "addReturnedProduct": "Ajouter un produit rendu",
+  "addTakenProduct": "Ajouter un article pris",
+  "noReceiptPriceNote": "Sans ticket, le remboursement se fait au prix de vente actuel.",
+  "returnValueLabel": "Valeur des articles rendus",
+  "takenValueLabel": "Valeur des articles pris",
+  "customerPays": "Le client paie : {amount}",
+  "@customerPays": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "giveBack": "À rendre au client : {amount}",
+  "@giveBack": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "nothingToSettle": "Rien à payer, rien à rendre.",
+  "debtReduced": "{amount} déduit de la dette du client",
+  "@debtReduced": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmExchange": "Valider l'échange",
+  "exchangeNothingTaken": "Ajoutez les articles pris par le client.",
+  "exchangeSaved": "Échange enregistré : ticket n°{number}.",
+  "@exchangeSaved": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "ownerApprovalTitle": "Accord du patron",
+  "ownerApprovalBody": "Un retour sans ticket doit être accepté par {name}. {name}, tapez votre code PIN :",
+  "@ownerApprovalBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ownerApprovalRefused": "Le patron doit accepter ce retour.",
+  "exchangeCreditLabel": "Avoir (articles rendus)",
+  "fromExchangeNote": "Ticket d'un échange",
+  "alertReturnNoReceiptBody": "{by} a repris des articles sans ticket : {amount}.",
+  "@alertReturnNoReceiptBody": {
+    "placeholders": {
+      "by": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "alertExchangeTitle": "Échange",
+  "alertExchangeBody": "{by} a fait un échange : rendu {amount}, pris {taken}.",
+  "@alertExchangeBody": {
+    "placeholders": {
+      "by": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      },
+      "taken": {
+        "type": "String"
+      }
+    }
+  }
 }

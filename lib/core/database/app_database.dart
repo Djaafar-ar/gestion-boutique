@@ -41,7 +41,7 @@ class AppDatabase extends _$AppDatabase {
   // 2. run: dart run drift_dev make-migrations
   // 3. add the new step below (the generated tests check it).
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -91,6 +91,17 @@ class AppDatabase extends _$AppDatabase {
             await m.createTable(schema.alerts);
             await m.createIndex(schema.alertsActive);
             await m.createTable(schema.alertReads);
+          },
+          // Returns without a receipt and exchanges: a return may have no
+          // ticket, and remembers the exchange ticket and who allowed it.
+          from6To7: (m, schema) async {
+            await m.alterTable(TableMigration(schema.returns, newColumns: [
+              schema.returns.exchangeSaleId,
+              schema.returns.approvedBy,
+            ]));
+            await m.createIndex(schema.returnsExchangeSale);
+            await m.alterTable(TableMigration(schema.returnItems,
+                newColumns: [schema.returnItems.unitCost]));
           },
         ),
       );

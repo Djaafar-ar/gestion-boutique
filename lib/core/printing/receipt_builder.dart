@@ -30,6 +30,10 @@ class ReceiptData {
   final int? paidNow;
   final int? customerDebt;
 
+  /// Exchange ticket: value of the items brought back that pay for part
+  /// of it.
+  final int exchangeCredit;
+
   const ReceiptData({
     required this.shopName,
     required this.address1,
@@ -45,6 +49,7 @@ class ReceiptData {
     this.customerName,
     this.paidNow,
     this.customerDebt,
+    this.exchangeCredit = 0,
   });
 
   factory ReceiptData.fromSale(Sale sale, Shop shop, {int? customerDebt}) =>
@@ -63,6 +68,7 @@ class ReceiptData {
         customerName: sale.isCredit ? (sale.customerName ?? '?') : null,
         paidNow: sale.isCredit ? sale.paidNow : null,
         customerDebt: sale.isCredit ? customerDebt : null,
+        exchangeCredit: sale.exchangeCredit,
       );
 }
 
@@ -103,6 +109,15 @@ List<String> buildReceiptBody(ReceiptData data, {bool asciiOnly = true}) {
     out.addAll(_amountRow('Remise', formatDA(-data.discount)));
   }
   out.addAll(_amountRow('TOTAL', formatDA(data.total)));
+  if (data.exchangeCredit > 0) {
+    // Exchange: the items brought back pay for part of the ticket.
+    final rest = data.total - data.exchangeCredit;
+    out.addAll(
+        _amountRow(p('Avoir (échange)'), formatDA(-data.exchangeCredit)));
+    out.addAll(rest >= 0
+        ? _amountRow(p('À payer'), formatDA(rest))
+        : _amountRow(p('À rendre'), formatDA(-rest)));
+  }
   out.add(dashes);
 
   final customer = data.customerName;

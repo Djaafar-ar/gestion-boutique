@@ -1627,4 +1627,102 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get myStatsNote => 'Vous voyez seulement vos propres chiffres.';
+
+  @override
+  String get noReceiptReturn => 'Retour sans ticket';
+
+  @override
+  String get noReceiptExchange => 'Échange sans ticket';
+
+  @override
+  String get exchangeButton => 'Échange';
+
+  @override
+  String exchangeTitle(int number) {
+    return 'Échange du ticket n°$number';
+  }
+
+  @override
+  String get exchangeSwitch => 'Le client prend d\'autres articles (échange)';
+
+  @override
+  String get returnedItemsSection => 'Articles rendus';
+
+  @override
+  String get takenItemsSection => 'Articles pris par le client';
+
+  @override
+  String get addReturnedProduct => 'Ajouter un produit rendu';
+
+  @override
+  String get addTakenProduct => 'Ajouter un article pris';
+
+  @override
+  String get noReceiptPriceNote =>
+      'Sans ticket, le remboursement se fait au prix de vente actuel.';
+
+  @override
+  String get returnValueLabel => 'Valeur des articles rendus';
+
+  @override
+  String get takenValueLabel => 'Valeur des articles pris';
+
+  @override
+  String customerPays(String amount) {
+    return 'Le client paie : $amount';
+  }
+
+  @override
+  String giveBack(String amount) {
+    return 'À rendre au client : $amount';
+  }
+
+  @override
+  String get nothingToSettle => 'Rien à payer, rien à rendre.';
+
+  @override
+  String debtReduced(String amount) {
+    return '$amount déduit de la dette du client';
+  }
+
+  @override
+  String get confirmExchange => 'Valider l\'échange';
+
+  @override
+  String get exchangeNothingTaken => 'Ajoutez les articles pris par le client.';
+
+  @override
+  String exchangeSaved(int number) {
+    return 'Échange enregistré : ticket n°$number.';
+  }
+
+  @override
+  String get ownerApprovalTitle => 'Accord du patron';
+
+  @override
+  String ownerApprovalBody(String name) {
+    return 'Un retour sans ticket doit être accepté par $name. $name, tapez votre code PIN :';
+  }
+
+  @override
+  String get ownerApprovalRefused => 'Le patron doit accepter ce retour.';
+
+  @override
+  String get exchangeCreditLabel => 'Avoir (articles rendus)';
+
+  @override
+  String get fromExchangeNote => 'Ticket d\'un échange';
+
+  @override
+  String alertReturnNoReceiptBody(String by, String amount) {
+    return '$by a repris des articles sans ticket : $amount.';
+  }
+
+  @override
+  String get alertExchangeTitle => 'Échange';
+
+  @override
+  String alertExchangeBody(String by, String amount, String taken) {
+    return '$by a fait un échange : rendu $amount, pris $taken.';
+  }
 }

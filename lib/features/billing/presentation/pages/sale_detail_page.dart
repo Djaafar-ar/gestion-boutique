@@ -34,8 +34,9 @@ class _SaleDetailPageState extends State<SaleDetailPage> {
     return result.fold((failure) => throw failure.message, (sale) => sale);
   }
 
-  Future<void> _openReturn(Sale sale) async {
-    final done = await context.push<bool>('/sell/history/${sale.id}/return');
+  Future<void> _openReturn(Sale sale, {bool exchange = false}) async {
+    final done = await context.push<bool>(
+        '/sell/history/${sale.id}/${exchange ? 'exchange' : 'return'}');
     if (done == true && mounted) {
       setState(() {
         _sale = _load();
@@ -178,12 +179,42 @@ class _SaleDetailPageState extends State<SaleDetailPage> {
                             ),
                           ),
                         ],
+                        if (sale.exchangeCredit > 0) ...[
+                          const SizedBox(height: 8),
+                          Text(l10n.fromExchangeNote,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600)),
+                          _AmountRow(
+                              label: l10n.exchangeCreditLabel,
+                              amount: -sale.exchangeCredit),
+                          _AmountRow(
+                              label: sale.total >= sale.exchangeCredit
+                                  ? l10n.paidLabel
+                                  : l10n.giveBack(''),
+                              amount: (sale.total - sale.exchangeCredit).abs()),
+                        ],
                         if (sale.hasReturnableItems) ...[
                           const SizedBox(height: 20),
-                          OutlinedButton.icon(
-                            onPressed: () => _openReturn(sale),
-                            icon: const Icon(Icons.assignment_return_outlined),
-                            label: Text(l10n.returnButton),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  onPressed: () => _openReturn(sale),
+                                  icon: const Icon(
+                                      Icons.assignment_return_outlined),
+                                  label: Text(l10n.returnButton),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  onPressed: () =>
+                                      _openReturn(sale, exchange: true),
+                                  icon: const Icon(Icons.swap_horiz),
+                                  label: Text(l10n.exchangeButton),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ],

@@ -104,12 +104,31 @@ AlertText describeAlert(
           Icons.shield_outlined,
           AlertLevel.urgent);
     case AlertType.returnMade:
-      return AlertText(
-          l10n.alertReturnTitle,
-          l10n.alertReturnBody(text('by'), number('number'), amount('amount')),
-          '/sell/history/${text('saleId')}',
-          Icons.assignment_return_outlined,
-          AlertLevel.info);
+      final route = data['saleId'] == null
+          ? '/sell/history'
+          : '/sell/history/${text('saleId')}';
+      return switch (data['kind']) {
+        'exchange' => AlertText(
+            l10n.alertExchangeTitle,
+            l10n.alertExchangeBody(
+                text('by'), amount('amount'), amount('taken')),
+            route,
+            Icons.swap_horiz,
+            AlertLevel.info),
+        'noReceipt' => AlertText(
+            l10n.alertReturnTitle,
+            l10n.alertReturnNoReceiptBody(text('by'), amount('amount')),
+            route,
+            Icons.assignment_return_outlined,
+            AlertLevel.warning),
+        _ => AlertText(
+            l10n.alertReturnTitle,
+            l10n.alertReturnBody(
+                text('by'), number('number'), amount('amount')),
+            route,
+            Icons.assignment_return_outlined,
+            AlertLevel.info),
+      };
   }
 }
 

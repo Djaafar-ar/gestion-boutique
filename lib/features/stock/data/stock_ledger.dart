@@ -96,6 +96,28 @@ class StockLedger {
     }
   }
 
+  /// Puts items back on the shelf when nobody knows which delivery they
+  /// came from (a return without a receipt). They count as stock without
+  /// an expiry date.
+  Future<void> putBackWithoutBatch({
+    required String productId,
+    required int quantity,
+    required String sourceId,
+    required String deviceId,
+    required String? userId,
+    required DateTime at,
+  }) =>
+      _insert(
+        productId: productId,
+        deliveryId: null,
+        quantity: -quantity,
+        source: 'return',
+        sourceId: sourceId,
+        deviceId: deviceId,
+        userId: userId,
+        at: at,
+      );
+
   Future<Map<String, BatchState>> _compute({String? productId}) async {
     final deliveryQuery = db.select(db.deliveries).join([
       leftOuterJoin(db.users, db.users.id.equalsExp(db.deliveries.userId)),

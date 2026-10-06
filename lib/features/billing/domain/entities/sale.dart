@@ -56,6 +56,10 @@ class Sale extends Equatable {
   final String? customerId;
   final String? customerName;
 
+  /// Exchange ticket: value of the items brought back that paid for part
+  /// of this ticket (centimes).
+  final int exchangeCredit;
+
   const Sale({
     required this.id,
     required this.number,
@@ -70,6 +74,7 @@ class Sale extends Equatable {
     this.refunded = 0,
     this.customerId,
     this.customerName,
+    this.exchangeCredit = 0,
   });
 
   /// A sale put (partly) on a customer's account.
@@ -101,7 +106,8 @@ class Sale extends Equatable {
         items,
         refunded,
         customerId,
-        customerName
+        customerName,
+        exchangeCredit
       ];
 }
 
@@ -165,4 +171,47 @@ class ReturnLine extends Equatable {
 
   @override
   List<Object?> get props => [saleItemId, quantity, backToStock];
+}
+
+/// A product brought back without its receipt. It is refunded at the
+/// product's current sell price.
+class LooseReturnLine extends Equatable {
+  final String productId;
+  final int quantity;
+  final bool backToStock;
+
+  const LooseReturnLine(
+      {required this.productId,
+      required this.quantity,
+      required this.backToStock});
+
+  @override
+  List<Object?> get props => [productId, quantity, backToStock];
+}
+
+/// What a return (or an exchange) came to.
+class ReturnResult extends Equatable {
+  /// Value of the items brought back (centimes).
+  final int refund;
+
+  /// The refund was taken off the customer's debt instead of paid.
+  final bool toCredit;
+
+  /// Exchange: the new ticket of the items the customer took.
+  final Sale? exchangeSale;
+
+  const ReturnResult(
+      {required this.refund, this.toCredit = false, this.exchangeSale});
+
+  /// Cash to settle: above zero the customer pays it, below zero the shop
+  /// gives it back.
+  int get difference => (exchangeSale?.total ?? 0) - (toCredit ? 0 : refund);
+
+  @override
+  List<Object?> get props => [refund, toCredit, exchangeSale];
+}
+
+/// A worker's return without a receipt needs the owner's PIN.
+class OwnerApprovalFailure extends Failure {
+  const OwnerApprovalFailure() : super('Owner approval needed');
 }

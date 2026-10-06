@@ -2889,6 +2889,168 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Vous voyez seulement vos propres chiffres.'**
   String get myStatsNote;
+
+  /// No description provided for @noReceiptReturn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour sans ticket'**
+  String get noReceiptReturn;
+
+  /// No description provided for @noReceiptExchange.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échange sans ticket'**
+  String get noReceiptExchange;
+
+  /// No description provided for @exchangeButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échange'**
+  String get exchangeButton;
+
+  /// No description provided for @exchangeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échange du ticket n°{number}'**
+  String exchangeTitle(int number);
+
+  /// No description provided for @exchangeSwitch.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le client prend d\'autres articles (échange)'**
+  String get exchangeSwitch;
+
+  /// No description provided for @returnedItemsSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Articles rendus'**
+  String get returnedItemsSection;
+
+  /// No description provided for @takenItemsSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Articles pris par le client'**
+  String get takenItemsSection;
+
+  /// No description provided for @addReturnedProduct.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un produit rendu'**
+  String get addReturnedProduct;
+
+  /// No description provided for @addTakenProduct.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un article pris'**
+  String get addTakenProduct;
+
+  /// No description provided for @noReceiptPriceNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans ticket, le remboursement se fait au prix de vente actuel.'**
+  String get noReceiptPriceNote;
+
+  /// No description provided for @returnValueLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur des articles rendus'**
+  String get returnValueLabel;
+
+  /// No description provided for @takenValueLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valeur des articles pris'**
+  String get takenValueLabel;
+
+  /// No description provided for @customerPays.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le client paie : {amount}'**
+  String customerPays(String amount);
+
+  /// No description provided for @giveBack.
+  ///
+  /// In fr, this message translates to:
+  /// **'À rendre au client : {amount}'**
+  String giveBack(String amount);
+
+  /// No description provided for @nothingToSettle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rien à payer, rien à rendre.'**
+  String get nothingToSettle;
+
+  /// No description provided for @debtReduced.
+  ///
+  /// In fr, this message translates to:
+  /// **'{amount} déduit de la dette du client'**
+  String debtReduced(String amount);
+
+  /// No description provided for @confirmExchange.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valider l\'échange'**
+  String get confirmExchange;
+
+  /// No description provided for @exchangeNothingTaken.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoutez les articles pris par le client.'**
+  String get exchangeNothingTaken;
+
+  /// No description provided for @exchangeSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échange enregistré : ticket n°{number}.'**
+  String exchangeSaved(int number);
+
+  /// No description provided for @ownerApprovalTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accord du patron'**
+  String get ownerApprovalTitle;
+
+  /// No description provided for @ownerApprovalBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un retour sans ticket doit être accepté par {name}. {name}, tapez votre code PIN :'**
+  String ownerApprovalBody(String name);
+
+  /// No description provided for @ownerApprovalRefused.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le patron doit accepter ce retour.'**
+  String get ownerApprovalRefused;
+
+  /// No description provided for @exchangeCreditLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avoir (articles rendus)'**
+  String get exchangeCreditLabel;
+
+  /// No description provided for @fromExchangeNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ticket d\'un échange'**
+  String get fromExchangeNote;
+
+  /// No description provided for @alertReturnNoReceiptBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'{by} a repris des articles sans ticket : {amount}.'**
+  String alertReturnNoReceiptBody(String by, String amount);
+
+  /// No description provided for @alertExchangeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échange'**
+  String get alertExchangeTitle;
+
+  /// No description provided for @alertExchangeBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'{by} a fait un échange : rendu {amount}, pris {taken}.'**
+  String alertExchangeBody(String by, String amount, String taken);
 }
 
 class _AppLocalizationsDelegate

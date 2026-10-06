@@ -46,20 +46,23 @@ class StatsRepository {
     ];
 
     // Returns of the period. Their money counts for the person who made
-    // the sale; the cash given back for the person who gave it.
+    // the sale (without a receipt: who took the items back); the cash
+    // given back for the person who gave it.
     final returnRows = await (db.select(db.returns).join([
-      innerJoin(db.sales, db.sales.id.equalsExp(db.returns.saleId)),
+      leftOuterJoin(db.sales, db.sales.id.equalsExp(db.returns.saleId)),
     ])
           ..where(
               db.returns.deleted.equals(false) & period(db.returns.createdAt)))
         .get();
     final sellerOfReturn = {
       for (final row in returnRows)
-        row.readTable(db.returns).id: row.readTable(db.sales).userId,
+        row.readTable(db.returns).id: row.readTableOrNull(db.sales) == null
+            ? row.readTable(db.returns).userId
+            : row.readTable(db.sales).userId,
     };
     final returns = returnRows.map((r) => r.readTable(db.returns)).toList();
     final itemRows = await (db.select(db.returnItems).join([
-      innerJoin(
+      leftOuterJoin(
           db.saleItems, db.saleItems.id.equalsExp(db.returnItems.saleItemId)),
     ])
           ..where(db.returnItems.deleted.equals(false) &
@@ -125,7 +128,9 @@ class StatsRepository {
       items -= item.quantity;
       // Back on the shelf: the shop has the item again.
       if (item.backToStock) {
-        cost -= item.quantity * row.readTable(db.saleItems).unitCost;
+        final unitCost =
+            row.readTableOrNull(db.saleItems)?.unitCost ?? item.unitCost ?? 0;
+        cost -= item.quantity * unitCost;
       }
     }
 

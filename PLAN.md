@@ -347,6 +347,12 @@ At the **end of every phase**:
 - Tests: statistics queries against a known sample dataset.
 - **Rules chosen while building:** returns count against the person who made the sale (as on the profile page); cash given back counts for the person who gave it. Net profit = revenue − buying price of items sold (items put back on the shelf are not counted) − stock losses (damaged returns are already in the buying price). Workers see their own figures without buying prices, profit or what all customers owe. Periods longer than 62 days are shown month by month. Supplier payments are shown under the cash drawer but not taken out of "Argent en caisse".
 
+### Phase 6b: Returns without a receipt and exchanges (requested after Phase 6)
+- **Return without a receipt:** pick or scan the products, back on the shelf or damaged, refunded at the product's current sell price. Owner only, or a worker with the owner typing their PIN on the same screen (same wrong-PIN rules as login; the PIN is checked again when saving). Items back on the shelf count as stock without a batch (nobody knows their expiry date).
+- **Exchange:** from a ticket ("Échange" button) or without a receipt (switch on the return screen): items brought back + items taken, in one operation. The items taken become a new ticket; the app shows "Le client paie X" / "À rendre X". The new ticket and its receipt show "Avoir (échange)". On a credit ticket the refund can still go off the debt.
+- Both count in the statistics like returns (a return without a ticket counts for whoever made it) and alert the owner when a worker does them. Database v7.
+- **Workers never see profit or buying prices** (confirmed by the user after Phase 6).
+
 ### Phase 7: Wi-Fi sync
 - First launch choice: "Create a new shop (owner)" / "Join a shop (worker) → scan QR".
 - Hub: `shelf` server + foreground service + "Hub actif" notification. Pairing QR (reuses `pretty_qr_code`).

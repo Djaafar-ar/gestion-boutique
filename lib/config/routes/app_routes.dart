@@ -73,6 +73,13 @@ final router = GoRouter(
             builder: (context, state) => const HomePage(),
             routes: [
               GoRoute(
+                path: 'return',
+                parentNavigatorKey: rootNavigatorKey,
+                // Without a receipt; ?exchange=1 starts as an exchange.
+                builder: (context, state) => ReturnPage(
+                    exchange: state.uri.queryParameters['exchange'] == '1'),
+              ),
+              GoRoute(
                 path: 'checkout',
                 parentNavigatorKey: rootNavigatorKey,
                 builder: (context, state) => const CheckoutPage(),
@@ -93,6 +100,13 @@ final router = GoRouter(
                         parentNavigatorKey: rootNavigatorKey,
                         builder: (context, state) =>
                             ReturnPage(saleId: state.pathParameters['saleId']!),
+                      ),
+                      GoRoute(
+                        path: 'exchange',
+                        parentNavigatorKey: rootNavigatorKey,
+                        builder: (context, state) => ReturnPage(
+                            saleId: state.pathParameters['saleId']!,
+                            exchange: true),
                       ),
                     ],
                   ),

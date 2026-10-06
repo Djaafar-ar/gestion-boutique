@@ -4,39 +4,69 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/service_locator.dart';
+import '../../../../core/session/session_cubit.dart';
 import '../../../../core/utils/money.dart';
 import '../../../../core/widgets/app_snack.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/primary_button.dart';
+import '../../../auth/presentation/widgets/owner_approval_dialog.dart';
+import '../../../product/domain/entities/product.dart';
 import '../../../product/presentation/bloc/product_bloc.dart';
+import '../../../stock/presentation/widgets/product_picker.dart';
+import '../../domain/entities/cart_item.dart';
 import '../../domain/entities/sale.dart';
 import '../../domain/repositories/sale_repository.dart';
 
-/// A customer brings items back: how many of each, back on the shelf or
-/// damaged, and how much money to give back.
+/// A customer brings items back:
+/// - from a ticket ([saleId]) or without one (refunded at today's price,
+///   the owner must agree when a worker does it);
+/// - maybe taking other items instead: an exchange, where the app works
+///   out what the customer pays or gets back.
 class ReturnPage extends StatefulWidget {
-  final String saleId;
+  /// The ticket, or null for a return without a receipt.
+  final String? saleId;
 
-  const ReturnPage({super.key, required this.saleId});
+  /// Opens with "the customer takes other items" switched on.
+  final bool exchange;
+
+  const ReturnPage({super.key, this.saleId, this.exchange = false});
 
   @override
   State<ReturnPage> createState() => _ReturnPageState();
 }
 
-class _ReturnPageState extends State<ReturnPage> {
-  late final Future<Sale> _sale = sl<SaleRepository>()
-      .getSale(widget.saleId)
-      .then((r) => r.getOrElse((f) => throw f.message));
+/// A product brought back without a receipt.
+class _LooseItem {
+  final Product product;
+  int quantity = 1;
+  bool toShelf = true;
+  _LooseItem(this.product);
+}
 
-  /// Per sale line: how many come back, and whether to the shelf.
+class _ReturnPageState extends State<ReturnPage> {
+  late final Future<Sale?> _sale = widget.saleId == null
+      ? Future.value(null)
+      : sl<SaleRepository>()
+          .getSale(widget.saleId!)
+          .then((r) => r.getOrElse((f) => throw f.message));
+
+  /// From a ticket: per sale line, how many come back and whether to the
+  /// shelf.
   final Map<String, int> _quantities = {};
   final Map<String, bool> _toShelf = {};
-  final _reason = TextEditingController();
-  bool _saving = false;
+
+  /// Without a ticket: the products brought back.
+  final List<_LooseItem> _loose = [];
+
+  /// Exchange: the items the customer takes instead.
+  final List<CartItem> _taken = [];
+  late bool _exchange = widget.exchange;
 
   /// For a credit sale: take the refund off the customer's debt (default)
-  /// instead of giving cash back.
+  /// instead of paying it.
   bool _toCredit = true;
+  final _reason = TextEditingController();
+  bool _saving = false;
 
   @override
   void dispose() {
@@ -44,163 +74,374 @@ class _ReturnPageState extends State<ReturnPage> {
     super.dispose();
   }
 
-  int _refund(Sale sale) => sale.items.fold(
-      0, (sum, line) => sum + sale.refundFor(line, _quantities[line.id] ?? 0));
+  int _refund(Sale? sale) => sale == null
+      ? _loose.fold(0, (sum, l) => sum + l.product.sellPrice * l.quantity)
+      : sale.items.fold(0,
+          (sum, line) => sum + sale.refundFor(line, _quantities[line.id] ?? 0));
 
-  Future<void> _save(Sale sale) async {
+  int get _takenTotal =>
+      _exchange ? _taken.fold(0, (sum, item) => sum + item.total) : 0;
+
+  bool _refundsToDebt(Sale? sale) => (sale?.isCredit ?? false) && _toCredit;
+
+  Future<void> _addLoose() async {
+    final product = await pickProduct(context);
+    if (product == null || !mounted) return;
+    setState(() {
+      final existing =
+          _loose.where((l) => l.product.id == product.id).firstOrNull;
+      if (existing != null) {
+        existing.quantity++;
+      } else {
+        _loose.add(_LooseItem(product));
+      }
+    });
+  }
+
+  Future<void> _addTaken() async {
+    final product = await pickProduct(context);
+    if (product == null || !mounted) return;
+    setState(() {
+      final index = _taken.indexWhere((t) => t.product.id == product.id);
+      if (index >= 0) {
+        _taken[index] =
+            _taken[index].copyWith(quantity: _taken[index].quantity + 1);
+      } else {
+        _taken.add(CartItem(product: product));
+      }
+    });
+  }
+
+  Future<void> _save(Sale? sale) async {
     final l10n = AppLocalizations.of(context);
     final lines = [
-      for (final line in sale.items)
-        if ((_quantities[line.id] ?? 0) > 0)
-          ReturnLine(
-            saleItemId: line.id,
-            quantity: _quantities[line.id]!,
-            backToStock: _toShelf[line.id] ?? true,
-          ),
+      if (sale != null)
+        for (final line in sale.items)
+          if ((_quantities[line.id] ?? 0) > 0)
+            ReturnLine(
+              saleItemId: line.id,
+              quantity: _quantities[line.id]!,
+              backToStock: _toShelf[line.id] ?? true,
+            ),
     ];
-    if (lines.isEmpty) {
+    final loose = [
+      for (final item in _loose)
+        LooseReturnLine(
+            productId: item.product.id,
+            quantity: item.quantity,
+            backToStock: item.toShelf),
+    ];
+    if (lines.isEmpty && loose.isEmpty) {
       showAppSnack(context, l10n.returnNothing, kind: SnackKind.error);
       return;
     }
+    if (_exchange && _taken.isEmpty) {
+      showAppSnack(context, l10n.exchangeNothingTaken, kind: SnackKind.error);
+      return;
+    }
+
+    // Without a receipt, a worker needs the owner's PIN.
+    String? ownerPin;
+    if (sale == null && !context.read<SessionCubit>().state.isOwner) {
+      ownerPin = await askOwnerApproval(context);
+      if (ownerPin == null || !mounted) return;
+    }
+
     setState(() => _saving = true);
-    final toCredit = sale.isCredit && _toCredit;
-    final result = await sl<SaleRepository>().createReturn(
-        saleId: sale.id,
-        lines: lines,
-        reason: _reason.text,
-        toCredit: toCredit);
+    final result = await sl<SaleRepository>().processReturn(
+      saleId: sale?.id,
+      lines: lines,
+      looseLines: loose,
+      takes: _exchange ? _taken : const [],
+      reason: _reason.text,
+      toCredit: _refundsToDebt(sale),
+      ownerPin: ownerPin,
+    );
     if (!mounted) return;
     setState(() => _saving = false);
     result.fold(
-      (failure) => showAppSnack(context, l10n.errorWithDetail(failure.message),
+      (failure) => showAppSnack(
+          context,
+          failure is OwnerApprovalFailure
+              ? l10n.ownerApprovalRefused
+              : l10n.errorWithDetail(failure.message),
           kind: SnackKind.error),
-      (refund) {
+      (done) {
         context.read<ProductBloc>().add(LoadProducts());
+        final newSale = done.exchangeSale;
+        if (newSale != null) {
+          showAppSnack(context, l10n.exchangeSaved(newSale.number),
+              kind: SnackKind.success);
+          // The exchange ticket, ready to print.
+          context.pushReplacement('/sell/history/${newSale.id}');
+          return;
+        }
         showAppSnack(
             context,
-            toCredit
-                ? l10n.returnSavedCredit(formatDA(refund))
-                : l10n.returnSaved(formatDA(refund)),
+            done.toCredit
+                ? l10n.returnSavedCredit(formatDA(done.refund))
+                : l10n.returnSaved(formatDA(done.refund)),
             kind: SnackKind.success);
         context.pop(true);
       },
     );
   }
 
+  String _title(AppLocalizations l10n, Sale? sale) {
+    if (sale == null) {
+      return _exchange ? l10n.noReceiptExchange : l10n.noReceiptReturn;
+    }
+    return _exchange
+        ? l10n.exchangeTitle(sale.number)
+        : l10n.returnTitle(sale.number);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
 
-    return FutureBuilder<Sale>(
+    return FutureBuilder<Sale?>(
       future: _sale,
       builder: (context, snapshot) {
         final sale = snapshot.data;
+        final loading = widget.saleId != null && sale == null;
         return Scaffold(
-          appBar: AppBar(
-              title: Text(sale == null ? '' : l10n.returnTitle(sale.number))),
+          appBar: AppBar(title: Text(loading ? '' : _title(l10n, sale))),
           body: snapshot.hasError
               ? EmptyState(
                   icon: Icons.error_outline,
                   title: l10n.errorWithDetail('${snapshot.error}'))
-              : sale == null
+              : loading
                   ? const Center(child: CircularProgressIndicator())
-                  : ListView(
-                      padding: const EdgeInsets.all(16),
-                      children: [
-                        Text(l10n.returnIntro,
-                            style: TextStyle(color: scheme.onSurfaceVariant)),
-                        const SizedBox(height: 12),
-                        for (final line
-                            in sale.items.where((l) => l.returnable > 0))
-                          _LineCard(
-                            line: line,
-                            quantity: _quantities[line.id] ?? 0,
-                            toShelf: _toShelf[line.id] ?? true,
-                            onQuantity: (q) =>
-                                setState(() => _quantities[line.id] = q),
-                            onShelf: (v) =>
-                                setState(() => _toShelf[line.id] = v),
-                          ),
-                        const SizedBox(height: 8),
-                        TextField(
-                          controller: _reason,
-                          decoration: InputDecoration(
-                              labelText: l10n.returnReasonLabel),
-                        ),
-                        if (sale.isCredit) ...[
-                          const SizedBox(height: 16),
-                          Text(l10n.refundModeLabel,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w600)),
-                          const SizedBox(height: 8),
-                          SegmentedButton<bool>(
-                            showSelectedIcon: false,
-                            segments: [
-                              ButtonSegment(
-                                  value: true,
-                                  icon: const Icon(Icons.menu_book_outlined,
-                                      size: 18),
-                                  label: Text(l10n.refundToCredit)),
-                              ButtonSegment(
-                                  value: false,
-                                  icon: const Icon(Icons.payments_outlined,
-                                      size: 18),
-                                  label: Text(l10n.refundCash)),
-                            ],
-                            selected: {_toCredit},
-                            onSelectionChanged: (s) =>
-                                setState(() => _toCredit = s.first),
-                          ),
-                        ],
-                        const SizedBox(height: 16),
-                        Card(
-                          color: scheme.primaryContainer,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Text(
-                              sale.isCredit && _toCredit
-                                  ? l10n.refundToAccount(
-                                      sale.customerName ?? '',
-                                      formatDAForUi(_refund(sale)))
-                                  : l10n.refundToGive(
-                                      formatDAForUi(_refund(sale))),
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: scheme.onPrimaryContainer),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-          bottomNavigationBar: sale == null
+                  : _form(context, l10n, sale),
+          bottomNavigationBar: loading
               ? null
               : PrimaryButton(
                   onPressed: () => _save(sale),
                   isLoading: _saving,
-                  icon: Icons.assignment_return_outlined,
-                  label: l10n.confirmReturn,
+                  icon: _exchange
+                      ? Icons.swap_horiz
+                      : Icons.assignment_return_outlined,
+                  label: _exchange ? l10n.confirmExchange : l10n.confirmReturn,
                 ),
         );
       },
     );
   }
+
+  Widget _form(BuildContext context, AppLocalizations l10n, Sale? sale) {
+    final scheme = Theme.of(context).colorScheme;
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+      children: [
+        Text(sale == null ? l10n.noReceiptPriceNote : l10n.returnIntro,
+            style: TextStyle(color: scheme.onSurfaceVariant)),
+        const SizedBox(height: 12),
+        _Header(l10n.returnedItemsSection),
+        if (sale != null)
+          for (final line in sale.items.where((l) => l.returnable > 0))
+            _LineCard(
+              name: line.productName,
+              detail:
+                  '${line.returnable} × ${formatDAForUi(line.sellPrice)}${line.returned > 0 ? ' · ${l10n.returnedQty(line.returned)}' : ''}',
+              quantity: _quantities[line.id] ?? 0,
+              max: line.returnable,
+              toShelf: _toShelf[line.id] ?? true,
+              onQuantity: (q) => setState(() => _quantities[line.id] = q),
+              onShelf: (v) => setState(() => _toShelf[line.id] = v),
+            )
+        else ...[
+          for (final item in _loose)
+            _LineCard(
+              name: item.product.name,
+              detail: formatDAForUi(item.product.sellPrice),
+              quantity: item.quantity,
+              toShelf: item.toShelf,
+              onQuantity: (q) => setState(() {
+                if (q == 0) {
+                  _loose.remove(item);
+                } else {
+                  item.quantity = q;
+                }
+              }),
+              onShelf: (v) => setState(() => item.toShelf = v),
+            ),
+          OutlinedButton.icon(
+            onPressed: _addLoose,
+            icon: const Icon(Icons.add),
+            label: Text(l10n.addReturnedProduct),
+          ),
+        ],
+        const SizedBox(height: 8),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          secondary: const Icon(Icons.swap_horiz),
+          title: Text(l10n.exchangeSwitch),
+          value: _exchange,
+          onChanged: (on) => setState(() => _exchange = on),
+        ),
+        if (_exchange) ...[
+          _Header(l10n.takenItemsSection),
+          for (final (index, item) in _taken.indexed)
+            _LineCard(
+              name: item.product.name,
+              detail: formatDAForUi(item.product.sellPrice),
+              quantity: item.quantity,
+              onQuantity: (q) => setState(() {
+                if (q == 0) {
+                  _taken.removeAt(index);
+                } else {
+                  _taken[index] = item.copyWith(quantity: q);
+                }
+              }),
+            ),
+          OutlinedButton.icon(
+            onPressed: _addTaken,
+            icon: const Icon(Icons.add_shopping_cart),
+            label: Text(l10n.addTakenProduct),
+          ),
+        ],
+        if (sale?.isCredit ?? false) ...[
+          const SizedBox(height: 16),
+          Text(l10n.refundModeLabel,
+              style: const TextStyle(fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          SegmentedButton<bool>(
+            showSelectedIcon: false,
+            segments: [
+              ButtonSegment(
+                  value: true,
+                  icon: const Icon(Icons.menu_book_outlined, size: 18),
+                  label: Text(l10n.refundToCredit)),
+              ButtonSegment(
+                  value: false,
+                  icon: const Icon(Icons.payments_outlined, size: 18),
+                  label: Text(l10n.refundCash)),
+            ],
+            selected: {_toCredit},
+            onSelectionChanged: (s) => setState(() => _toCredit = s.first),
+          ),
+        ],
+        const SizedBox(height: 12),
+        TextField(
+          controller: _reason,
+          decoration: InputDecoration(labelText: l10n.returnReasonLabel),
+        ),
+        const SizedBox(height: 16),
+        _Summary(
+          refund: _refund(sale),
+          taken: _takenTotal,
+          exchange: _exchange,
+          toDebt: _refundsToDebt(sale),
+          customerName: sale?.customerName,
+        ),
+      ],
+    );
+  }
 }
 
+/// What the customer pays or gets back.
+class _Summary extends StatelessWidget {
+  final int refund;
+  final int taken;
+  final bool exchange;
+  final bool toDebt;
+  final String? customerName;
+
+  const _Summary(
+      {required this.refund,
+      required this.taken,
+      required this.exchange,
+      required this.toDebt,
+      this.customerName});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final style = TextStyle(color: scheme.onPrimaryContainer);
+    final bold = style.copyWith(fontSize: 16, fontWeight: FontWeight.bold);
+
+    final lines = <Widget>[];
+    if (!exchange) {
+      lines.add(Text(
+          toDebt
+              ? l10n.refundToAccount(customerName ?? '', formatDAForUi(refund))
+              : l10n.refundToGive(formatDAForUi(refund)),
+          style: bold));
+    } else {
+      final difference = taken - (toDebt ? 0 : refund);
+      lines
+        ..add(_row(l10n.returnValueLabel, refund, style))
+        ..add(_row(l10n.takenValueLabel, taken, style));
+      if (toDebt) {
+        lines.add(Text(l10n.debtReduced(formatDAForUi(refund)), style: style));
+      }
+      lines
+        ..add(Divider(color: scheme.onPrimaryContainer.withValues(alpha: 0.3)))
+        ..add(Text(
+            difference > 0
+                ? l10n.customerPays(formatDAForUi(difference))
+                : difference < 0
+                    ? l10n.giveBack(formatDAForUi(-difference))
+                    : l10n.nothingToSettle,
+            style: bold));
+    }
+    return Card(
+      color: scheme.primaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start, children: lines),
+      ),
+    );
+  }
+
+  Widget _row(String label, int amount, TextStyle style) => Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Row(
+          children: [
+            Expanded(child: Text(label, style: style)),
+            Text(formatDAForUi(amount), style: style),
+          ],
+        ),
+      );
+}
+
+class _Header extends StatelessWidget {
+  final String text;
+  const _Header(this.text);
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Text(text, style: Theme.of(context).textTheme.titleMedium),
+      );
+}
+
+/// One product: how many, and (for items brought back) whether they go
+/// back on the shelf or are damaged.
 class _LineCard extends StatelessWidget {
-  final SaleLine line;
+  final String name;
+  final String detail;
   final int quantity;
-  final bool toShelf;
+
+  /// Highest quantity allowed, or null for no limit.
+  final int? max;
+
+  /// Null for items taken in an exchange (no shelf/damaged choice).
+  final bool? toShelf;
   final ValueChanged<int> onQuantity;
-  final ValueChanged<bool> onShelf;
+  final ValueChanged<bool>? onShelf;
 
   const _LineCard({
-    required this.line,
+    required this.name,
+    required this.detail,
     required this.quantity,
-    required this.toShelf,
+    this.max,
+    this.toShelf,
     required this.onQuantity,
-    required this.onShelf,
+    this.onShelf,
   });
 
   @override
@@ -220,11 +461,9 @@ class _LineCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(line.productName,
+                      Text(name,
                           style: const TextStyle(fontWeight: FontWeight.w600)),
-                      Text(
-                          '${line.returnable} × ${formatDAForUi(line.sellPrice)}'
-                          '${line.returned > 0 ? ' · ${l10n.returnedQty(line.returned)}' : ''}',
+                      Text(detail,
                           style: TextStyle(
                               fontSize: 12, color: scheme.onSurfaceVariant)),
                     ],
@@ -239,14 +478,14 @@ class _LineCard extends StatelessWidget {
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold)),
                 IconButton(
-                  onPressed: quantity < line.returnable
+                  onPressed: max == null || quantity < max!
                       ? () => onQuantity(quantity + 1)
                       : null,
                   icon: const Icon(Icons.add_circle_outline),
                 ),
               ],
             ),
-            if (quantity > 0)
+            if (toShelf != null && quantity > 0)
               SegmentedButton<bool>(
                 showSelectedIcon: false,
                 segments: [
@@ -259,8 +498,8 @@ class _LineCard extends StatelessWidget {
                       icon: const Icon(Icons.broken_image_outlined, size: 18),
                       label: Text(l10n.reasonDamaged)),
                 ],
-                selected: {toShelf},
-                onSelectionChanged: (s) => onShelf(s.first),
+                selected: {toShelf!},
+                onSelectionChanged: (s) => onShelf?.call(s.first),
               ),
           ],
         ),

@@ -7,6 +7,7 @@ import '../../features/alerts/data/alert_repository.dart';
 import '../../features/alerts/data/phone_notifier.dart';
 import '../../features/alerts/presentation/alerts_cubit.dart';
 import '../../features/auth/data/login_guard.dart';
+import '../../features/auth/data/owner_approval.dart';
 import '../../features/auth/data/login_service.dart';
 import '../../features/billing/data/receipt_printer.dart';
 import '../../features/billing/data/repositories/sale_repository_impl.dart';
@@ -125,7 +126,8 @@ Future<void> init() async {
 
   // Features - Billing / Sales
   sl.registerLazySingleton<SaleRepository>(
-    () => SaleRepositoryImpl(sl(), sl(), sl(), sl()),
+    () => SaleRepositoryImpl(sl(), sl(), sl(), sl(),
+        ownerApproval: ownerApprovalWith(sl())),
   );
   sl.registerLazySingleton(() => ReceiptPrinter(sl()));
 

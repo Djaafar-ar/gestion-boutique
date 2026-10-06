@@ -12,6 +12,7 @@ import 'generated/schema_v3.dart' as v3;
 import 'generated/schema_v4.dart' as v4;
 import 'generated/schema_v5.dart' as v5;
 import 'generated/schema_v6.dart' as v6;
+import 'generated/schema_v7.dart' as v7;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -252,6 +253,53 @@ void main() {
         expect(customers.map((c) => (c.id, c.creditLimit)), [('c1', 100000)]);
         expect(await newDb.select(newDb.alerts).get(), isEmpty);
         expect(await newDb.select(newDb.alertReads).get(), isEmpty);
+      },
+    );
+  });
+
+  // Returns without a receipt: the tables are rebuilt so a return may
+  // have no ticket. Returns made before must keep their ticket.
+  test('migration from v6 to v7 keeps returns and their tickets', () async {
+    const at = '2026-10-06T14:32:00.000';
+    const ret = v6.ReturnsData(
+        id: 'r1',
+        createdAt: at,
+        updatedAt: at,
+        deviceId: 'phone-1',
+        deleted: 0,
+        saleId: 's1',
+        total: 6000,
+        refundMode: 'cash');
+    const item = v6.ReturnItemsData(
+        id: 'ri1',
+        createdAt: at,
+        updatedAt: at,
+        deviceId: 'phone-1',
+        deleted: 0,
+        returnId: 'r1',
+        saleItemId: 'line1',
+        productId: 'soda',
+        quantity: 1,
+        backToStock: 1,
+        refund: 6000);
+
+    await verifier.testWithDataIntegrity(
+      oldVersion: 6,
+      newVersion: 7,
+      createOld: v6.DatabaseAtV6.new,
+      createNew: v7.DatabaseAtV7.new,
+      openTestedDatabase: AppDatabase.new,
+      createItems: (batch, oldDb) {
+        batch.insert(oldDb.returns, ret);
+        batch.insert(oldDb.returnItems, item);
+      },
+      validateItems: (newDb) async {
+        final returns = await newDb.select(newDb.returns).get();
+        expect(returns.map((r) => (r.id, r.saleId, r.total, r.exchangeSaleId)),
+            [('r1', 's1', 6000, null)]);
+        final items = await newDb.select(newDb.returnItems).get();
+        expect(items.map((i) => (i.saleItemId, i.backToStock, i.unitCost)),
+            [('line1', 1, null)]);
       },
     );
   });

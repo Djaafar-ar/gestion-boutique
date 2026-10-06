@@ -167,8 +167,11 @@ Future<List<AlertDraft>> currentAlerts(AppDatabase db,
       at: delivery.createdAt,
     ));
   }
+  final exchangeSales = db.alias(db.sales, 'exchange_sales');
   final returns = await (db.select(db.returns).join([
-    innerJoin(db.sales, db.sales.id.equalsExp(db.returns.saleId)),
+    leftOuterJoin(db.sales, db.sales.id.equalsExp(db.returns.saleId)),
+    leftOuterJoin(
+        exchangeSales, exchangeSales.id.equalsExp(db.returns.exchangeSaleId)),
   ])
         ..where(db.returns.deleted.equals(false) &
             db.returns.createdAt.isBiggerOrEqualValue(from)))
@@ -181,9 +184,14 @@ Future<List<AlertDraft>> currentAlerts(AppDatabase db,
       type: AlertType.returnMade,
       refId: ret.id,
       data: {
-        'saleId': ret.saleId,
-        'number': row.readTable(db.sales).number,
+        // The ticket to open: the exchange ticket, else the old one.
+        'saleId': ret.exchangeSaleId ?? ret.saleId,
+        'number': row.readTableOrNull(db.sales)?.number,
         'amount': ret.total,
+        'taken': row.readTableOrNull(exchangeSales)?.total,
+        'kind': ret.exchangeSaleId != null
+            ? 'exchange'
+            : (ret.saleId == null ? 'noReceipt' : 'return'),
         'by': nameOf(ret.userId) ?? '?',
       },
       at: ret.createdAt,

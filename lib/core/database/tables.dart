@@ -116,14 +116,23 @@ class Losses extends Table with SyncColumns {
   Set<Column> get primaryKey => {id};
 }
 
-/// A customer bringing items back.
+/// A customer bringing items back, with or without their receipt, maybe
+/// taking other items instead (an exchange).
 @DataClassName('ReturnRow')
 @TableIndex(name: 'returns_sale', columns: {#saleId})
+@TableIndex(name: 'returns_exchange_sale', columns: {#exchangeSaleId})
 class Returns extends Table with SyncColumns {
-  TextColumn get saleId => text()();
+  /// The ticket the items come from, or null without a receipt.
+  TextColumn get saleId => text().nullable()();
   IntColumn get total => integer()(); // money given back, centimes
   TextColumn get refundMode => text().withDefault(const Constant('cash'))();
   TextColumn get reason => text().nullable()();
+
+  /// Exchange: the new ticket of the items the customer took instead.
+  TextColumn get exchangeSaleId => text().nullable()();
+
+  /// The owner who allowed a worker's return without a receipt.
+  TextColumn get approvedBy => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -133,13 +142,19 @@ class Returns extends Table with SyncColumns {
 @TableIndex(name: 'return_items_sale_item', columns: {#saleItemId})
 class ReturnItems extends Table with SyncColumns {
   TextColumn get returnId => text()();
-  TextColumn get saleItemId => text()();
+
+  /// The ticket line, or null without a receipt.
+  TextColumn get saleItemId => text().nullable()();
   TextColumn get productId => text()();
   IntColumn get quantity => integer()();
 
   /// True: back on the shelf. False: damaged, recorded as a loss.
   BoolColumn get backToStock => boolean()();
   IntColumn get refund => integer()(); // centimes
+
+  /// Without a receipt: the product's buying price at the time (with a
+  /// receipt, the ticket line has it).
+  IntColumn get unitCost => integer().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

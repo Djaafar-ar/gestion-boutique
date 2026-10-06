@@ -1617,4 +1617,102 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get myStatsNote => 'ترى أرقامك فقط.';
+
+  @override
+  String get noReceiptReturn => 'إرجاع بدون تذكرة';
+
+  @override
+  String get noReceiptExchange => 'استبدال بدون تذكرة';
+
+  @override
+  String get exchangeButton => 'استبدال';
+
+  @override
+  String exchangeTitle(int number) {
+    return 'استبدال التذكرة رقم $number';
+  }
+
+  @override
+  String get exchangeSwitch => 'يأخذ الزبون سلعاً أخرى (استبدال)';
+
+  @override
+  String get returnedItemsSection => 'السلع المُرجعة';
+
+  @override
+  String get takenItemsSection => 'السلع التي يأخذها الزبون';
+
+  @override
+  String get addReturnedProduct => 'إضافة سلعة مُرجعة';
+
+  @override
+  String get addTakenProduct => 'إضافة سلعة مأخوذة';
+
+  @override
+  String get noReceiptPriceNote =>
+      'بدون تذكرة، يكون الاسترداد بسعر البيع الحالي.';
+
+  @override
+  String get returnValueLabel => 'قيمة السلع المُرجعة';
+
+  @override
+  String get takenValueLabel => 'قيمة السلع المأخوذة';
+
+  @override
+  String customerPays(String amount) {
+    return 'يدفع الزبون: $amount';
+  }
+
+  @override
+  String giveBack(String amount) {
+    return 'يُرد للزبون: $amount';
+  }
+
+  @override
+  String get nothingToSettle => 'لا شيء للدفع أو للإرجاع.';
+
+  @override
+  String debtReduced(String amount) {
+    return 'خُصم $amount من دين الزبون';
+  }
+
+  @override
+  String get confirmExchange => 'تأكيد الاستبدال';
+
+  @override
+  String get exchangeNothingTaken => 'أضف السلع التي يأخذها الزبون.';
+
+  @override
+  String exchangeSaved(int number) {
+    return 'تم حفظ الاستبدال: التذكرة رقم $number.';
+  }
+
+  @override
+  String get ownerApprovalTitle => 'موافقة المالك';
+
+  @override
+  String ownerApprovalBody(String name) {
+    return 'يجب أن يوافق $name على الإرجاع بدون تذكرة. $name، أدخل رمز PIN:';
+  }
+
+  @override
+  String get ownerApprovalRefused => 'يجب أن يوافق المالك على هذا الإرجاع.';
+
+  @override
+  String get exchangeCreditLabel => 'رصيد (السلع المُرجعة)';
+
+  @override
+  String get fromExchangeNote => 'تذكرة استبدال';
+
+  @override
+  String alertReturnNoReceiptBody(String by, String amount) {
+    return 'استرجع $by سلعاً بدون تذكرة: $amount.';
+  }
+
+  @override
+  String get alertExchangeTitle => 'استبدال';
+
+  @override
+  String alertExchangeBody(String by, String amount, String taken) {
+    return 'قام $by باستبدال: مُرجع $amount، مأخوذ $taken.';
+  }
 }

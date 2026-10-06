@@ -4746,8 +4746,8 @@ class $ReturnsTable extends Returns with TableInfo<$ReturnsTable, ReturnRow> {
   static const VerificationMeta _saleIdMeta = const VerificationMeta('saleId');
   @override
   late final GeneratedColumn<String> saleId = GeneratedColumn<String>(
-      'sale_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'sale_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _totalMeta = const VerificationMeta('total');
   @override
   late final GeneratedColumn<int> total = GeneratedColumn<int>(
@@ -4766,6 +4766,18 @@ class $ReturnsTable extends Returns with TableInfo<$ReturnsTable, ReturnRow> {
   late final GeneratedColumn<String> reason = GeneratedColumn<String>(
       'reason', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _exchangeSaleIdMeta =
+      const VerificationMeta('exchangeSaleId');
+  @override
+  late final GeneratedColumn<String> exchangeSaleId = GeneratedColumn<String>(
+      'exchange_sale_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _approvedByMeta =
+      const VerificationMeta('approvedBy');
+  @override
+  late final GeneratedColumn<String> approvedBy = GeneratedColumn<String>(
+      'approved_by', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -4777,7 +4789,9 @@ class $ReturnsTable extends Returns with TableInfo<$ReturnsTable, ReturnRow> {
         saleId,
         total,
         refundMode,
-        reason
+        reason,
+        exchangeSaleId,
+        approvedBy
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4823,8 +4837,6 @@ class $ReturnsTable extends Returns with TableInfo<$ReturnsTable, ReturnRow> {
     if (data.containsKey('sale_id')) {
       context.handle(_saleIdMeta,
           saleId.isAcceptableOrUnknown(data['sale_id']!, _saleIdMeta));
-    } else if (isInserting) {
-      context.missing(_saleIdMeta);
     }
     if (data.containsKey('total')) {
       context.handle(
@@ -4841,6 +4853,18 @@ class $ReturnsTable extends Returns with TableInfo<$ReturnsTable, ReturnRow> {
     if (data.containsKey('reason')) {
       context.handle(_reasonMeta,
           reason.isAcceptableOrUnknown(data['reason']!, _reasonMeta));
+    }
+    if (data.containsKey('exchange_sale_id')) {
+      context.handle(
+          _exchangeSaleIdMeta,
+          exchangeSaleId.isAcceptableOrUnknown(
+              data['exchange_sale_id']!, _exchangeSaleIdMeta));
+    }
+    if (data.containsKey('approved_by')) {
+      context.handle(
+          _approvedByMeta,
+          approvedBy.isAcceptableOrUnknown(
+              data['approved_by']!, _approvedByMeta));
     }
     return context;
   }
@@ -4864,13 +4888,17 @@ class $ReturnsTable extends Returns with TableInfo<$ReturnsTable, ReturnRow> {
       deleted: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}deleted'])!,
       saleId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}sale_id'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}sale_id']),
       total: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}total'])!,
       refundMode: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}refund_mode'])!,
       reason: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}reason']),
+      exchangeSaleId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}exchange_sale_id']),
+      approvedBy: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}approved_by']),
     );
   }
 
@@ -4887,10 +4915,18 @@ class ReturnRow extends DataClass implements Insertable<ReturnRow> {
   final String deviceId;
   final String? userId;
   final bool deleted;
-  final String saleId;
+
+  /// The ticket the items come from, or null without a receipt.
+  final String? saleId;
   final int total;
   final String refundMode;
   final String? reason;
+
+  /// Exchange: the new ticket of the items the customer took instead.
+  final String? exchangeSaleId;
+
+  /// The owner who allowed a worker's return without a receipt.
+  final String? approvedBy;
   const ReturnRow(
       {required this.id,
       required this.createdAt,
@@ -4898,10 +4934,12 @@ class ReturnRow extends DataClass implements Insertable<ReturnRow> {
       required this.deviceId,
       this.userId,
       required this.deleted,
-      required this.saleId,
+      this.saleId,
       required this.total,
       required this.refundMode,
-      this.reason});
+      this.reason,
+      this.exchangeSaleId,
+      this.approvedBy});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -4913,11 +4951,19 @@ class ReturnRow extends DataClass implements Insertable<ReturnRow> {
       map['user_id'] = Variable<String>(userId);
     }
     map['deleted'] = Variable<bool>(deleted);
-    map['sale_id'] = Variable<String>(saleId);
+    if (!nullToAbsent || saleId != null) {
+      map['sale_id'] = Variable<String>(saleId);
+    }
     map['total'] = Variable<int>(total);
     map['refund_mode'] = Variable<String>(refundMode);
     if (!nullToAbsent || reason != null) {
       map['reason'] = Variable<String>(reason);
+    }
+    if (!nullToAbsent || exchangeSaleId != null) {
+      map['exchange_sale_id'] = Variable<String>(exchangeSaleId);
+    }
+    if (!nullToAbsent || approvedBy != null) {
+      map['approved_by'] = Variable<String>(approvedBy);
     }
     return map;
   }
@@ -4931,11 +4977,18 @@ class ReturnRow extends DataClass implements Insertable<ReturnRow> {
       userId:
           userId == null && nullToAbsent ? const Value.absent() : Value(userId),
       deleted: Value(deleted),
-      saleId: Value(saleId),
+      saleId:
+          saleId == null && nullToAbsent ? const Value.absent() : Value(saleId),
       total: Value(total),
       refundMode: Value(refundMode),
       reason:
           reason == null && nullToAbsent ? const Value.absent() : Value(reason),
+      exchangeSaleId: exchangeSaleId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exchangeSaleId),
+      approvedBy: approvedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(approvedBy),
     );
   }
 
@@ -4949,10 +5002,12 @@ class ReturnRow extends DataClass implements Insertable<ReturnRow> {
       deviceId: serializer.fromJson<String>(json['deviceId']),
       userId: serializer.fromJson<String?>(json['userId']),
       deleted: serializer.fromJson<bool>(json['deleted']),
-      saleId: serializer.fromJson<String>(json['saleId']),
+      saleId: serializer.fromJson<String?>(json['saleId']),
       total: serializer.fromJson<int>(json['total']),
       refundMode: serializer.fromJson<String>(json['refundMode']),
       reason: serializer.fromJson<String?>(json['reason']),
+      exchangeSaleId: serializer.fromJson<String?>(json['exchangeSaleId']),
+      approvedBy: serializer.fromJson<String?>(json['approvedBy']),
     );
   }
   @override
@@ -4965,10 +5020,12 @@ class ReturnRow extends DataClass implements Insertable<ReturnRow> {
       'deviceId': serializer.toJson<String>(deviceId),
       'userId': serializer.toJson<String?>(userId),
       'deleted': serializer.toJson<bool>(deleted),
-      'saleId': serializer.toJson<String>(saleId),
+      'saleId': serializer.toJson<String?>(saleId),
       'total': serializer.toJson<int>(total),
       'refundMode': serializer.toJson<String>(refundMode),
       'reason': serializer.toJson<String?>(reason),
+      'exchangeSaleId': serializer.toJson<String?>(exchangeSaleId),
+      'approvedBy': serializer.toJson<String?>(approvedBy),
     };
   }
 
@@ -4979,10 +5036,12 @@ class ReturnRow extends DataClass implements Insertable<ReturnRow> {
           String? deviceId,
           Value<String?> userId = const Value.absent(),
           bool? deleted,
-          String? saleId,
+          Value<String?> saleId = const Value.absent(),
           int? total,
           String? refundMode,
-          Value<String?> reason = const Value.absent()}) =>
+          Value<String?> reason = const Value.absent(),
+          Value<String?> exchangeSaleId = const Value.absent(),
+          Value<String?> approvedBy = const Value.absent()}) =>
       ReturnRow(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
@@ -4990,10 +5049,13 @@ class ReturnRow extends DataClass implements Insertable<ReturnRow> {
         deviceId: deviceId ?? this.deviceId,
         userId: userId.present ? userId.value : this.userId,
         deleted: deleted ?? this.deleted,
-        saleId: saleId ?? this.saleId,
+        saleId: saleId.present ? saleId.value : this.saleId,
         total: total ?? this.total,
         refundMode: refundMode ?? this.refundMode,
         reason: reason.present ? reason.value : this.reason,
+        exchangeSaleId:
+            exchangeSaleId.present ? exchangeSaleId.value : this.exchangeSaleId,
+        approvedBy: approvedBy.present ? approvedBy.value : this.approvedBy,
       );
   ReturnRow copyWithCompanion(ReturnsCompanion data) {
     return ReturnRow(
@@ -5008,6 +5070,11 @@ class ReturnRow extends DataClass implements Insertable<ReturnRow> {
       refundMode:
           data.refundMode.present ? data.refundMode.value : this.refundMode,
       reason: data.reason.present ? data.reason.value : this.reason,
+      exchangeSaleId: data.exchangeSaleId.present
+          ? data.exchangeSaleId.value
+          : this.exchangeSaleId,
+      approvedBy:
+          data.approvedBy.present ? data.approvedBy.value : this.approvedBy,
     );
   }
 
@@ -5023,14 +5090,16 @@ class ReturnRow extends DataClass implements Insertable<ReturnRow> {
           ..write('saleId: $saleId, ')
           ..write('total: $total, ')
           ..write('refundMode: $refundMode, ')
-          ..write('reason: $reason')
+          ..write('reason: $reason, ')
+          ..write('exchangeSaleId: $exchangeSaleId, ')
+          ..write('approvedBy: $approvedBy')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(id, createdAt, updatedAt, deviceId, userId,
-      deleted, saleId, total, refundMode, reason);
+      deleted, saleId, total, refundMode, reason, exchangeSaleId, approvedBy);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -5044,7 +5113,9 @@ class ReturnRow extends DataClass implements Insertable<ReturnRow> {
           other.saleId == this.saleId &&
           other.total == this.total &&
           other.refundMode == this.refundMode &&
-          other.reason == this.reason);
+          other.reason == this.reason &&
+          other.exchangeSaleId == this.exchangeSaleId &&
+          other.approvedBy == this.approvedBy);
 }
 
 class ReturnsCompanion extends UpdateCompanion<ReturnRow> {
@@ -5054,10 +5125,12 @@ class ReturnsCompanion extends UpdateCompanion<ReturnRow> {
   final Value<String> deviceId;
   final Value<String?> userId;
   final Value<bool> deleted;
-  final Value<String> saleId;
+  final Value<String?> saleId;
   final Value<int> total;
   final Value<String> refundMode;
   final Value<String?> reason;
+  final Value<String?> exchangeSaleId;
+  final Value<String?> approvedBy;
   final Value<int> rowid;
   const ReturnsCompanion({
     this.id = const Value.absent(),
@@ -5070,6 +5143,8 @@ class ReturnsCompanion extends UpdateCompanion<ReturnRow> {
     this.total = const Value.absent(),
     this.refundMode = const Value.absent(),
     this.reason = const Value.absent(),
+    this.exchangeSaleId = const Value.absent(),
+    this.approvedBy = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ReturnsCompanion.insert({
@@ -5079,16 +5154,17 @@ class ReturnsCompanion extends UpdateCompanion<ReturnRow> {
     required String deviceId,
     this.userId = const Value.absent(),
     this.deleted = const Value.absent(),
-    required String saleId,
+    this.saleId = const Value.absent(),
     required int total,
     this.refundMode = const Value.absent(),
     this.reason = const Value.absent(),
+    this.exchangeSaleId = const Value.absent(),
+    this.approvedBy = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdAt = Value(createdAt),
         updatedAt = Value(updatedAt),
         deviceId = Value(deviceId),
-        saleId = Value(saleId),
         total = Value(total);
   static Insertable<ReturnRow> custom({
     Expression<String>? id,
@@ -5101,6 +5177,8 @@ class ReturnsCompanion extends UpdateCompanion<ReturnRow> {
     Expression<int>? total,
     Expression<String>? refundMode,
     Expression<String>? reason,
+    Expression<String>? exchangeSaleId,
+    Expression<String>? approvedBy,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -5114,6 +5192,8 @@ class ReturnsCompanion extends UpdateCompanion<ReturnRow> {
       if (total != null) 'total': total,
       if (refundMode != null) 'refund_mode': refundMode,
       if (reason != null) 'reason': reason,
+      if (exchangeSaleId != null) 'exchange_sale_id': exchangeSaleId,
+      if (approvedBy != null) 'approved_by': approvedBy,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -5125,10 +5205,12 @@ class ReturnsCompanion extends UpdateCompanion<ReturnRow> {
       Value<String>? deviceId,
       Value<String?>? userId,
       Value<bool>? deleted,
-      Value<String>? saleId,
+      Value<String?>? saleId,
       Value<int>? total,
       Value<String>? refundMode,
       Value<String?>? reason,
+      Value<String?>? exchangeSaleId,
+      Value<String?>? approvedBy,
       Value<int>? rowid}) {
     return ReturnsCompanion(
       id: id ?? this.id,
@@ -5141,6 +5223,8 @@ class ReturnsCompanion extends UpdateCompanion<ReturnRow> {
       total: total ?? this.total,
       refundMode: refundMode ?? this.refundMode,
       reason: reason ?? this.reason,
+      exchangeSaleId: exchangeSaleId ?? this.exchangeSaleId,
+      approvedBy: approvedBy ?? this.approvedBy,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -5178,6 +5262,12 @@ class ReturnsCompanion extends UpdateCompanion<ReturnRow> {
     if (reason.present) {
       map['reason'] = Variable<String>(reason.value);
     }
+    if (exchangeSaleId.present) {
+      map['exchange_sale_id'] = Variable<String>(exchangeSaleId.value);
+    }
+    if (approvedBy.present) {
+      map['approved_by'] = Variable<String>(approvedBy.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -5197,6 +5287,8 @@ class ReturnsCompanion extends UpdateCompanion<ReturnRow> {
           ..write('total: $total, ')
           ..write('refundMode: $refundMode, ')
           ..write('reason: $reason, ')
+          ..write('exchangeSaleId: $exchangeSaleId, ')
+          ..write('approvedBy: $approvedBy, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5257,8 +5349,8 @@ class $ReturnItemsTable extends ReturnItems
       const VerificationMeta('saleItemId');
   @override
   late final GeneratedColumn<String> saleItemId = GeneratedColumn<String>(
-      'sale_item_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'sale_item_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _productIdMeta =
       const VerificationMeta('productId');
   @override
@@ -5285,6 +5377,12 @@ class $ReturnItemsTable extends ReturnItems
   late final GeneratedColumn<int> refund = GeneratedColumn<int>(
       'refund', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _unitCostMeta =
+      const VerificationMeta('unitCost');
+  @override
+  late final GeneratedColumn<int> unitCost = GeneratedColumn<int>(
+      'unit_cost', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -5298,7 +5396,8 @@ class $ReturnItemsTable extends ReturnItems
         productId,
         quantity,
         backToStock,
-        refund
+        refund,
+        unitCost
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -5352,8 +5451,6 @@ class $ReturnItemsTable extends ReturnItems
           _saleItemIdMeta,
           saleItemId.isAcceptableOrUnknown(
               data['sale_item_id']!, _saleItemIdMeta));
-    } else if (isInserting) {
-      context.missing(_saleItemIdMeta);
     }
     if (data.containsKey('product_id')) {
       context.handle(_productIdMeta,
@@ -5381,6 +5478,10 @@ class $ReturnItemsTable extends ReturnItems
     } else if (isInserting) {
       context.missing(_refundMeta);
     }
+    if (data.containsKey('unit_cost')) {
+      context.handle(_unitCostMeta,
+          unitCost.isAcceptableOrUnknown(data['unit_cost']!, _unitCostMeta));
+    }
     return context;
   }
 
@@ -5405,7 +5506,7 @@ class $ReturnItemsTable extends ReturnItems
       returnId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}return_id'])!,
       saleItemId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}sale_item_id'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}sale_item_id']),
       productId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}product_id'])!,
       quantity: attachedDatabase.typeMapping
@@ -5414,6 +5515,8 @@ class $ReturnItemsTable extends ReturnItems
           .read(DriftSqlType.bool, data['${effectivePrefix}back_to_stock'])!,
       refund: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}refund'])!,
+      unitCost: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}unit_cost']),
     );
   }
 
@@ -5431,13 +5534,19 @@ class ReturnItemRow extends DataClass implements Insertable<ReturnItemRow> {
   final String? userId;
   final bool deleted;
   final String returnId;
-  final String saleItemId;
+
+  /// The ticket line, or null without a receipt.
+  final String? saleItemId;
   final String productId;
   final int quantity;
 
   /// True: back on the shelf. False: damaged, recorded as a loss.
   final bool backToStock;
   final int refund;
+
+  /// Without a receipt: the product's buying price at the time (with a
+  /// receipt, the ticket line has it).
+  final int? unitCost;
   const ReturnItemRow(
       {required this.id,
       required this.createdAt,
@@ -5446,11 +5555,12 @@ class ReturnItemRow extends DataClass implements Insertable<ReturnItemRow> {
       this.userId,
       required this.deleted,
       required this.returnId,
-      required this.saleItemId,
+      this.saleItemId,
       required this.productId,
       required this.quantity,
       required this.backToStock,
-      required this.refund});
+      required this.refund,
+      this.unitCost});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -5463,11 +5573,16 @@ class ReturnItemRow extends DataClass implements Insertable<ReturnItemRow> {
     }
     map['deleted'] = Variable<bool>(deleted);
     map['return_id'] = Variable<String>(returnId);
-    map['sale_item_id'] = Variable<String>(saleItemId);
+    if (!nullToAbsent || saleItemId != null) {
+      map['sale_item_id'] = Variable<String>(saleItemId);
+    }
     map['product_id'] = Variable<String>(productId);
     map['quantity'] = Variable<int>(quantity);
     map['back_to_stock'] = Variable<bool>(backToStock);
     map['refund'] = Variable<int>(refund);
+    if (!nullToAbsent || unitCost != null) {
+      map['unit_cost'] = Variable<int>(unitCost);
+    }
     return map;
   }
 
@@ -5481,11 +5596,16 @@ class ReturnItemRow extends DataClass implements Insertable<ReturnItemRow> {
           userId == null && nullToAbsent ? const Value.absent() : Value(userId),
       deleted: Value(deleted),
       returnId: Value(returnId),
-      saleItemId: Value(saleItemId),
+      saleItemId: saleItemId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(saleItemId),
       productId: Value(productId),
       quantity: Value(quantity),
       backToStock: Value(backToStock),
       refund: Value(refund),
+      unitCost: unitCost == null && nullToAbsent
+          ? const Value.absent()
+          : Value(unitCost),
     );
   }
 
@@ -5500,11 +5620,12 @@ class ReturnItemRow extends DataClass implements Insertable<ReturnItemRow> {
       userId: serializer.fromJson<String?>(json['userId']),
       deleted: serializer.fromJson<bool>(json['deleted']),
       returnId: serializer.fromJson<String>(json['returnId']),
-      saleItemId: serializer.fromJson<String>(json['saleItemId']),
+      saleItemId: serializer.fromJson<String?>(json['saleItemId']),
       productId: serializer.fromJson<String>(json['productId']),
       quantity: serializer.fromJson<int>(json['quantity']),
       backToStock: serializer.fromJson<bool>(json['backToStock']),
       refund: serializer.fromJson<int>(json['refund']),
+      unitCost: serializer.fromJson<int?>(json['unitCost']),
     );
   }
   @override
@@ -5518,11 +5639,12 @@ class ReturnItemRow extends DataClass implements Insertable<ReturnItemRow> {
       'userId': serializer.toJson<String?>(userId),
       'deleted': serializer.toJson<bool>(deleted),
       'returnId': serializer.toJson<String>(returnId),
-      'saleItemId': serializer.toJson<String>(saleItemId),
+      'saleItemId': serializer.toJson<String?>(saleItemId),
       'productId': serializer.toJson<String>(productId),
       'quantity': serializer.toJson<int>(quantity),
       'backToStock': serializer.toJson<bool>(backToStock),
       'refund': serializer.toJson<int>(refund),
+      'unitCost': serializer.toJson<int?>(unitCost),
     };
   }
 
@@ -5534,11 +5656,12 @@ class ReturnItemRow extends DataClass implements Insertable<ReturnItemRow> {
           Value<String?> userId = const Value.absent(),
           bool? deleted,
           String? returnId,
-          String? saleItemId,
+          Value<String?> saleItemId = const Value.absent(),
           String? productId,
           int? quantity,
           bool? backToStock,
-          int? refund}) =>
+          int? refund,
+          Value<int?> unitCost = const Value.absent()}) =>
       ReturnItemRow(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
@@ -5547,11 +5670,12 @@ class ReturnItemRow extends DataClass implements Insertable<ReturnItemRow> {
         userId: userId.present ? userId.value : this.userId,
         deleted: deleted ?? this.deleted,
         returnId: returnId ?? this.returnId,
-        saleItemId: saleItemId ?? this.saleItemId,
+        saleItemId: saleItemId.present ? saleItemId.value : this.saleItemId,
         productId: productId ?? this.productId,
         quantity: quantity ?? this.quantity,
         backToStock: backToStock ?? this.backToStock,
         refund: refund ?? this.refund,
+        unitCost: unitCost.present ? unitCost.value : this.unitCost,
       );
   ReturnItemRow copyWithCompanion(ReturnItemsCompanion data) {
     return ReturnItemRow(
@@ -5569,6 +5693,7 @@ class ReturnItemRow extends DataClass implements Insertable<ReturnItemRow> {
       backToStock:
           data.backToStock.present ? data.backToStock.value : this.backToStock,
       refund: data.refund.present ? data.refund.value : this.refund,
+      unitCost: data.unitCost.present ? data.unitCost.value : this.unitCost,
     );
   }
 
@@ -5586,14 +5711,27 @@ class ReturnItemRow extends DataClass implements Insertable<ReturnItemRow> {
           ..write('productId: $productId, ')
           ..write('quantity: $quantity, ')
           ..write('backToStock: $backToStock, ')
-          ..write('refund: $refund')
+          ..write('refund: $refund, ')
+          ..write('unitCost: $unitCost')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, createdAt, updatedAt, deviceId, userId,
-      deleted, returnId, saleItemId, productId, quantity, backToStock, refund);
+  int get hashCode => Object.hash(
+      id,
+      createdAt,
+      updatedAt,
+      deviceId,
+      userId,
+      deleted,
+      returnId,
+      saleItemId,
+      productId,
+      quantity,
+      backToStock,
+      refund,
+      unitCost);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -5609,7 +5747,8 @@ class ReturnItemRow extends DataClass implements Insertable<ReturnItemRow> {
           other.productId == this.productId &&
           other.quantity == this.quantity &&
           other.backToStock == this.backToStock &&
-          other.refund == this.refund);
+          other.refund == this.refund &&
+          other.unitCost == this.unitCost);
 }
 
 class ReturnItemsCompanion extends UpdateCompanion<ReturnItemRow> {
@@ -5620,11 +5759,12 @@ class ReturnItemsCompanion extends UpdateCompanion<ReturnItemRow> {
   final Value<String?> userId;
   final Value<bool> deleted;
   final Value<String> returnId;
-  final Value<String> saleItemId;
+  final Value<String?> saleItemId;
   final Value<String> productId;
   final Value<int> quantity;
   final Value<bool> backToStock;
   final Value<int> refund;
+  final Value<int?> unitCost;
   final Value<int> rowid;
   const ReturnItemsCompanion({
     this.id = const Value.absent(),
@@ -5639,6 +5779,7 @@ class ReturnItemsCompanion extends UpdateCompanion<ReturnItemRow> {
     this.quantity = const Value.absent(),
     this.backToStock = const Value.absent(),
     this.refund = const Value.absent(),
+    this.unitCost = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ReturnItemsCompanion.insert({
@@ -5649,18 +5790,18 @@ class ReturnItemsCompanion extends UpdateCompanion<ReturnItemRow> {
     this.userId = const Value.absent(),
     this.deleted = const Value.absent(),
     required String returnId,
-    required String saleItemId,
+    this.saleItemId = const Value.absent(),
     required String productId,
     required int quantity,
     required bool backToStock,
     required int refund,
+    this.unitCost = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdAt = Value(createdAt),
         updatedAt = Value(updatedAt),
         deviceId = Value(deviceId),
         returnId = Value(returnId),
-        saleItemId = Value(saleItemId),
         productId = Value(productId),
         quantity = Value(quantity),
         backToStock = Value(backToStock),
@@ -5678,6 +5819,7 @@ class ReturnItemsCompanion extends UpdateCompanion<ReturnItemRow> {
     Expression<int>? quantity,
     Expression<bool>? backToStock,
     Expression<int>? refund,
+    Expression<int>? unitCost,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -5693,6 +5835,7 @@ class ReturnItemsCompanion extends UpdateCompanion<ReturnItemRow> {
       if (quantity != null) 'quantity': quantity,
       if (backToStock != null) 'back_to_stock': backToStock,
       if (refund != null) 'refund': refund,
+      if (unitCost != null) 'unit_cost': unitCost,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -5705,11 +5848,12 @@ class ReturnItemsCompanion extends UpdateCompanion<ReturnItemRow> {
       Value<String?>? userId,
       Value<bool>? deleted,
       Value<String>? returnId,
-      Value<String>? saleItemId,
+      Value<String?>? saleItemId,
       Value<String>? productId,
       Value<int>? quantity,
       Value<bool>? backToStock,
       Value<int>? refund,
+      Value<int?>? unitCost,
       Value<int>? rowid}) {
     return ReturnItemsCompanion(
       id: id ?? this.id,
@@ -5724,6 +5868,7 @@ class ReturnItemsCompanion extends UpdateCompanion<ReturnItemRow> {
       quantity: quantity ?? this.quantity,
       backToStock: backToStock ?? this.backToStock,
       refund: refund ?? this.refund,
+      unitCost: unitCost ?? this.unitCost,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -5767,6 +5912,9 @@ class ReturnItemsCompanion extends UpdateCompanion<ReturnItemRow> {
     if (refund.present) {
       map['refund'] = Variable<int>(refund.value);
     }
+    if (unitCost.present) {
+      map['unit_cost'] = Variable<int>(unitCost.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -5788,6 +5936,7 @@ class ReturnItemsCompanion extends UpdateCompanion<ReturnItemRow> {
           ..write('quantity: $quantity, ')
           ..write('backToStock: $backToStock, ')
           ..write('refund: $refund, ')
+          ..write('unitCost: $unitCost, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -10567,6 +10716,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       'losses_product', 'CREATE INDEX losses_product ON losses (product_id)');
   late final Index returnsSale =
       Index('returns_sale', 'CREATE INDEX returns_sale ON returns (sale_id)');
+  late final Index returnsExchangeSale = Index('returns_exchange_sale',
+      'CREATE INDEX returns_exchange_sale ON returns (exchange_sale_id)');
   late final Index returnItemsSaleItem = Index('return_items_sale_item',
       'CREATE INDEX return_items_sale_item ON return_items (sale_item_id)');
   late final Index supplierPaymentsSupplier = Index(
@@ -10619,6 +10770,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         stockAllocationsSource,
         lossesProduct,
         returnsSale,
+        returnsExchangeSale,
         returnItemsSaleItem,
         supplierPaymentsSupplier,
         supplierPaymentsStatus,
@@ -12831,10 +12983,12 @@ typedef $$ReturnsTableCreateCompanionBuilder = ReturnsCompanion Function({
   required String deviceId,
   Value<String?> userId,
   Value<bool> deleted,
-  required String saleId,
+  Value<String?> saleId,
   required int total,
   Value<String> refundMode,
   Value<String?> reason,
+  Value<String?> exchangeSaleId,
+  Value<String?> approvedBy,
   Value<int> rowid,
 });
 typedef $$ReturnsTableUpdateCompanionBuilder = ReturnsCompanion Function({
@@ -12844,10 +12998,12 @@ typedef $$ReturnsTableUpdateCompanionBuilder = ReturnsCompanion Function({
   Value<String> deviceId,
   Value<String?> userId,
   Value<bool> deleted,
-  Value<String> saleId,
+  Value<String?> saleId,
   Value<int> total,
   Value<String> refundMode,
   Value<String?> reason,
+  Value<String?> exchangeSaleId,
+  Value<String?> approvedBy,
   Value<int> rowid,
 });
 
@@ -12889,6 +13045,13 @@ class $$ReturnsTableFilterComposer
 
   ColumnFilters<String> get reason => $composableBuilder(
       column: $table.reason, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get exchangeSaleId => $composableBuilder(
+      column: $table.exchangeSaleId,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get approvedBy => $composableBuilder(
+      column: $table.approvedBy, builder: (column) => ColumnFilters(column));
 }
 
 class $$ReturnsTableOrderingComposer
@@ -12929,6 +13092,13 @@ class $$ReturnsTableOrderingComposer
 
   ColumnOrderings<String> get reason => $composableBuilder(
       column: $table.reason, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get exchangeSaleId => $composableBuilder(
+      column: $table.exchangeSaleId,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get approvedBy => $composableBuilder(
+      column: $table.approvedBy, builder: (column) => ColumnOrderings(column));
 }
 
 class $$ReturnsTableAnnotationComposer
@@ -12969,6 +13139,12 @@ class $$ReturnsTableAnnotationComposer
 
   GeneratedColumn<String> get reason =>
       $composableBuilder(column: $table.reason, builder: (column) => column);
+
+  GeneratedColumn<String> get exchangeSaleId => $composableBuilder(
+      column: $table.exchangeSaleId, builder: (column) => column);
+
+  GeneratedColumn<String> get approvedBy => $composableBuilder(
+      column: $table.approvedBy, builder: (column) => column);
 }
 
 class $$ReturnsTableTableManager extends RootTableManager<
@@ -13000,10 +13176,12 @@ class $$ReturnsTableTableManager extends RootTableManager<
             Value<String> deviceId = const Value.absent(),
             Value<String?> userId = const Value.absent(),
             Value<bool> deleted = const Value.absent(),
-            Value<String> saleId = const Value.absent(),
+            Value<String?> saleId = const Value.absent(),
             Value<int> total = const Value.absent(),
             Value<String> refundMode = const Value.absent(),
             Value<String?> reason = const Value.absent(),
+            Value<String?> exchangeSaleId = const Value.absent(),
+            Value<String?> approvedBy = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ReturnsCompanion(
@@ -13017,6 +13195,8 @@ class $$ReturnsTableTableManager extends RootTableManager<
             total: total,
             refundMode: refundMode,
             reason: reason,
+            exchangeSaleId: exchangeSaleId,
+            approvedBy: approvedBy,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -13026,10 +13206,12 @@ class $$ReturnsTableTableManager extends RootTableManager<
             required String deviceId,
             Value<String?> userId = const Value.absent(),
             Value<bool> deleted = const Value.absent(),
-            required String saleId,
+            Value<String?> saleId = const Value.absent(),
             required int total,
             Value<String> refundMode = const Value.absent(),
             Value<String?> reason = const Value.absent(),
+            Value<String?> exchangeSaleId = const Value.absent(),
+            Value<String?> approvedBy = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ReturnsCompanion.insert(
@@ -13043,6 +13225,8 @@ class $$ReturnsTableTableManager extends RootTableManager<
             total: total,
             refundMode: refundMode,
             reason: reason,
+            exchangeSaleId: exchangeSaleId,
+            approvedBy: approvedBy,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -13077,11 +13261,12 @@ typedef $$ReturnItemsTableCreateCompanionBuilder = ReturnItemsCompanion
   Value<String?> userId,
   Value<bool> deleted,
   required String returnId,
-  required String saleItemId,
+  Value<String?> saleItemId,
   required String productId,
   required int quantity,
   required bool backToStock,
   required int refund,
+  Value<int?> unitCost,
   Value<int> rowid,
 });
 typedef $$ReturnItemsTableUpdateCompanionBuilder = ReturnItemsCompanion
@@ -13093,11 +13278,12 @@ typedef $$ReturnItemsTableUpdateCompanionBuilder = ReturnItemsCompanion
   Value<String?> userId,
   Value<bool> deleted,
   Value<String> returnId,
-  Value<String> saleItemId,
+  Value<String?> saleItemId,
   Value<String> productId,
   Value<int> quantity,
   Value<bool> backToStock,
   Value<int> refund,
+  Value<int?> unitCost,
   Value<int> rowid,
 });
 
@@ -13145,6 +13331,9 @@ class $$ReturnItemsTableFilterComposer
 
   ColumnFilters<int> get refund => $composableBuilder(
       column: $table.refund, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get unitCost => $composableBuilder(
+      column: $table.unitCost, builder: (column) => ColumnFilters(column));
 }
 
 class $$ReturnItemsTableOrderingComposer
@@ -13191,6 +13380,9 @@ class $$ReturnItemsTableOrderingComposer
 
   ColumnOrderings<int> get refund => $composableBuilder(
       column: $table.refund, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get unitCost => $composableBuilder(
+      column: $table.unitCost, builder: (column) => ColumnOrderings(column));
 }
 
 class $$ReturnItemsTableAnnotationComposer
@@ -13237,6 +13429,9 @@ class $$ReturnItemsTableAnnotationComposer
 
   GeneratedColumn<int> get refund =>
       $composableBuilder(column: $table.refund, builder: (column) => column);
+
+  GeneratedColumn<int> get unitCost =>
+      $composableBuilder(column: $table.unitCost, builder: (column) => column);
 }
 
 class $$ReturnItemsTableTableManager extends RootTableManager<
@@ -13272,11 +13467,12 @@ class $$ReturnItemsTableTableManager extends RootTableManager<
             Value<String?> userId = const Value.absent(),
             Value<bool> deleted = const Value.absent(),
             Value<String> returnId = const Value.absent(),
-            Value<String> saleItemId = const Value.absent(),
+            Value<String?> saleItemId = const Value.absent(),
             Value<String> productId = const Value.absent(),
             Value<int> quantity = const Value.absent(),
             Value<bool> backToStock = const Value.absent(),
             Value<int> refund = const Value.absent(),
+            Value<int?> unitCost = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ReturnItemsCompanion(
@@ -13292,6 +13488,7 @@ class $$ReturnItemsTableTableManager extends RootTableManager<
             quantity: quantity,
             backToStock: backToStock,
             refund: refund,
+            unitCost: unitCost,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -13302,11 +13499,12 @@ class $$ReturnItemsTableTableManager extends RootTableManager<
             Value<String?> userId = const Value.absent(),
             Value<bool> deleted = const Value.absent(),
             required String returnId,
-            required String saleItemId,
+            Value<String?> saleItemId = const Value.absent(),
             required String productId,
             required int quantity,
             required bool backToStock,
             required int refund,
+            Value<int?> unitCost = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               ReturnItemsCompanion.insert(
@@ -13322,6 +13520,7 @@ class $$ReturnItemsTableTableManager extends RootTableManager<
             quantity: quantity,
             backToStock: backToStock,
             refund: refund,
+            unitCost: unitCost,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

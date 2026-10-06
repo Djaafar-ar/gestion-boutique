@@ -73,7 +73,19 @@ class _SalesHistoryPageState extends State<SalesHistoryPage> {
     final l10n = AppLocalizations.of(context);
     final filtered = _day != null || _search.text.trim().isNotEmpty;
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.historyTitle)),
+      appBar: AppBar(
+        title: Text(l10n.historyTitle),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.assignment_return_outlined),
+            tooltip: l10n.noReceiptReturn,
+            onPressed: () async {
+              await context.push('/sell/return');
+              if (mounted) _reload();
+            },
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Padding(

@@ -49,4 +49,22 @@ abstract class SaleRepository {
       required List<ReturnLine> lines,
       String? reason,
       bool toCredit = false});
+
+  /// Every kind of return in one operation:
+  /// - with a receipt ([saleId] and [lines]) or without one ([saleId] null
+  ///   and [looseLines], refunded at today's sell price). Without a
+  ///   receipt, a worker needs the owner's PIN ([ownerPin],
+  ///   [OwnerApprovalFailure] otherwise);
+  /// - an exchange when the customer [takes] other items: they become a
+  ///   new ticket, paid partly by the items brought back.
+  /// Everything is saved together, or nothing.
+  Future<Either<Failure, ReturnResult>> processReturn({
+    String? saleId,
+    List<ReturnLine> lines = const [],
+    List<LooseReturnLine> looseLines = const [],
+    List<CartItem> takes = const [],
+    String? reason,
+    bool toCredit = false,
+    String? ownerPin,
+  });
 }

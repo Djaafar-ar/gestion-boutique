@@ -10,6 +10,7 @@ void main() {
     String? customerName,
     int? paidNow,
     int? customerDebt,
+    int exchangeCredit = 0,
   }) {
     final items = lines ??
         const [
@@ -36,6 +37,7 @@ void main() {
       customerName: customerName,
       paidNow: paidNow,
       customerDebt: customerDebt,
+      exchangeCredit: exchangeCredit,
     );
   }
 
@@ -104,6 +106,15 @@ void main() {
     expect(text, matches(RegExp(r'Paye\s+20,00 DA')));
     expect(text, matches(RegExp(r'Reste \(credit\)\s+100,00 DA')));
     expect(text, matches(RegExp(r'Total du\s+1 650,00 DA')));
+  });
+
+  test('an exchange ticket shows the credit and what is left to pay', () {
+    final pay = buildReceiptBody(receipt(exchangeCredit: 5000)).join('\n');
+    expect(pay, matches(RegExp(r'Avoir \(echange\)\s+-50,00 DA')));
+    expect(pay, matches(RegExp(r'A payer\s+70,00 DA')));
+
+    final back = buildReceiptBody(receipt(exchangeCredit: 15000)).join('\n');
+    expect(back, matches(RegExp(r'A rendre\s+30,00 DA')));
   });
 
   test('a cash sale has no customer lines', () {

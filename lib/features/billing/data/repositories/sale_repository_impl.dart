@@ -21,9 +21,14 @@ class SaleRepositoryImpl implements SaleRepository {
   final SettingsStore settings;
   final SessionCubit session;
   final StockLedger ledger;
+
+  /// Checks the owner's PIN for a worker's return without a receipt and
+  /// gives the owner's id, or null when the PIN is wrong.
+  final Future<String?> Function(String pin)? ownerApproval;
   final Uuid _uuid = const Uuid();
 
-  SaleRepositoryImpl(this.db, this.settings, this.session, this.ledger);
+  SaleRepositoryImpl(this.db, this.settings, this.session, this.ledger,
+      {this.ownerApproval});
 
   @override
   Future<int?> maxDiscountPercent() async {
@@ -74,65 +79,15 @@ class SaleRepositoryImpl implements SaleRepository {
         }
       }
 
-      // Everything below is saved together, or nothing is saved.
-      final saleId = await db.transaction(() async {
-        final now = DateTime.now();
-        final deviceId = settings.deviceId;
-        final userId = session.userId;
-        final saleId = _uuid.v4();
-
-        final maxNumber = db.sales.number.max();
-        final lastNumber = await (db.selectOnly(db.sales)
-              ..addColumns([maxNumber]))
-            .map((row) => row.read(maxNumber))
-            .getSingle();
-
-        await db.into(db.sales).insert(SalesCompanion.insert(
-              id: saleId,
-              createdAt: now,
-              updatedAt: now,
-              deviceId: deviceId,
-              userId: Value(userId),
-              number: (lastNumber ?? 0) + 1,
-              subtotal: subtotal,
-              discount: Value(discount),
-              total: total,
-              paidNow: paid,
-              customerId: Value(customerId),
-            ));
-
-        for (final (index, item) in items.indexed) {
-          // One millisecond apart, so the lines keep the cart order.
-          final lineTime = now.add(Duration(milliseconds: index * 10));
-          final lineId = _uuid.v4();
-          // Items leave the batch that expires first; the line keeps
-          // their real buying price for the profit.
-          final unitCost = await ledger.takeOut(
-            productId: item.product.id,
-            quantity: item.quantity,
-            source: 'sale',
-            sourceId: lineId,
-            fallbackCost: item.product.buyPrice,
-            deviceId: deviceId,
-            userId: userId,
-            at: lineTime,
-          );
-          await db.into(db.saleItems).insert(SaleItemsCompanion.insert(
-                id: lineId,
-                createdAt: lineTime,
-                updatedAt: lineTime,
-                deviceId: deviceId,
-                userId: Value(userId),
-                saleId: saleId,
-                productId: item.product.id,
-                productName: item.product.name,
-                sellPrice: item.product.sellPrice,
-                unitCost: unitCost,
-                quantity: item.quantity,
-              ));
-        }
-        return saleId;
-      });
+      // Everything is saved together, or nothing is saved.
+      final saleId = await db.transaction(() => _insertSale(
+            items: items,
+            subtotal: subtotal,
+            discount: discount,
+            paid: paid,
+            customerId: customerId,
+            at: DateTime.now(),
+          ));
       return await getSale(saleId);
     } catch (e) {
       return Left(CacheFailure(e.toString()));
@@ -182,8 +137,11 @@ class SaleRepositoryImpl implements SaleRepository {
         return where;
       }
 
-      Expression<bool> seller(GeneratedColumn<String> column) =>
+      Expression<bool> seller(Expression<String> column) =>
           userId == null ? const Constant(true) : column.equals(userId);
+      // The seller of the ticket, or whoever took the items back when
+      // there was no ticket.
+      final returnSeller = coalesce([db.sales.userId, db.returns.userId]);
 
       final revenue = db.sales.total.sum();
       final count = db.sales.id.count();
@@ -203,24 +161,24 @@ class SaleRepositoryImpl implements SaleRepository {
       // Returns made in the period, taken off the seller's figures.
       final refunds = db.returns.total.sum();
       final refunded = await (db.selectOnly(db.returns).join([
-        innerJoin(db.sales, db.sales.id.equalsExp(db.returns.saleId),
+        leftOuterJoin(db.sales, db.sales.id.equalsExp(db.returns.saleId),
             useColumns: false),
       ])
             ..addColumns([refunds])
             ..where(period(db.returns.createdAt, db.returns.deleted) &
-                seller(db.sales.userId)))
+                seller(returnSeller)))
           .getSingle();
 
       final returnedQty = db.returnItems.quantity.sum();
       final returnedItems = await (db.selectOnly(db.returnItems).join([
         innerJoin(db.returns, db.returns.id.equalsExp(db.returnItems.returnId),
             useColumns: false),
-        innerJoin(db.sales, db.sales.id.equalsExp(db.returns.saleId),
+        leftOuterJoin(db.sales, db.sales.id.equalsExp(db.returns.saleId),
             useColumns: false),
       ])
             ..addColumns([returnedQty])
             ..where(period(db.returnItems.createdAt, db.returnItems.deleted) &
-                seller(db.sales.userId)))
+                seller(returnSeller)))
           .getSingle();
 
       return Right(SalesSummary(
@@ -236,33 +194,174 @@ class SaleRepositoryImpl implements SaleRepository {
 
   @override
   Future<Either<Failure, int>> createReturn(
-      {required String saleId,
-      required List<ReturnLine> lines,
-      String? reason,
-      bool toCredit = false}) async {
+          {required String saleId,
+          required List<ReturnLine> lines,
+          String? reason,
+          bool toCredit = false}) async =>
+      (await processReturn(
+              saleId: saleId, lines: lines, reason: reason, toCredit: toCredit))
+          .map((result) => result.refund);
+
+  @override
+  Future<Either<Failure, ReturnResult>> processReturn({
+    String? saleId,
+    List<ReturnLine> lines = const [],
+    List<LooseReturnLine> looseLines = const [],
+    List<CartItem> takes = const [],
+    String? reason,
+    bool toCredit = false,
+    String? ownerPin,
+  }) async {
+    final wanted = lines.where((l) => l.quantity > 0).toList();
+    final loose = looseLines.where((l) => l.quantity > 0).toList();
+    final taken = takes.where((t) => t.quantity > 0).toList();
+    final withReceipt = saleId != null;
+    if (withReceipt ? wanted.isEmpty : loose.isEmpty) {
+      return const Left(CacheFailure('Nothing to return'));
+    }
+    if (withReceipt ? loose.isNotEmpty : wanted.isNotEmpty) {
+      return const Left(CacheFailure('Receipt and no receipt mixed'));
+    }
     try {
-      final wanted = lines.where((l) => l.quantity > 0).toList();
-      if (wanted.isEmpty) return const Left(CacheFailure('Nothing to return'));
-
-      final refund = await db.transaction(() async {
-        final sale = (await getSale(saleId)).getOrElse((f) => throw f.message);
-        // Only a credit sale has a customer account to put money back on.
-        if (toCredit && !sale.isCredit) throw 'Not a credit sale';
-        final byId = {for (final line in sale.items) line.id: line};
-        for (final line in wanted) {
-          final saleLine = byId[line.saleItemId];
-          // Never more than what was sold (minus earlier returns).
-          if (saleLine == null || line.quantity > saleLine.returnable) {
-            throw 'Cannot return more than sold';
-          }
+      String? approvedBy;
+      if (!withReceipt) {
+        // No ticket, no customer account to put money back on.
+        if (toCredit) return const Left(CacheFailure('No account'));
+        // Checked here, whatever the screen does.
+        if (!session.state.isOwner) {
+          final approve = ownerApproval;
+          approvedBy = ownerPin == null || approve == null
+              ? null
+              : await approve(ownerPin);
+          if (approvedBy == null) return const Left(OwnerApprovalFailure());
         }
+      }
 
+      final (refund, exchangeSaleId) = await db.transaction(() async {
         final now = DateTime.now();
         final deviceId = settings.deviceId;
         final userId = session.userId;
         final returnId = _uuid.v4();
-        final refund = wanted.fold<int>(0,
-            (sum, l) => sum + sale.refundFor(byId[l.saleItemId]!, l.quantity));
+        var refund = 0;
+        var index = 0;
+        DateTime nextTime() => now.add(Duration(milliseconds: 10 * index++));
+
+        if (withReceipt) {
+          final sale =
+              (await getSale(saleId)).getOrElse((f) => throw f.message);
+          // Only a credit sale has a customer account to put money back on.
+          if (toCredit && !sale.isCredit) throw 'Not a credit sale';
+          final byId = {for (final line in sale.items) line.id: line};
+          for (final line in wanted) {
+            final saleLine = byId[line.saleItemId];
+            // Never more than what was sold (minus earlier returns).
+            if (saleLine == null || line.quantity > saleLine.returnable) {
+              throw 'Cannot return more than sold';
+            }
+          }
+          for (final line in wanted) {
+            final saleLine = byId[line.saleItemId]!;
+            final at = nextTime();
+            final itemId = _uuid.v4();
+            final lineRefund = sale.refundFor(saleLine, line.quantity);
+            refund += lineRefund;
+            await db.into(db.returnItems).insert(ReturnItemsCompanion.insert(
+                  id: itemId,
+                  createdAt: at,
+                  updatedAt: at,
+                  deviceId: deviceId,
+                  userId: Value(userId),
+                  returnId: returnId,
+                  saleItemId: Value(line.saleItemId),
+                  productId: saleLine.productId,
+                  quantity: line.quantity,
+                  backToStock: line.backToStock,
+                  refund: lineRefund,
+                ));
+            if (line.backToStock) {
+              // Back on the shelf, into the batch it came from.
+              await ledger.putBack(
+                productId: saleLine.productId,
+                saleItemId: line.saleItemId,
+                quantity: line.quantity,
+                deviceId: deviceId,
+                userId: userId,
+                at: at,
+              );
+            } else {
+              await _damaged(
+                  productId: saleLine.productId,
+                  quantity: line.quantity,
+                  unitCost: saleLine.unitCost,
+                  note: 'Retour ticket n° ${sale.number}',
+                  returnItemId: itemId,
+                  at: at);
+            }
+          }
+        } else {
+          final products = {
+            for (final p in await (db.select(db.products)
+                  ..where((p) => p.id.isIn(loose.map((l) => l.productId))))
+                .get())
+              p.id: p,
+          };
+          for (final line in loose) {
+            final product =
+                products[line.productId] ?? (throw 'Unknown product');
+            final at = nextTime();
+            final itemId = _uuid.v4();
+            // Today's price: there is no ticket to say what was paid.
+            final lineRefund = product.sellPrice * line.quantity;
+            refund += lineRefund;
+            await db.into(db.returnItems).insert(ReturnItemsCompanion.insert(
+                  id: itemId,
+                  createdAt: at,
+                  updatedAt: at,
+                  deviceId: deviceId,
+                  userId: Value(userId),
+                  returnId: returnId,
+                  productId: product.id,
+                  quantity: line.quantity,
+                  backToStock: line.backToStock,
+                  refund: lineRefund,
+                  unitCost: Value(product.buyPrice),
+                ));
+            if (line.backToStock) {
+              // Nobody knows which delivery it came from.
+              await ledger.putBackWithoutBatch(
+                productId: product.id,
+                quantity: line.quantity,
+                sourceId: itemId,
+                deviceId: deviceId,
+                userId: userId,
+                at: at,
+              );
+            } else {
+              await _damaged(
+                  productId: product.id,
+                  quantity: line.quantity,
+                  unitCost: product.buyPrice,
+                  note: 'Retour sans ticket',
+                  returnItemId: itemId,
+                  at: at);
+            }
+          }
+        }
+
+        // Exchange: the items taken become a new ticket, paid in cash
+        // (the items brought back pay for part of it).
+        String? exchangeSaleId;
+        if (taken.isNotEmpty) {
+          final subtotal = taken.fold<int>(0, (sum, item) => sum + item.total);
+          exchangeSaleId = await _insertSale(
+            items: taken,
+            subtotal: subtotal,
+            discount: 0,
+            paid: subtotal,
+            customerId: null,
+            at: nextTime(),
+          );
+        }
 
         await db.into(db.returns).insert(ReturnsCompanion.insert(
               id: returnId,
@@ -270,63 +369,116 @@ class SaleRepositoryImpl implements SaleRepository {
               updatedAt: now,
               deviceId: deviceId,
               userId: Value(userId),
-              saleId: saleId,
+              saleId: Value(saleId),
               total: refund,
               refundMode: Value(toCredit ? 'credit' : 'cash'),
               reason: Value(reason?.trim().isEmpty ?? true ? null : reason),
+              exchangeSaleId: Value(exchangeSaleId),
+              approvedBy: Value(approvedBy),
             ));
-
-        for (final (index, line) in wanted.indexed) {
-          final saleLine = byId[line.saleItemId]!;
-          final at = now.add(Duration(milliseconds: index * 10));
-          final itemId = _uuid.v4();
-          await db.into(db.returnItems).insert(ReturnItemsCompanion.insert(
-                id: itemId,
-                createdAt: at,
-                updatedAt: at,
-                deviceId: deviceId,
-                userId: Value(userId),
-                returnId: returnId,
-                saleItemId: line.saleItemId,
-                productId: saleLine.productId,
-                quantity: line.quantity,
-                backToStock: line.backToStock,
-                refund: sale.refundFor(saleLine, line.quantity),
-              ));
-          if (line.backToStock) {
-            // Back on the shelf, into the batch it came from.
-            await ledger.putBack(
-              productId: saleLine.productId,
-              saleItemId: line.saleItemId,
-              quantity: line.quantity,
-              deviceId: deviceId,
-              userId: userId,
-              at: at,
-            );
-          } else {
-            // Damaged: money lost at buying price. The item already left
-            // the stock with the sale, so the stock does not change.
-            await db.into(db.losses).insert(LossesCompanion.insert(
-                  id: _uuid.v4(),
-                  createdAt: at,
-                  updatedAt: at,
-                  deviceId: deviceId,
-                  userId: Value(userId),
-                  productId: saleLine.productId,
-                  quantity: line.quantity,
-                  reason: LossReason.damaged.name,
-                  note: Value('Retour ticket n° ${sale.number}'),
-                  unitCost: saleLine.unitCost,
-                  returnItemId: Value(itemId),
-                ));
-          }
-        }
-        return refund;
+        return (refund, exchangeSaleId);
       });
-      return Right(refund);
+
+      final exchangeSale = exchangeSaleId == null
+          ? null
+          : (await getSale(exchangeSaleId)).toNullable();
+      return Right(ReturnResult(
+          refund: refund, toCredit: toCredit, exchangeSale: exchangeSale));
     } catch (e) {
       return Left(CacheFailure(e.toString()));
     }
+  }
+
+  /// A damaged item brought back: money lost at buying price. The item
+  /// already left the stock with the sale, so the stock does not change.
+  Future<void> _damaged({
+    required String productId,
+    required int quantity,
+    required int unitCost,
+    required String note,
+    required String returnItemId,
+    required DateTime at,
+  }) =>
+      db.into(db.losses).insert(LossesCompanion.insert(
+            id: _uuid.v4(),
+            createdAt: at,
+            updatedAt: at,
+            deviceId: settings.deviceId,
+            userId: Value(session.userId),
+            productId: productId,
+            quantity: quantity,
+            reason: LossReason.damaged.name,
+            note: Value(note),
+            unitCost: unitCost,
+            returnItemId: Value(returnItemId),
+          ));
+
+  /// Writes a ticket and takes its items out of the stock. Call it inside
+  /// a transaction. Returns the new sale id.
+  Future<String> _insertSale({
+    required List<CartItem> items,
+    required int subtotal,
+    required int discount,
+    required int paid,
+    required String? customerId,
+    required DateTime at,
+  }) async {
+    final now = at;
+    final deviceId = settings.deviceId;
+    final userId = session.userId;
+    final saleId = _uuid.v4();
+    final total = subtotal - discount;
+
+    final maxNumber = db.sales.number.max();
+    final lastNumber = await (db.selectOnly(db.sales)..addColumns([maxNumber]))
+        .map((row) => row.read(maxNumber))
+        .getSingle();
+
+    await db.into(db.sales).insert(SalesCompanion.insert(
+          id: saleId,
+          createdAt: now,
+          updatedAt: now,
+          deviceId: deviceId,
+          userId: Value(userId),
+          number: (lastNumber ?? 0) + 1,
+          subtotal: subtotal,
+          discount: Value(discount),
+          total: total,
+          paidNow: paid,
+          customerId: Value(customerId),
+        ));
+
+    for (final (index, item) in items.indexed) {
+      // A few milliseconds apart, so the lines keep the cart order.
+      final lineTime = now.add(Duration(milliseconds: index * 10));
+      final lineId = _uuid.v4();
+      // Items leave the batch that expires first; the line keeps their
+      // real buying price for the profit.
+      final unitCost = await ledger.takeOut(
+        productId: item.product.id,
+        quantity: item.quantity,
+        source: 'sale',
+        sourceId: lineId,
+        fallbackCost: item.product.buyPrice,
+        deviceId: deviceId,
+        userId: userId,
+        at: lineTime,
+      );
+      await db.into(db.saleItems).insert(SaleItemsCompanion.insert(
+            id: lineId,
+            createdAt: lineTime,
+            updatedAt: lineTime,
+            deviceId: deviceId,
+            userId: Value(userId),
+            saleId: saleId,
+            productId: item.product.id,
+            productName: item.product.name,
+            sellPrice: item.product.sellPrice,
+            unitCost: unitCost,
+            quantity: item.quantity,
+          ));
+    }
+    return saleId;
   }
 
   /// Turns sale rows into sales with their lines, seller name, returned
@@ -367,6 +519,18 @@ class SaleRepositoryImpl implements SaleRepository {
         row.read(db.returns.saleId)!: row.read(refundSum) ?? 0,
     };
 
+    final exchangeRows = await (db.selectOnly(db.returns)
+          ..addColumns([db.returns.exchangeSaleId, refundSum])
+          ..where(db.returns.exchangeSaleId.isIn(ids) &
+              db.returns.refundMode.equals('cash') &
+              db.returns.deleted.equals(false))
+          ..groupBy([db.returns.exchangeSaleId]))
+        .get();
+    final exchangeCredit = {
+      for (final row in exchangeRows)
+        row.read(db.returns.exchangeSaleId)!: row.read(refundSum) ?? 0,
+    };
+
     final names = await userNames(db, sales.map((s) => s.userId));
     final customerIds = sales.map((s) => s.customerId).whereType<String>();
     final customers = customerIds.isEmpty
@@ -380,12 +544,18 @@ class SaleRepositoryImpl implements SaleRepository {
     return [
       for (final sale in sales)
         _toSale(sale, linesBySale[sale.id] ?? [], names, returned,
-            refunded[sale.id] ?? 0, customers),
+            refunded[sale.id] ?? 0, customers, exchangeCredit[sale.id] ?? 0),
     ];
   }
 
-  Sale _toSale(SaleRow sale, List<SaleItemRow> lines, Map<String, String> names,
-      Map<String, int> returned, int refunded, Map<String, String> customers) {
+  Sale _toSale(
+      SaleRow sale,
+      List<SaleItemRow> lines,
+      Map<String, String> names,
+      Map<String, int> returned,
+      int refunded,
+      Map<String, String> customers,
+      int exchangeCredit) {
     // Keep the order in which items were added to the cart.
     lines.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     return Sale(
@@ -401,6 +571,7 @@ class SaleRepositoryImpl implements SaleRepository {
       refunded: refunded,
       customerId: sale.customerId,
       customerName: customers[sale.customerId],
+      exchangeCredit: exchangeCredit,
       items: lines
           .map((l) => SaleLine(
                 id: l.id,
