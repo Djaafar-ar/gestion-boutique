@@ -295,6 +295,47 @@ class ChangeLogs extends Table with SyncColumns {
   Set<Column> get primaryKey => {id};
 }
 
+/// Alerts shown in the Alertes tab. Each phone works them out from its own
+/// data (after a sync too), so they are never synced. [id] says what the
+/// alert is about, for example 'lowStock:<product id>': there is never
+/// more than one alert for the same thing.
+@DataClassName('AlertRow')
+@TableIndex(name: 'alerts_active', columns: {#active})
+class Alerts extends Table {
+  TextColumn get id => text()();
+  TextColumn get type => text()();
+
+  /// The product, delivery, payment, customer... it is about.
+  TextColumn get refId => text()();
+
+  /// What the message needs (names, quantities...), as JSON.
+  TextColumn get data => text().withDefault(const Constant('{}'))();
+
+  /// Hidden from workers (payments, security...).
+  BoolColumn get ownerOnly => boolean()();
+
+  /// False once the problem is gone (stock back up, payment validated...).
+  BoolColumn get active => boolean().withDefault(const Constant(true))();
+
+  /// When it started (again).
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Who has read which alert: each person has their own unread alerts.
+@DataClassName('AlertReadRow')
+class AlertReads extends Table {
+  TextColumn get alertId => text()();
+  TextColumn get userId => text()();
+  DateTimeColumn get readAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {alertId, userId};
+}
+
 /// Settings that belong to this phone only (language, theme, printer...).
 /// They are never synced.
 @DataClassName('AppSettingRow')

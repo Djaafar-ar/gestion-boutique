@@ -586,7 +586,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get lowStockHelp =>
-      '0 = pas d\'alerte. Les alertes arrivent à l\'étape 5.';
+      'Alerte dans l\'onglet Alertes à ce niveau. 0 = seulement si des articles sont vendus sans stock.';
 
   @override
   String get quantityInvalid => 'Entrez un nombre entier';
@@ -1368,4 +1368,173 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get savedLabel => 'Enregistré';
+
+  @override
+  String get alertsTitle => 'Alertes';
+
+  @override
+  String get alertsEmpty => 'Aucune alerte. Tout va bien !';
+
+  @override
+  String get markAllRead => 'Tout marquer comme lu';
+
+  @override
+  String get markRead => 'Marquer comme lu';
+
+  @override
+  String alertsUnread(int count) {
+    return '$count non lue(s)';
+  }
+
+  @override
+  String get alertsReadSection => 'Déjà lues';
+
+  @override
+  String alertLowStockTitle(String product) {
+    return 'Stock bas : $product';
+  }
+
+  @override
+  String alertLowStockBody(int quantity, int threshold) {
+    return 'Il reste $quantity (alerte à $threshold).';
+  }
+
+  @override
+  String alertOutOfStockTitle(String product) {
+    return 'Rupture : $product';
+  }
+
+  @override
+  String get alertOutOfStockBody => 'Plus aucun article en stock.';
+
+  @override
+  String alertNegativeStockTitle(String product) {
+    return 'Stock négatif : $product';
+  }
+
+  @override
+  String alertNegativeStockBody(int count) {
+    return '$count vendu(s) sans stock enregistré : ajoutez la réception oubliée.';
+  }
+
+  @override
+  String alertExpiringTitle(String product) {
+    return 'Bientôt périmé : $product';
+  }
+
+  @override
+  String alertExpiringBody(int remaining, String date) {
+    return '$remaining article(s) expirent le $date.';
+  }
+
+  @override
+  String alertExpiredTitle(String product) {
+    return 'Périmé : $product';
+  }
+
+  @override
+  String alertExpiredBody(int remaining, String date) {
+    return '$remaining article(s) périmé(s) depuis le $date. Déclarez une perte.';
+  }
+
+  @override
+  String get alertPaymentTitle => 'Paiement à valider';
+
+  @override
+  String alertPaymentBody(String by, String amount, String supplier) {
+    return '$by a payé $amount à $supplier.';
+  }
+
+  @override
+  String get alertDeliveryTitle => 'Réception de stock';
+
+  @override
+  String alertDeliveryBody(String by, int quantity, String product) {
+    return '$by a reçu $quantity × $product.';
+  }
+
+  @override
+  String alertCreditTitle(String customer) {
+    return 'Limite de crédit dépassée : $customer';
+  }
+
+  @override
+  String alertCreditBody(String debt, String limit) {
+    return 'Doit $debt (limite $limit).';
+  }
+
+  @override
+  String get alertPinTitle => 'Codes PIN faux';
+
+  @override
+  String alertPinBody(int count, String name) {
+    return '$count code(s) faux sur le compte de $name.';
+  }
+
+  @override
+  String get alertReturnTitle => 'Retour client';
+
+  @override
+  String alertReturnBody(String by, int number, String amount) {
+    return '$by a fait un retour sur le ticket n°$number : $amount.';
+  }
+
+  @override
+  String alertsSummaryTitle(int count) {
+    return '$count nouvelles alertes';
+  }
+
+  @override
+  String get alertsSummaryBody => 'Ouvrez l\'onglet Alertes pour les voir.';
+
+  @override
+  String get notificationsTitle => 'Notifications du téléphone';
+
+  @override
+  String get notificationsSub => 'Choisir les alertes qui sonnent';
+
+  @override
+  String get notificationsIntro =>
+      'Les alertes restent toujours visibles dans l\'onglet Alertes. Ici, vous choisissez celles qui apparaissent aussi en notification sur ce téléphone.';
+
+  @override
+  String get workersSeeNote =>
+      'Les employés voient seulement le stock bas et les dates de péremption.';
+
+  @override
+  String get typeLowStock => 'Stock bas et ruptures';
+
+  @override
+  String get typeExpiringSoon => 'Bientôt périmés';
+
+  @override
+  String get typeExpired => 'Périmés';
+
+  @override
+  String get typeNewDelivery => 'Réceptions de stock des employés';
+
+  @override
+  String get typeOverCreditLimit => 'Clients au-dessus de leur limite';
+
+  @override
+  String get typeReturnMade => 'Retours faits par les employés';
+
+  @override
+  String get notificationsBlocked =>
+      'Les notifications sont bloquées sur ce téléphone.';
+
+  @override
+  String get openPhoneSettings => 'Ouvrir les réglages';
+
+  @override
+  String get sendTestNotification => 'Envoyer une notification de test';
+
+  @override
+  String get testNotificationTitle => 'Notification de test';
+
+  @override
+  String get testNotificationBody => 'Les notifications fonctionnent.';
+
+  @override
+  String get notificationChannel => 'Alertes de la boutique';
 }

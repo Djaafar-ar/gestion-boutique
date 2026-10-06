@@ -1141,7 +1141,7 @@ abstract class AppLocalizations {
   /// No description provided for @lowStockHelp.
   ///
   /// In fr, this message translates to:
-  /// **'0 = pas d\'alerte. Les alertes arrivent à l\'étape 5.'**
+  /// **'Alerte dans l\'onglet Alertes à ce niveau. 0 = seulement si des articles sont vendus sans stock.'**
   String get lowStockHelp;
 
   /// No description provided for @quantityInvalid.
@@ -2457,6 +2457,270 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Enregistré'**
   String get savedLabel;
+
+  /// No description provided for @alertsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alertes'**
+  String get alertsTitle;
+
+  /// No description provided for @alertsEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune alerte. Tout va bien !'**
+  String get alertsEmpty;
+
+  /// No description provided for @markAllRead.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout marquer comme lu'**
+  String get markAllRead;
+
+  /// No description provided for @markRead.
+  ///
+  /// In fr, this message translates to:
+  /// **'Marquer comme lu'**
+  String get markRead;
+
+  /// No description provided for @alertsUnread.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} non lue(s)'**
+  String alertsUnread(int count);
+
+  /// No description provided for @alertsReadSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déjà lues'**
+  String get alertsReadSection;
+
+  /// No description provided for @alertLowStockTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock bas : {product}'**
+  String alertLowStockTitle(String product);
+
+  /// No description provided for @alertLowStockBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Il reste {quantity} (alerte à {threshold}).'**
+  String alertLowStockBody(int quantity, int threshold);
+
+  /// No description provided for @alertOutOfStockTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rupture : {product}'**
+  String alertOutOfStockTitle(String product);
+
+  /// No description provided for @alertOutOfStockBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus aucun article en stock.'**
+  String get alertOutOfStockBody;
+
+  /// No description provided for @alertNegativeStockTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock négatif : {product}'**
+  String alertNegativeStockTitle(String product);
+
+  /// No description provided for @alertNegativeStockBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} vendu(s) sans stock enregistré : ajoutez la réception oubliée.'**
+  String alertNegativeStockBody(int count);
+
+  /// No description provided for @alertExpiringTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bientôt périmé : {product}'**
+  String alertExpiringTitle(String product);
+
+  /// No description provided for @alertExpiringBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'{remaining} article(s) expirent le {date}.'**
+  String alertExpiringBody(int remaining, String date);
+
+  /// No description provided for @alertExpiredTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Périmé : {product}'**
+  String alertExpiredTitle(String product);
+
+  /// No description provided for @alertExpiredBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'{remaining} article(s) périmé(s) depuis le {date}. Déclarez une perte.'**
+  String alertExpiredBody(int remaining, String date);
+
+  /// No description provided for @alertPaymentTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement à valider'**
+  String get alertPaymentTitle;
+
+  /// No description provided for @alertPaymentBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'{by} a payé {amount} à {supplier}.'**
+  String alertPaymentBody(String by, String amount, String supplier);
+
+  /// No description provided for @alertDeliveryTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réception de stock'**
+  String get alertDeliveryTitle;
+
+  /// No description provided for @alertDeliveryBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'{by} a reçu {quantity} × {product}.'**
+  String alertDeliveryBody(String by, int quantity, String product);
+
+  /// No description provided for @alertCreditTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Limite de crédit dépassée : {customer}'**
+  String alertCreditTitle(String customer);
+
+  /// No description provided for @alertCreditBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Doit {debt} (limite {limit}).'**
+  String alertCreditBody(String debt, String limit);
+
+  /// No description provided for @alertPinTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Codes PIN faux'**
+  String get alertPinTitle;
+
+  /// No description provided for @alertPinBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} code(s) faux sur le compte de {name}.'**
+  String alertPinBody(int count, String name);
+
+  /// No description provided for @alertReturnTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour client'**
+  String get alertReturnTitle;
+
+  /// No description provided for @alertReturnBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'{by} a fait un retour sur le ticket n°{number} : {amount}.'**
+  String alertReturnBody(String by, int number, String amount);
+
+  /// No description provided for @alertsSummaryTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} nouvelles alertes'**
+  String alertsSummaryTitle(int count);
+
+  /// No description provided for @alertsSummaryBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrez l\'onglet Alertes pour les voir.'**
+  String get alertsSummaryBody;
+
+  /// No description provided for @notificationsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notifications du téléphone'**
+  String get notificationsTitle;
+
+  /// No description provided for @notificationsSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir les alertes qui sonnent'**
+  String get notificationsSub;
+
+  /// No description provided for @notificationsIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les alertes restent toujours visibles dans l\'onglet Alertes. Ici, vous choisissez celles qui apparaissent aussi en notification sur ce téléphone.'**
+  String get notificationsIntro;
+
+  /// No description provided for @workersSeeNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les employés voient seulement le stock bas et les dates de péremption.'**
+  String get workersSeeNote;
+
+  /// No description provided for @typeLowStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stock bas et ruptures'**
+  String get typeLowStock;
+
+  /// No description provided for @typeExpiringSoon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bientôt périmés'**
+  String get typeExpiringSoon;
+
+  /// No description provided for @typeExpired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Périmés'**
+  String get typeExpired;
+
+  /// No description provided for @typeNewDelivery.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réceptions de stock des employés'**
+  String get typeNewDelivery;
+
+  /// No description provided for @typeOverCreditLimit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clients au-dessus de leur limite'**
+  String get typeOverCreditLimit;
+
+  /// No description provided for @typeReturnMade.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retours faits par les employés'**
+  String get typeReturnMade;
+
+  /// No description provided for @notificationsBlocked.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les notifications sont bloquées sur ce téléphone.'**
+  String get notificationsBlocked;
+
+  /// No description provided for @openPhoneSettings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrir les réglages'**
+  String get openPhoneSettings;
+
+  /// No description provided for @sendTestNotification.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer une notification de test'**
+  String get sendTestNotification;
+
+  /// No description provided for @testNotificationTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notification de test'**
+  String get testNotificationTitle;
+
+  /// No description provided for @testNotificationBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les notifications fonctionnent.'**
+  String get testNotificationBody;
+
+  /// No description provided for @notificationChannel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Alertes de la boutique'**
+  String get notificationChannel;
 }
 
 class _AppLocalizationsDelegate

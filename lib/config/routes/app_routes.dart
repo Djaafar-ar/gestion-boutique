@@ -8,6 +8,8 @@ import '../../core/service_locator.dart';
 import '../../core/session/session_cubit.dart';
 import '../../core/widgets/coming_soon_page.dart';
 import '../../core/widgets/empty_state.dart';
+import '../../features/alerts/presentation/pages/alerts_page.dart';
+import '../../features/alerts/presentation/pages/notification_settings_page.dart';
 import '../../features/billing/presentation/pages/home_page.dart';
 import '../../features/customers/domain/entities/customer.dart';
 import '../../features/customers/presentation/pages/customer_detail_page.dart';
@@ -160,7 +162,7 @@ final router = GoRouter(
         StatefulShellBranch(routes: [
           GoRoute(
             path: '/alerts',
-            builder: (context, state) => const ComingSoonPage.alerts(),
+            builder: (context, state) => const AlertsPage(),
           ),
         ]),
         StatefulShellBranch(routes: [
@@ -177,6 +179,11 @@ final router = GoRouter(
                 path: 'profile',
                 parentNavigatorKey: rootNavigatorKey,
                 builder: (context, state) => const ProfilePage(),
+              ),
+              GoRoute(
+                path: 'notifications',
+                parentNavigatorKey: rootNavigatorKey,
+                builder: (context, state) => const NotificationSettingsPage(),
               ),
               GoRoute(
                 path: 'security',

@@ -576,7 +576,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lowStockLabel => 'Low-stock alert at';
 
   @override
-  String get lowStockHelp => '0 = no alert. Alerts come in step 5.';
+  String get lowStockHelp =>
+      'Alert in the Alerts tab at this level. 0 = only when stock goes below zero.';
 
   @override
   String get quantityInvalid => 'Enter a whole number';
@@ -1352,4 +1353,171 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get savedLabel => 'Saved';
+
+  @override
+  String get alertsTitle => 'Alerts';
+
+  @override
+  String get alertsEmpty => 'No alerts. All good!';
+
+  @override
+  String get markAllRead => 'Mark all as read';
+
+  @override
+  String get markRead => 'Mark as read';
+
+  @override
+  String alertsUnread(int count) {
+    return '$count unread';
+  }
+
+  @override
+  String get alertsReadSection => 'Already read';
+
+  @override
+  String alertLowStockTitle(String product) {
+    return 'Low stock: $product';
+  }
+
+  @override
+  String alertLowStockBody(int quantity, int threshold) {
+    return '$quantity left (alert at $threshold).';
+  }
+
+  @override
+  String alertOutOfStockTitle(String product) {
+    return 'Out of stock: $product';
+  }
+
+  @override
+  String get alertOutOfStockBody => 'Nothing left in stock.';
+
+  @override
+  String alertNegativeStockTitle(String product) {
+    return 'Negative stock: $product';
+  }
+
+  @override
+  String alertNegativeStockBody(int count) {
+    return '$count sold with no stock recorded: add the forgotten delivery.';
+  }
+
+  @override
+  String alertExpiringTitle(String product) {
+    return 'Expiring soon: $product';
+  }
+
+  @override
+  String alertExpiringBody(int remaining, String date) {
+    return '$remaining item(s) expire on $date.';
+  }
+
+  @override
+  String alertExpiredTitle(String product) {
+    return 'Expired: $product';
+  }
+
+  @override
+  String alertExpiredBody(int remaining, String date) {
+    return '$remaining item(s) expired on $date. Record a loss.';
+  }
+
+  @override
+  String get alertPaymentTitle => 'Payment to validate';
+
+  @override
+  String alertPaymentBody(String by, String amount, String supplier) {
+    return '$by paid $amount to $supplier.';
+  }
+
+  @override
+  String get alertDeliveryTitle => 'Stock received';
+
+  @override
+  String alertDeliveryBody(String by, int quantity, String product) {
+    return '$by received $quantity × $product.';
+  }
+
+  @override
+  String alertCreditTitle(String customer) {
+    return 'Credit limit exceeded: $customer';
+  }
+
+  @override
+  String alertCreditBody(String debt, String limit) {
+    return 'Owes $debt (limit $limit).';
+  }
+
+  @override
+  String get alertPinTitle => 'Wrong PINs';
+
+  @override
+  String alertPinBody(int count, String name) {
+    return '$count wrong code(s) on $name\'s account.';
+  }
+
+  @override
+  String get alertReturnTitle => 'Customer return';
+
+  @override
+  String alertReturnBody(String by, int number, String amount) {
+    return '$by took back items from ticket #$number: $amount.';
+  }
+
+  @override
+  String alertsSummaryTitle(int count) {
+    return '$count new alerts';
+  }
+
+  @override
+  String get alertsSummaryBody => 'Open the Alerts tab to see them.';
+
+  @override
+  String get notificationsTitle => 'Phone notifications';
+
+  @override
+  String get notificationsSub => 'Choose which alerts ring';
+
+  @override
+  String get notificationsIntro =>
+      'Alerts always stay in the Alerts tab. Here you choose which ones also appear as notifications on this phone.';
+
+  @override
+  String get workersSeeNote => 'Workers only see low stock and expiry dates.';
+
+  @override
+  String get typeLowStock => 'Low and out of stock';
+
+  @override
+  String get typeExpiringSoon => 'Expiring soon';
+
+  @override
+  String get typeExpired => 'Expired';
+
+  @override
+  String get typeNewDelivery => 'Stock received by workers';
+
+  @override
+  String get typeOverCreditLimit => 'Customers over their limit';
+
+  @override
+  String get typeReturnMade => 'Returns made by workers';
+
+  @override
+  String get notificationsBlocked => 'Notifications are blocked on this phone.';
+
+  @override
+  String get openPhoneSettings => 'Open settings';
+
+  @override
+  String get sendTestNotification => 'Send a test notification';
+
+  @override
+  String get testNotificationTitle => 'Test notification';
+
+  @override
+  String get testNotificationBody => 'Notifications work.';
+
+  @override
+  String get notificationChannel => 'Shop alerts';
 }

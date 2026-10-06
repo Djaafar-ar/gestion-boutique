@@ -182,6 +182,16 @@ class _MorePageState extends State<MorePage> {
                 onTap: () => context.push('/more/workers'),
               ),
             ]),
+            _SectionHeader(l10n.alertsTitle),
+            _Group(children: [
+              ListTile(
+                leading: const _TileIcon(Icons.notifications_active_outlined),
+                title: Text(l10n.notificationsTitle),
+                subtitle: Text(l10n.notificationsSub),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/more/notifications'),
+              ),
+            ]),
             _SectionHeader(l10n.securitySection),
             _Group(children: [
               ListTile(

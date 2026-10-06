@@ -1,6 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../../features/alerts/data/alert_repository.dart';
+import '../../features/alerts/data/phone_notifier.dart';
+import '../../features/alerts/presentation/alerts_cubit.dart';
 import '../../features/auth/data/login_guard.dart';
 import '../../features/auth/data/login_service.dart';
 import '../../features/billing/data/receipt_printer.dart';
@@ -30,6 +35,7 @@ import '../../features/users/data/repositories/user_repository_impl.dart';
 import '../../features/users/domain/repositories/user_repository.dart';
 import 'database/app_database.dart';
 import 'database/hive_importer.dart';
+import 'l10n/app_localizations.dart';
 import 'session/session_cubit.dart';
 import 'settings/settings_store.dart';
 
@@ -140,4 +146,32 @@ Future<void> init() async {
   sl.registerLazySingleton<PrinterRepository>(
     () => PrinterRepositoryImpl(sl()),
   );
+
+  // Features - Alerts and phone notifications
+  final notifier = LocalPhoneNotifier(settings);
+  try {
+    await notifier.init();
+  } catch (e, stack) {
+    // The Alertes tab works even if the phone refuses notifications.
+    debugPrint('Notifications unavailable: $e\n$stack');
+  }
+  sl.registerSingleton<PhoneNotifier>(notifier);
+  sl.registerLazySingleton(() => AlertRepository(sl(), sl()));
+  sl.registerLazySingleton(() => AlertsCubit(
+        db: sl(),
+        repository: sl(),
+        notifier: sl(),
+        settings: sl(),
+        session: sl(),
+        locale: () => notificationLocale(settings),
+      ));
+}
+
+/// The language of phone notifications: the one chosen in the app, or
+/// the phone's language when "follow the phone" is chosen.
+Locale notificationLocale(SettingsStore settings) {
+  final language = settings.get(SettingsKeys.language);
+  if (supportedLanguageCodes.contains(language)) return Locale(language!);
+  return resolveAppLocale(
+      PlatformDispatcher.instance.locale, AppLocalizations.supportedLocales);
 }

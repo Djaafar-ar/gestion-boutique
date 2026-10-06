@@ -49,6 +49,7 @@ void main() {
     expect(guardRoute(session, '/more/workers'), '/sell');
     expect(guardRoute(session, '/more/workers/new'), '/sell');
     expect(guardRoute(session, '/payments'), '/sell');
+    expect(guardRoute(session, '/more/notifications'), '/sell');
   });
 
   test('a worker can use the carnet and suppliers', () {
@@ -59,6 +60,7 @@ void main() {
       '/customers/c1',
       '/suppliers',
       '/suppliers/s1',
+      '/alerts',
     ]) {
       expect(guardRoute(session, path), isNull, reason: path);
     }

@@ -5,6 +5,7 @@ const ownerOnlyPaths = [
   '/more/shop',
   '/more/workers',
   '/more/security',
+  '/more/notifications',
   '/payments',
 ];
 

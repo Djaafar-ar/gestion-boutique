@@ -11,6 +11,7 @@ import 'generated/schema_v2.dart' as v2;
 import 'generated/schema_v3.dart' as v3;
 import 'generated/schema_v4.dart' as v4;
 import 'generated/schema_v5.dart' as v5;
+import 'generated/schema_v6.dart' as v6;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -219,6 +220,38 @@ void main() {
             [('s1', null, 100)]);
         expect(await newDb.select(newDb.suppliers).get(), isEmpty);
         expect(await newDb.select(newDb.customers).get(), isEmpty);
+      },
+    );
+  });
+
+  // Phase 5 adds alerts: the shop data stays, and there are no alerts
+  // until the app first looks for them.
+  test('migration from v5 to v6 keeps customers and starts with no alerts',
+      () async {
+    const at = '2026-10-06T14:32:00.000';
+    const customer = v5.CustomersData(
+        id: 'c1',
+        createdAt: at,
+        updatedAt: at,
+        deviceId: 'phone-1',
+        deleted: 0,
+        name: 'Mohamed',
+        phone: '0555',
+        creditLimit: 100000,
+        active: 1);
+
+    await verifier.testWithDataIntegrity(
+      oldVersion: 5,
+      newVersion: 6,
+      createOld: v5.DatabaseAtV5.new,
+      createNew: v6.DatabaseAtV6.new,
+      openTestedDatabase: AppDatabase.new,
+      createItems: (batch, oldDb) => batch.insert(oldDb.customers, customer),
+      validateItems: (newDb) async {
+        final customers = await newDb.select(newDb.customers).get();
+        expect(customers.map((c) => (c.id, c.creditLimit)), [('c1', 100000)]);
+        expect(await newDb.select(newDb.alerts).get(), isEmpty);
+        expect(await newDb.select(newDb.alertReads).get(), isEmpty);
       },
     );
   });

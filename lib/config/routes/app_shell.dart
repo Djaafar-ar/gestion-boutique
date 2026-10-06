@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +7,9 @@ import 'package:go_router/go_router.dart';
 import '../../core/l10n/app_localizations.dart';
 import '../../core/service_locator.dart';
 import '../../core/session/session_cubit.dart';
+import '../../core/settings/settings_store.dart';
+import '../../features/alerts/data/phone_notifier.dart';
+import '../../features/alerts/presentation/alerts_cubit.dart';
 import '../../features/users/domain/repositories/user_repository.dart';
 import '../../features/users/presentation/pages/failed_logins_page.dart';
 
@@ -24,12 +29,58 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   StatefulNavigationShell get shell => widget.shell;
+  StreamSubscription<String>? _taps;
+
+  /// Index of the Alertes tab.
+  static const _alertsTab = 3;
 
   @override
   void initState() {
     super.initState();
+    final notifier = sl<PhoneNotifier>();
+    _taps = notifier.taps.listen((_) => _openTapped());
     // The shell is built again after every login.
-    WidgetsBinding.instance.addPostFrameCallback((_) => _warnOwner());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _askNotificationPermission();
+      _openTapped();
+      await _warnOwner();
+    });
+  }
+
+  @override
+  void dispose() {
+    _taps?.cancel();
+    super.dispose();
+  }
+
+  /// Asks once, on the first login, for the right to show notifications.
+  Future<void> _askNotificationPermission() async {
+    const key = 'notification_permission_asked';
+    final settings = sl<SettingsStore>();
+    if (settings.get(key) != null) return;
+    await settings.set(key, 'yes');
+    try {
+      await sl<PhoneNotifier>().requestPermission();
+    } catch (_) {
+      // Not available (for example in tests).
+    }
+  }
+
+  /// Opens what a tapped notification is about: 'alert id|page'.
+  void _openTapped() {
+    if (!mounted) return;
+    final payload = sl<PhoneNotifier>().takePendingTap();
+    if (payload == null) return;
+    final separator = payload.indexOf('|');
+    final alertId = separator < 0 ? '' : payload.substring(0, separator);
+    final route = payload.substring(separator + 1);
+    if (alertId.isNotEmpty) context.read<AlertsCubit>().markRead(alertId);
+    if (route == '/alerts' || route.isEmpty) {
+      currentTabIndex.value = _alertsTab;
+      shell.goBranch(_alertsTab);
+    } else {
+      context.push(route);
+    }
   }
 
   /// Tells the owner about wrong codes typed since their last login.
@@ -45,6 +96,7 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final unread = context.watch<AlertsCubit>().state.unread;
     // Keep the shared tab index right after a login or a redirect too.
     if (currentTabIndex.value != shell.currentIndex) {
       WidgetsBinding.instance.addPostFrameCallback(
@@ -76,8 +128,16 @@ class _AppShellState extends State<AppShell> {
             label: l10n.navStats,
           ),
           NavigationDestination(
-            icon: const Icon(Icons.notifications_outlined),
-            selectedIcon: const Icon(Icons.notifications),
+            icon: Badge(
+              isLabelVisible: unread > 0,
+              label: Text('$unread'),
+              child: const Icon(Icons.notifications_outlined),
+            ),
+            selectedIcon: Badge(
+              isLabelVisible: unread > 0,
+              label: Text('$unread'),
+              child: const Icon(Icons.notifications),
+            ),
             label: l10n.navAlerts,
           ),
           NavigationDestination(

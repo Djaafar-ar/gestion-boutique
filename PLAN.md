@@ -334,6 +334,8 @@ At the **end of every phase**:
 - Checks: new stock entry, low stock, expiring soon (N days, setting), expired, pending payments, negative stock, return made, customer over credit limit.
 - Phone notifications with `flutter_local_notifications` (Android 13+ permission request, desugaring setting). Expiry notifications scheduled ahead.
 - Tests: each alert rule triggers correctly, no duplicate alerts.
+- **(Requested before Phase 5)** Every alert reaches the owner in three places: a phone notification, the Alertes tab, and a number badge on the Alertes tab icon. Tapping a notification opens the page that deals with it (a payment → "Paiements à valider"). Also failed PIN attempts. Workers only get low stock, expiring soon and expired. Each alert can be marked as read (per person), and the owner can switch each type of phone notification on or off (Plus → Notifications du téléphone).
+- **Rules chosen while building:** alerts are worked out on each phone from its own data (not synced), one alert per thing (a product, a batch, a payment...). A problem that is solved disappears; if it comes back, or gets worse (low → out of stock → sold without stock; more wrong PINs), it is unread again and rings again. Deliveries and returns by workers stay 30 days. Only things after the update count, so old deliveries do not flood the list. More than 3 new alerts at once give one summary notification. Expiry reminders are planned at 9:00 (warning day and the day after expiry) and ring even with the app closed.
 
 ### Phase 6: Statistics
 - Owner dashboard: revenue (after discounts and returns), profit (sell − unitCost − discounts), number of sales, today/week/month, top products, sales per worker, loss value, discounts given, returns value.

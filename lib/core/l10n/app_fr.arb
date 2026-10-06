@@ -250,7 +250,7 @@
   "newCategory": "Nouvelle catégorie…",
   "categoryNameHint": "ex : Boissons",
   "lowStockLabel": "Alerte stock bas à partir de",
-  "lowStockHelp": "0 = pas d'alerte. Les alertes arrivent à l'étape 5.",
+  "lowStockHelp": "Alerte dans l'onglet Alertes à ce niveau. 0 = seulement si des articles sont vendus sans stock.",
   "quantityInvalid": "Entrez un nombre entier",
   "historySection": "Historique des modifications",
   "historyNoChanges": "Aucune modification pour l'instant.",
@@ -848,5 +848,201 @@
   "supplierOptional": "Fournisseur (facultatif)",
   "noSupplier": "Aucun fournisseur",
   "searchSupplier": "Rechercher un fournisseur",
-  "savedLabel": "Enregistré"
+  "savedLabel": "Enregistré",
+  "alertsTitle": "Alertes",
+  "alertsEmpty": "Aucune alerte. Tout va bien !",
+  "markAllRead": "Tout marquer comme lu",
+  "markRead": "Marquer comme lu",
+  "alertsUnread": "{count} non lue(s)",
+  "@alertsUnread": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "alertsReadSection": "Déjà lues",
+  "alertLowStockTitle": "Stock bas : {product}",
+  "@alertLowStockTitle": {
+    "placeholders": {
+      "product": {
+        "type": "String"
+      }
+    }
+  },
+  "alertLowStockBody": "Il reste {quantity} (alerte à {threshold}).",
+  "@alertLowStockBody": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      },
+      "threshold": {
+        "type": "int"
+      }
+    }
+  },
+  "alertOutOfStockTitle": "Rupture : {product}",
+  "@alertOutOfStockTitle": {
+    "placeholders": {
+      "product": {
+        "type": "String"
+      }
+    }
+  },
+  "alertOutOfStockBody": "Plus aucun article en stock.",
+  "alertNegativeStockTitle": "Stock négatif : {product}",
+  "@alertNegativeStockTitle": {
+    "placeholders": {
+      "product": {
+        "type": "String"
+      }
+    }
+  },
+  "alertNegativeStockBody": "{count} vendu(s) sans stock enregistré : ajoutez la réception oubliée.",
+  "@alertNegativeStockBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "alertExpiringTitle": "Bientôt périmé : {product}",
+  "@alertExpiringTitle": {
+    "placeholders": {
+      "product": {
+        "type": "String"
+      }
+    }
+  },
+  "alertExpiringBody": "{remaining} article(s) expirent le {date}.",
+  "@alertExpiringBody": {
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "alertExpiredTitle": "Périmé : {product}",
+  "@alertExpiredTitle": {
+    "placeholders": {
+      "product": {
+        "type": "String"
+      }
+    }
+  },
+  "alertExpiredBody": "{remaining} article(s) périmé(s) depuis le {date}. Déclarez une perte.",
+  "@alertExpiredBody": {
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "alertPaymentTitle": "Paiement à valider",
+  "alertPaymentBody": "{by} a payé {amount} à {supplier}.",
+  "@alertPaymentBody": {
+    "placeholders": {
+      "by": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      },
+      "supplier": {
+        "type": "String"
+      }
+    }
+  },
+  "alertDeliveryTitle": "Réception de stock",
+  "alertDeliveryBody": "{by} a reçu {quantity} × {product}.",
+  "@alertDeliveryBody": {
+    "placeholders": {
+      "by": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "int"
+      },
+      "product": {
+        "type": "String"
+      }
+    }
+  },
+  "alertCreditTitle": "Limite de crédit dépassée : {customer}",
+  "@alertCreditTitle": {
+    "placeholders": {
+      "customer": {
+        "type": "String"
+      }
+    }
+  },
+  "alertCreditBody": "Doit {debt} (limite {limit}).",
+  "@alertCreditBody": {
+    "placeholders": {
+      "debt": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "alertPinTitle": "Codes PIN faux",
+  "alertPinBody": "{count} code(s) faux sur le compte de {name}.",
+  "@alertPinBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "alertReturnTitle": "Retour client",
+  "alertReturnBody": "{by} a fait un retour sur le ticket n°{number} : {amount}.",
+  "@alertReturnBody": {
+    "placeholders": {
+      "by": {
+        "type": "String"
+      },
+      "number": {
+        "type": "int"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "alertsSummaryTitle": "{count} nouvelles alertes",
+  "@alertsSummaryTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "alertsSummaryBody": "Ouvrez l'onglet Alertes pour les voir.",
+  "notificationsTitle": "Notifications du téléphone",
+  "notificationsSub": "Choisir les alertes qui sonnent",
+  "notificationsIntro": "Les alertes restent toujours visibles dans l'onglet Alertes. Ici, vous choisissez celles qui apparaissent aussi en notification sur ce téléphone.",
+  "workersSeeNote": "Les employés voient seulement le stock bas et les dates de péremption.",
+  "typeLowStock": "Stock bas et ruptures",
+  "typeExpiringSoon": "Bientôt périmés",
+  "typeExpired": "Périmés",
+  "typeNewDelivery": "Réceptions de stock des employés",
+  "typeOverCreditLimit": "Clients au-dessus de leur limite",
+  "typeReturnMade": "Retours faits par les employés",
+  "notificationsBlocked": "Les notifications sont bloquées sur ce téléphone.",
+  "openPhoneSettings": "Ouvrir les réglages",
+  "sendTestNotification": "Envoyer une notification de test",
+  "testNotificationTitle": "Notification de test",
+  "testNotificationBody": "Les notifications fonctionnent.",
+  "notificationChannel": "Alertes de la boutique"
 }

@@ -6,6 +6,7 @@ import 'core/l10n/app_localizations.dart';
 import 'core/service_locator.dart' as di;
 import 'core/session/session_cubit.dart';
 import 'core/theme/app_theme.dart';
+import 'features/alerts/presentation/alerts_cubit.dart';
 import 'features/billing/presentation/bloc/billing_bloc.dart';
 import 'features/product/presentation/bloc/product_bloc.dart';
 import 'features/shop/presentation/bloc/shop_bloc.dart';
@@ -16,6 +17,8 @@ import 'features/settings/presentation/cubit/app_preferences_cubit.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
+  // Alerts are checked from the start, even on the PIN screen.
+  di.sl<AlertsCubit>().start();
   runApp(const MyApp());
 }
 
@@ -37,6 +40,7 @@ class MyApp extends StatelessWidget {
             create: (context) => di.sl<AppPreferencesCubit>()),
         // One session for the whole app; the router listens to it too.
         BlocProvider<SessionCubit>.value(value: di.sl<SessionCubit>()),
+        BlocProvider<AlertsCubit>.value(value: di.sl<AlertsCubit>()),
       ],
       child: BlocBuilder<AppPreferencesCubit, AppPreferences>(
         builder: (context, prefs) {

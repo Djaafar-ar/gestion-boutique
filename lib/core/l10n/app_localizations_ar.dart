@@ -582,7 +582,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get lowStockLabel => 'تنبيه المخزون المنخفض عند';
 
   @override
-  String get lowStockHelp => '0 = بدون تنبيه. التنبيهات في المرحلة 5.';
+  String get lowStockHelp =>
+      'تنبيه في تبويب التنبيهات عند هذا المستوى. 0 = فقط عندما يصبح المخزون سالباً.';
 
   @override
   String get quantityInvalid => 'أدخل عددًا صحيحًا';
@@ -1356,4 +1357,172 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get savedLabel => 'تم الحفظ';
+
+  @override
+  String get alertsTitle => 'التنبيهات';
+
+  @override
+  String get alertsEmpty => 'لا توجد تنبيهات. كل شيء على ما يرام!';
+
+  @override
+  String get markAllRead => 'تحديد الكل كمقروء';
+
+  @override
+  String get markRead => 'تحديد كمقروء';
+
+  @override
+  String alertsUnread(int count) {
+    return '$count غير مقروءة';
+  }
+
+  @override
+  String get alertsReadSection => 'مقروءة';
+
+  @override
+  String alertLowStockTitle(String product) {
+    return 'مخزون منخفض: $product';
+  }
+
+  @override
+  String alertLowStockBody(int quantity, int threshold) {
+    return 'تبقى $quantity (التنبيه عند $threshold).';
+  }
+
+  @override
+  String alertOutOfStockTitle(String product) {
+    return 'نفاد المخزون: $product';
+  }
+
+  @override
+  String get alertOutOfStockBody => 'لم يبق شيء في المخزون.';
+
+  @override
+  String alertNegativeStockTitle(String product) {
+    return 'مخزون سالب: $product';
+  }
+
+  @override
+  String alertNegativeStockBody(int count) {
+    return '$count بيعت دون مخزون مسجل: أضف الاستلام المنسي.';
+  }
+
+  @override
+  String alertExpiringTitle(String product) {
+    return 'ينتهي قريباً: $product';
+  }
+
+  @override
+  String alertExpiringBody(int remaining, String date) {
+    return '$remaining قطعة تنتهي صلاحيتها في $date.';
+  }
+
+  @override
+  String alertExpiredTitle(String product) {
+    return 'منتهي الصلاحية: $product';
+  }
+
+  @override
+  String alertExpiredBody(int remaining, String date) {
+    return '$remaining قطعة انتهت صلاحيتها في $date. سجّل خسارة.';
+  }
+
+  @override
+  String get alertPaymentTitle => 'دفعة للمصادقة';
+
+  @override
+  String alertPaymentBody(String by, String amount, String supplier) {
+    return 'دفع $by مبلغ $amount إلى $supplier.';
+  }
+
+  @override
+  String get alertDeliveryTitle => 'استلام مخزون';
+
+  @override
+  String alertDeliveryBody(String by, int quantity, String product) {
+    return 'استلم $by $quantity × $product.';
+  }
+
+  @override
+  String alertCreditTitle(String customer) {
+    return 'تجاوز حد الدين: $customer';
+  }
+
+  @override
+  String alertCreditBody(String debt, String limit) {
+    return 'عليه $debt (الحد $limit).';
+  }
+
+  @override
+  String get alertPinTitle => 'رموز PIN خاطئة';
+
+  @override
+  String alertPinBody(int count, String name) {
+    return '$count رمز خاطئ على حساب $name.';
+  }
+
+  @override
+  String get alertReturnTitle => 'إرجاع زبون';
+
+  @override
+  String alertReturnBody(String by, int number, String amount) {
+    return 'قام $by بإرجاع من التذكرة رقم $number: $amount.';
+  }
+
+  @override
+  String alertsSummaryTitle(int count) {
+    return '$count تنبيهات جديدة';
+  }
+
+  @override
+  String get alertsSummaryBody => 'افتح تبويب التنبيهات لرؤيتها.';
+
+  @override
+  String get notificationsTitle => 'إشعارات الهاتف';
+
+  @override
+  String get notificationsSub => 'اختيار التنبيهات التي ترن';
+
+  @override
+  String get notificationsIntro =>
+      'تبقى التنبيهات دائماً في تبويب التنبيهات. هنا تختار أيها يظهر أيضاً كإشعار على هذا الهاتف.';
+
+  @override
+  String get workersSeeNote =>
+      'يرى العمال فقط المخزون المنخفض وتواريخ انتهاء الصلاحية.';
+
+  @override
+  String get typeLowStock => 'المخزون المنخفض والنفاد';
+
+  @override
+  String get typeExpiringSoon => 'قريبة الانتهاء';
+
+  @override
+  String get typeExpired => 'منتهية الصلاحية';
+
+  @override
+  String get typeNewDelivery => 'استلامات المخزون من العمال';
+
+  @override
+  String get typeOverCreditLimit => 'زبائن تجاوزوا حدهم';
+
+  @override
+  String get typeReturnMade => 'إرجاعات قام بها العمال';
+
+  @override
+  String get notificationsBlocked => 'الإشعارات محظورة على هذا الهاتف.';
+
+  @override
+  String get openPhoneSettings => 'فتح الإعدادات';
+
+  @override
+  String get sendTestNotification => 'إرسال إشعار تجريبي';
+
+  @override
+  String get testNotificationTitle => 'إشعار تجريبي';
+
+  @override
+  String get testNotificationBody => 'الإشعارات تعمل.';
+
+  @override
+  String get notificationChannel => 'تنبيهات المتجر';
 }

@@ -24,6 +24,8 @@ part 'app_database.g.dart';
   Users,
   ChangeLogs,
   FailedLogins,
+  Alerts,
+  AlertReads,
   AppSettings,
 ])
 class AppDatabase extends _$AppDatabase {
@@ -39,7 +41,7 @@ class AppDatabase extends _$AppDatabase {
   // 2. run: dart run drift_dev make-migrations
   // 3. add the new step below (the generated tests check it).
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -83,6 +85,12 @@ class AppDatabase extends _$AppDatabase {
             await m.createIndex(schema.customerPaymentsCustomer);
             await m.createIndex(schema.salesCustomer);
             await m.createIndex(schema.deliveriesSupplier);
+          },
+          // Phase 5: alerts and who has read them.
+          from5To6: (m, schema) async {
+            await m.createTable(schema.alerts);
+            await m.createIndex(schema.alertsActive);
+            await m.createTable(schema.alertReads);
           },
         ),
       );
