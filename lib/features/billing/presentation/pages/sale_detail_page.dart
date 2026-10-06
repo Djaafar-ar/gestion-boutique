@@ -36,7 +36,11 @@ class _SaleDetailPageState extends State<SaleDetailPage> {
 
   Future<void> _openReturn(Sale sale) async {
     final done = await context.push<bool>('/sell/history/${sale.id}/return');
-    if (done == true && mounted) setState(() => _sale = _load());
+    if (done == true && mounted) {
+      setState(() {
+        _sale = _load();
+      });
+    }
   }
 
   Future<void> _reprint(Sale sale) async {
@@ -45,7 +49,12 @@ class _SaleDetailPageState extends State<SaleDetailPage> {
     final shop = shopState is ShopLoaded ? shopState.shop : const Shop();
 
     setState(() => _printing = true);
-    final result = await sl<ReceiptPrinter>().printSale(sale, shop);
+    final customerId = sale.customerId;
+    final debt = customerId == null
+        ? null
+        : await sl<SaleRepository>().customerDebt(customerId);
+    final result =
+        await sl<ReceiptPrinter>().printSale(sale, shop, customerDebt: debt);
     if (!mounted) return;
     setState(() => _printing = false);
 
@@ -136,6 +145,39 @@ class _SaleDetailPageState extends State<SaleDetailPage> {
                               label: l10n.refundedLabel,
                               amount: -sale.refunded,
                               color: scheme.error),
+                        if (sale.isCredit) ...[
+                          const SizedBox(height: 12),
+                          Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(Icons.menu_book_outlined,
+                                          color: scheme.primary),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                            '${l10n.customerLabel} : ${sale.customerName ?? '?'}',
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w600)),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  _AmountRow(
+                                      label: l10n.paidLabel,
+                                      amount: sale.paidNow),
+                                  _AmountRow(
+                                      label: l10n.onCreditLabel,
+                                      amount: sale.onCredit,
+                                      color: scheme.error),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                         if (sale.hasReturnableItems) ...[
                           const SizedBox(height: 20),
                           OutlinedButton.icon(

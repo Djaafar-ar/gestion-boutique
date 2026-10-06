@@ -12,7 +12,8 @@ abstract class StockRepository {
   Future<Either<Failure, ({List<StockBatch> batches, int stock})>> getBatches(
       String productId);
 
-  /// Records a delivery, signed by the logged-in person. When
+  /// Records a delivery, signed by the logged-in person, optionally from
+  /// [supplierId] (what the shop owes them goes up). When
   /// [updateProductBuyPrice] is true the product's buying price becomes
   /// [buyPrice] (written in the product history).
   Future<Either<Failure, void>> addDelivery({
@@ -21,6 +22,7 @@ abstract class StockRepository {
     required int buyPrice,
     DateTime? expiryDate,
     String? note,
+    String? supplierId,
     bool updateProductBuyPrice = false,
   });
 

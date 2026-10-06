@@ -1558,10 +1558,644 @@ i1.GeneratedColumn<int> _column_63(String aliasedName) =>
 i1.GeneratedColumn<int> _column_64(String aliasedName) =>
     i1.GeneratedColumn<int>('refund', aliasedName, false,
         type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
+
+final class Schema5 extends i0.VersionedSchema {
+  Schema5({required super.database}) : super(version: 5);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    shops,
+    categories,
+    products,
+    deliveries,
+    sales,
+    saleItems,
+    stockAllocations,
+    losses,
+    returns,
+    returnItems,
+    suppliers,
+    supplierPayments,
+    customers,
+    customerPayments,
+    users,
+    changeLogs,
+    failedLogins,
+    appSettings,
+    productsBarcode,
+    deliveriesProduct,
+    deliveriesSupplier,
+    salesCreated,
+    salesCustomer,
+    saleItemsSale,
+    saleItemsProduct,
+    stockAllocationsProduct,
+    stockAllocationsSource,
+    lossesProduct,
+    returnsSale,
+    returnItemsSaleItem,
+    supplierPaymentsSupplier,
+    supplierPaymentsStatus,
+    customerPaymentsCustomer,
+    changeLogsEntity,
+    failedLoginsSeen,
+  ];
+  late final Shape0 shops = Shape0(
+      source: i0.VersionedTable(
+        entityName: 'shops',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_7,
+          _column_8,
+          _column_9,
+          _column_10,
+          _column_11,
+          _column_12,
+          _column_13,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape1 categories = Shape1(
+      source: i0.VersionedTable(
+        entityName: 'categories',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape2 products = Shape2(
+      source: i0.VersionedTable(
+        entityName: 'products',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_14,
+          _column_15,
+          _column_16,
+          _column_17,
+          _column_18,
+          _column_19,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape3 deliveries = Shape3(
+      source: i0.VersionedTable(
+        entityName: 'deliveries',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_20,
+          _column_21,
+          _column_22,
+          _column_23,
+          _column_24,
+          _column_25,
+          _column_26,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape4 sales = Shape4(
+      source: i0.VersionedTable(
+        entityName: 'sales',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_27,
+          _column_28,
+          _column_29,
+          _column_30,
+          _column_31,
+          _column_32,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape5 saleItems = Shape5(
+      source: i0.VersionedTable(
+        entityName: 'sale_items',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_33,
+          _column_20,
+          _column_34,
+          _column_15,
+          _column_35,
+          _column_21,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape11 stockAllocations = Shape11(
+      source: i0.VersionedTable(
+        entityName: 'stock_allocations',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_20,
+          _column_54,
+          _column_21,
+          _column_55,
+          _column_56,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape12 losses = Shape12(
+      source: i0.VersionedTable(
+        entityName: 'losses',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_20,
+          _column_21,
+          _column_57,
+          _column_26,
+          _column_35,
+          _column_54,
+          _column_58,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape13 returns = Shape13(
+      source: i0.VersionedTable(
+        entityName: 'returns',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_33,
+          _column_30,
+          _column_59,
+          _column_60,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape14 returnItems = Shape14(
+      source: i0.VersionedTable(
+        entityName: 'return_items',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_61,
+          _column_62,
+          _column_20,
+          _column_21,
+          _column_63,
+          _column_64,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape15 suppliers = Shape15(
+      source: i0.VersionedTable(
+        entityName: 'suppliers',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_9,
+          _column_26,
+          _column_39,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape16 supplierPayments = Shape16(
+      source: i0.VersionedTable(
+        entityName: 'supplier_payments',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_65,
+          _column_66,
+          _column_26,
+          _column_67,
+          _column_68,
+          _column_69,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape17 customers = Shape17(
+      source: i0.VersionedTable(
+        entityName: 'customers',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_9,
+          _column_26,
+          _column_70,
+          _column_39,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape18 customerPayments = Shape18(
+      source: i0.VersionedTable(
+        entityName: 'customer_payments',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_71,
+          _column_66,
+          _column_26,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape9 users = Shape9(
+      source: i0.VersionedTable(
+        entityName: 'users',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_9,
+          _column_36,
+          _column_37,
+          _column_38,
+          _column_39,
+          _column_47,
+          _column_48,
+          _column_49,
+          _column_50,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape7 changeLogs = Shape7(
+      source: i0.VersionedTable(
+        entityName: 'change_logs',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_40,
+          _column_41,
+          _column_42,
+          _column_43,
+          _column_44,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape10 failedLogins = Shape10(
+      source: i0.VersionedTable(
+        entityName: 'failed_logins',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_51,
+          _column_52,
+          _column_53,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape8 appSettings = Shape8(
+      source: i0.VersionedTable(
+        entityName: 'app_settings',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY("key")',
+        ],
+        columns: [
+          _column_45,
+          _column_46,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Index productsBarcode = i1.Index('products_barcode',
+      'CREATE INDEX products_barcode ON products (barcode)');
+  final i1.Index deliveriesProduct = i1.Index('deliveries_product',
+      'CREATE INDEX deliveries_product ON deliveries (product_id)');
+  final i1.Index deliveriesSupplier = i1.Index('deliveries_supplier',
+      'CREATE INDEX deliveries_supplier ON deliveries (supplier_id)');
+  final i1.Index salesCreated = i1.Index(
+      'sales_created', 'CREATE INDEX sales_created ON sales (created_at)');
+  final i1.Index salesCustomer = i1.Index(
+      'sales_customer', 'CREATE INDEX sales_customer ON sales (customer_id)');
+  final i1.Index saleItemsSale = i1.Index('sale_items_sale',
+      'CREATE INDEX sale_items_sale ON sale_items (sale_id)');
+  final i1.Index saleItemsProduct = i1.Index('sale_items_product',
+      'CREATE INDEX sale_items_product ON sale_items (product_id)');
+  final i1.Index stockAllocationsProduct = i1.Index('stock_allocations_product',
+      'CREATE INDEX stock_allocations_product ON stock_allocations (product_id)');
+  final i1.Index stockAllocationsSource = i1.Index('stock_allocations_source',
+      'CREATE INDEX stock_allocations_source ON stock_allocations (source_id)');
+  final i1.Index lossesProduct = i1.Index(
+      'losses_product', 'CREATE INDEX losses_product ON losses (product_id)');
+  final i1.Index returnsSale = i1.Index(
+      'returns_sale', 'CREATE INDEX returns_sale ON returns (sale_id)');
+  final i1.Index returnItemsSaleItem = i1.Index('return_items_sale_item',
+      'CREATE INDEX return_items_sale_item ON return_items (sale_item_id)');
+  final i1.Index supplierPaymentsSupplier = i1.Index(
+      'supplier_payments_supplier',
+      'CREATE INDEX supplier_payments_supplier ON supplier_payments (supplier_id)');
+  final i1.Index supplierPaymentsStatus = i1.Index('supplier_payments_status',
+      'CREATE INDEX supplier_payments_status ON supplier_payments (status)');
+  final i1.Index customerPaymentsCustomer = i1.Index(
+      'customer_payments_customer',
+      'CREATE INDEX customer_payments_customer ON customer_payments (customer_id)');
+  final i1.Index changeLogsEntity = i1.Index('change_logs_entity',
+      'CREATE INDEX change_logs_entity ON change_logs (entity_id)');
+  final i1.Index failedLoginsSeen = i1.Index('failed_logins_seen',
+      'CREATE INDEX failed_logins_seen ON failed_logins (seen)');
+}
+
+class Shape15 extends i0.VersionedTable {
+  Shape15({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get createdAt =>
+      columnsByName['created_at']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get updatedAt =>
+      columnsByName['updated_at']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get deviceId =>
+      columnsByName['device_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get userId =>
+      columnsByName['user_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get deleted =>
+      columnsByName['deleted']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get name =>
+      columnsByName['name']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get phone =>
+      columnsByName['phone']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get note =>
+      columnsByName['note']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get active =>
+      columnsByName['active']! as i1.GeneratedColumn<int>;
+}
+
+class Shape16 extends i0.VersionedTable {
+  Shape16({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get createdAt =>
+      columnsByName['created_at']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get updatedAt =>
+      columnsByName['updated_at']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get deviceId =>
+      columnsByName['device_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get userId =>
+      columnsByName['user_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get deleted =>
+      columnsByName['deleted']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get supplierId =>
+      columnsByName['supplier_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get amount =>
+      columnsByName['amount']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get note =>
+      columnsByName['note']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get status =>
+      columnsByName['status']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get validatedBy =>
+      columnsByName['validated_by']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get validatedAt =>
+      columnsByName['validated_at']! as i1.GeneratedColumn<String>;
+}
+
+i1.GeneratedColumn<String> _column_65(String aliasedName) =>
+    i1.GeneratedColumn<String>('supplier_id', aliasedName, false,
+        type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
+i1.GeneratedColumn<int> _column_66(String aliasedName) =>
+    i1.GeneratedColumn<int>('amount', aliasedName, false,
+        type: i1.DriftSqlType.int, $customConstraints: 'NOT NULL');
+i1.GeneratedColumn<String> _column_67(String aliasedName) =>
+    i1.GeneratedColumn<String>('status', aliasedName, false,
+        type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
+i1.GeneratedColumn<String> _column_68(String aliasedName) =>
+    i1.GeneratedColumn<String>('validated_by', aliasedName, true,
+        type: i1.DriftSqlType.string, $customConstraints: 'NULL');
+i1.GeneratedColumn<String> _column_69(String aliasedName) =>
+    i1.GeneratedColumn<String>('validated_at', aliasedName, true,
+        type: i1.DriftSqlType.string, $customConstraints: 'NULL');
+
+class Shape17 extends i0.VersionedTable {
+  Shape17({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get createdAt =>
+      columnsByName['created_at']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get updatedAt =>
+      columnsByName['updated_at']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get deviceId =>
+      columnsByName['device_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get userId =>
+      columnsByName['user_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get deleted =>
+      columnsByName['deleted']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get name =>
+      columnsByName['name']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get phone =>
+      columnsByName['phone']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get note =>
+      columnsByName['note']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get creditLimit =>
+      columnsByName['credit_limit']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get active =>
+      columnsByName['active']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<int> _column_70(String aliasedName) =>
+    i1.GeneratedColumn<int>('credit_limit', aliasedName, true,
+        type: i1.DriftSqlType.int, $customConstraints: 'NULL');
+
+class Shape18 extends i0.VersionedTable {
+  Shape18({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get createdAt =>
+      columnsByName['created_at']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get updatedAt =>
+      columnsByName['updated_at']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get deviceId =>
+      columnsByName['device_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get userId =>
+      columnsByName['user_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get deleted =>
+      columnsByName['deleted']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get customerId =>
+      columnsByName['customer_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get amount =>
+      columnsByName['amount']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get note =>
+      columnsByName['note']! as i1.GeneratedColumn<String>;
+}
+
+i1.GeneratedColumn<String> _column_71(String aliasedName) =>
+    i1.GeneratedColumn<String>('customer_id', aliasedName, false,
+        type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
   required Future<void> Function(i1.Migrator m, Schema4 schema) from3To4,
+  required Future<void> Function(i1.Migrator m, Schema5 schema) from4To5,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -1580,6 +2214,11 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from3To4(migrator, schema);
         return 4;
+      case 4:
+        final schema = Schema5(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from4To5(migrator, schema);
+        return 5;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -1590,10 +2229,12 @@ i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
   required Future<void> Function(i1.Migrator m, Schema4 schema) from3To4,
+  required Future<void> Function(i1.Migrator m, Schema5 schema) from4To5,
 }) =>
     i0.VersionedSchema.stepByStepHelper(
         step: migrationSteps(
       from1To2: from1To2,
       from2To3: from2To3,
       from3To4: from3To4,
+      from4To5: from4To5,
     ));

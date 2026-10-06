@@ -377,7 +377,9 @@ class _RecoveryCodeTileState extends State<_RecoveryCodeTile> {
       (code) => showRecoveryCode(context, code),
     );
     if (mounted) {
-      setState(() => _hasCode = sl<UserRepository>().ownerHasRecoveryCode());
+      setState(() {
+        _hasCode = sl<UserRepository>().ownerHasRecoveryCode();
+      });
     }
   }
 

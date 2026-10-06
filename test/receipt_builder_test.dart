@@ -7,6 +7,9 @@ void main() {
     List<SaleLine>? lines,
     int discount = 0,
     String footer = 'Merci, à bientôt !',
+    String? customerName,
+    int? paidNow,
+    int? customerDebt,
   }) {
     final items = lines ??
         const [
@@ -30,6 +33,9 @@ void main() {
       subtotal: subtotal,
       discount: discount,
       total: subtotal - discount,
+      customerName: customerName,
+      paidNow: paidNow,
+      customerDebt: customerDebt,
     );
   }
 
@@ -87,6 +93,23 @@ void main() {
     expect(text, matches(RegExp(r'Sous-total\s+120,00 DA')));
     expect(text, matches(RegExp(r'Remise\s+-20,00 DA')));
     expect(text, matches(RegExp(r'TOTAL\s+100,00 DA')));
+  });
+
+  test('a credit sale shows the customer, paid, left and total owed', () {
+    final text = buildReceiptBody(receipt(
+            customerName: 'Mohamed', paidNow: 2000, customerDebt: 165000))
+        .join('\n');
+
+    expect(text, contains('Client : Mohamed'));
+    expect(text, matches(RegExp(r'Paye\s+20,00 DA')));
+    expect(text, matches(RegExp(r'Reste \(credit\)\s+100,00 DA')));
+    expect(text, matches(RegExp(r'Total du\s+1 650,00 DA')));
+  });
+
+  test('a cash sale has no customer lines', () {
+    final text = buildReceiptBody(receipt()).join('\n');
+    expect(text, isNot(contains('Client')));
+    expect(text, isNot(contains('credit')));
   });
 
   test('wrapText breaks between words and cuts very long words', () {

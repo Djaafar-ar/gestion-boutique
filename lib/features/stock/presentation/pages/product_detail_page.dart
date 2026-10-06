@@ -35,7 +35,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   /// Opens a page, then reloads the batches when coming back.
   Future<void> _open(String location, {Object? extra}) async {
     await context.push(location, extra: extra);
-    if (mounted) setState(() => _batches = _load());
+    if (mounted) {
+      setState(() {
+        _batches = _load();
+      });
+    }
   }
 
   @override

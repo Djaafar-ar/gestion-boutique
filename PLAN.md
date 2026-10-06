@@ -327,6 +327,7 @@ At the **end of every phase**:
 - Checkout: Comptant / Crédit, pick or create a customer, amount paid now, credit-limit warning.
 - Record customer payment. Returns on credit sales reduce the debt.
 - Tests: supplier balance (pending not counted), validation rules, customer debt math (partial payment, payment, return), credit-limit check.
+- **Rules chosen while building:** a customer can never pay back more than they owe. A return on a credit sale is taken off the debt by default (cash is still possible); if that makes the debt negative, it shows as an "Avance". Workers can add/edit customers and suppliers, but only the owner sets credit limits, archives, and validates or rejects payments (a decision is final). A worker can never go over a credit limit; the owner is asked to confirm. Credit receipts get Client / Payé / Reste (crédit) / Total dû lines.
 
 ### Phase 5: Alerts and notifications
 - `notifications` table, Alerts tab with unread badge, mark as read.

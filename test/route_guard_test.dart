@@ -48,11 +48,26 @@ void main() {
     expect(guardRoute(session, '/more/shop'), '/sell');
     expect(guardRoute(session, '/more/workers'), '/sell');
     expect(guardRoute(session, '/more/workers/new'), '/sell');
+    expect(guardRoute(session, '/payments'), '/sell');
+  });
+
+  test('a worker can use the carnet and suppliers', () {
+    const session = SessionState(hasOwner: true, user: worker);
+    for (final path in [
+      '/customers',
+      '/customers/new',
+      '/customers/c1',
+      '/suppliers',
+      '/suppliers/s1',
+    ]) {
+      expect(guardRoute(session, path), isNull, reason: path);
+    }
   });
 
   test('the owner can open everything', () {
     const session = SessionState(hasOwner: true, user: owner);
     expect(guardRoute(session, '/more/shop'), isNull);
     expect(guardRoute(session, '/more/workers/w'), isNull);
+    expect(guardRoute(session, '/payments'), isNull);
   });
 }

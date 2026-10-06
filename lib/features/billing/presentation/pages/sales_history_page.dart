@@ -51,7 +51,9 @@ class _SalesHistoryPageState extends State<SalesHistoryPage> {
     super.dispose();
   }
 
-  void _reload() => setState(() => _sales = _load());
+  void _reload() => setState(() {
+        _sales = _load();
+      });
 
   Future<void> _pickDay() async {
     final now = DateTime.now();
@@ -151,7 +153,9 @@ class _SalesHistoryPageState extends State<SalesHistoryPage> {
         return RefreshIndicator(
           onRefresh: () async {
             final next = _load();
-            setState(() => _sales = next);
+            setState(() {
+              _sales = next;
+            });
             await next;
           },
           child: ListView(
@@ -231,7 +235,9 @@ class _SaleTile extends StatelessWidget {
       leading: CircleAvatar(
         backgroundColor: scheme.secondaryContainer,
         foregroundColor: scheme.onSecondaryContainer,
-        child: const Icon(Icons.receipt_outlined, size: 20),
+        child: Icon(
+            sale.isCredit ? Icons.menu_book_outlined : Icons.receipt_outlined,
+            size: 20),
       ),
       title: Text(l10n.saleTitle(sale.number),
           style: const TextStyle(fontWeight: FontWeight.w600)),
@@ -239,6 +245,7 @@ class _SaleTile extends StatelessWidget {
         formatTime(sale.createdAt),
         l10n.itemCount(sale.itemCount),
         if (sale.sellerName != null) sale.sellerName!,
+        if (sale.isCredit) '${l10n.creditChip} : ${sale.customerName ?? '?'}',
       ].join(' · ')),
       trailing: Text(formatDAForUi(sale.total),
           style: const TextStyle(fontWeight: FontWeight.w600)),

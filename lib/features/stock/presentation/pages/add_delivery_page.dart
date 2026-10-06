@@ -13,11 +13,13 @@ import '../../../../core/widgets/input_label.dart';
 import '../../../../core/widgets/primary_button.dart';
 import '../../../product/domain/entities/product.dart';
 import '../../../product/presentation/bloc/product_bloc.dart';
+import '../../../suppliers/domain/entities/supplier.dart';
+import '../../../suppliers/presentation/widgets/supplier_picker.dart';
 import '../../domain/repositories/stock_repository.dart';
 import '../widgets/product_picker.dart';
 
-/// "Réception de stock": quantity, buying price and expiry date of a
-/// delivery. Who received it is saved automatically.
+/// "Réception de stock": quantity, buying price, expiry date and supplier
+/// of a delivery. Who received it is saved automatically.
 class AddDeliveryPage extends StatefulWidget {
   /// Product already chosen (from its page), or null to pick one.
   final String? productId;
@@ -34,6 +36,7 @@ class _AddDeliveryPageState extends State<AddDeliveryPage> {
   final _buyPrice = TextEditingController();
   final _note = TextEditingController();
   Product? _product;
+  Supplier? _supplier;
   DateTime? _expiry;
   bool _updateBuyPrice = true;
   bool _saving = false;
@@ -99,6 +102,7 @@ class _AddDeliveryPageState extends State<AddDeliveryPage> {
       buyPrice: buyPrice,
       expiryDate: _expiry,
       note: _note.text,
+      supplierId: _supplier?.id,
       updateProductBuyPrice: _updateBuyPrice && buyPrice > 0,
     );
     if (!mounted) return;
@@ -211,6 +215,27 @@ class _AddDeliveryPageState extends State<AddDeliveryPage> {
                         onPressed: () => setState(() => _expiry = null),
                       ),
                 onTap: _pickExpiry,
+              ),
+            ),
+            const SizedBox(height: 20),
+            InputLabel(text: l10n.supplierOptional),
+            Card(
+              child: ListTile(
+                leading:
+                    Icon(Icons.local_shipping_outlined, color: scheme.primary),
+                title: Text(_supplier?.name ?? l10n.noSupplier),
+                trailing: _supplier == null
+                    ? const Icon(Icons.search)
+                    : IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () => setState(() => _supplier = null),
+                      ),
+                onTap: () async {
+                  final picked = await pickSupplier(context);
+                  if (picked != null && mounted) {
+                    setState(() => _supplier = picked);
+                  }
+                },
               ),
             ),
             const SizedBox(height: 20),

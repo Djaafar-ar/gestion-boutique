@@ -61,6 +61,7 @@ class StockRepositoryImpl implements StockRepository {
     required int buyPrice,
     DateTime? expiryDate,
     String? note,
+    String? supplierId,
     bool updateProductBuyPrice = false,
   }) async {
     if (quantity <= 0) return const Left(CacheFailure('Quantity must be > 0'));
@@ -79,6 +80,7 @@ class StockRepositoryImpl implements StockRepository {
                 ? null
                 : DateTime(expiryDate.year, expiryDate.month, expiryDate.day)),
             receivedAt: now,
+            supplierId: Value(supplierId),
             note: Value(note?.trim().isEmpty ?? true ? null : note!.trim()),
           ));
       if (updateProductBuyPrice) {

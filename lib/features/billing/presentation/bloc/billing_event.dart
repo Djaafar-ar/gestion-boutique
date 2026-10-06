@@ -45,13 +45,40 @@ class SetDiscountEvent extends BillingEvent {
   List<Object> get props => [discount ?? 'none'];
 }
 
+/// Cash (false) or credit (true) sale.
+class SetCreditModeEvent extends BillingEvent {
+  final bool onCredit;
+  const SetCreditModeEvent(this.onCredit);
+  @override
+  List<Object> get props => [onCredit];
+}
+
+/// The customer of a credit sale (null to remove).
+class SetCustomerEvent extends BillingEvent {
+  final Customer? customer;
+  const SetCustomerEvent(this.customer);
+  @override
+  List<Object> get props => [customer ?? 'none'];
+}
+
+/// What the customer pays now on a credit sale (centimes).
+class SetPaidNowEvent extends BillingEvent {
+  final int paidNow;
+  const SetPaidNowEvent(this.paidNow);
+  @override
+  List<Object> get props => [paidNow];
+}
+
 /// Saves the cart as a sale, and prints the receipt when [print] is true.
+/// [allowOverLimit]: the owner confirmed going over a credit limit.
 class CheckoutEvent extends BillingEvent {
   final bool print;
   final Shop shop;
+  final bool allowOverLimit;
 
-  const CheckoutEvent({required this.print, required this.shop});
+  const CheckoutEvent(
+      {required this.print, required this.shop, this.allowOverLimit = false});
 
   @override
-  List<Object> get props => [print, shop];
+  List<Object> get props => [print, shop, allowOverLimit];
 }

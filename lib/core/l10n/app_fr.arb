@@ -570,5 +570,283 @@
   "maxDiscountLabel": "Remise maximale des employés (%)",
   "expiryWarnLabel": "Alerte péremption : jours avant",
   "percentInvalid": "Entre 0 et 100",
-  "daysInvalid": "Entre 0 et 60"
+  "daysInvalid": "Entre 0 et 60",
+  "creditSection": "Carnet et fournisseurs",
+  "customersTitle": "Clients (carnet)",
+  "customersSub": "Crédits et paiements des clients",
+  "suppliersTitle": "Fournisseurs",
+  "suppliersSub": "Livraisons, paiements, reste à payer",
+  "pendingPaymentsTitle": "Paiements à valider",
+  "pendingPaymentsSub": "{count} en attente",
+  "@pendingPaymentsSub": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "newCustomer": "Nouveau client",
+  "editCustomer": "Modifier le client",
+  "customerNameHint": "ex : Mohamed Saidi",
+  "nameRequired": "Entrez un nom",
+  "creditLimitLabel": "Limite de crédit (facultatif)",
+  "creditLimitHelp": "Vide = pas de limite",
+  "creditLimitOwnerOnly": "Seul le patron fixe la limite de crédit.",
+  "totalOwedByCustomers": "Total dû par les clients",
+  "debtLabel": "Dette",
+  "noDebt": "Rien à payer",
+  "advanceLabel": "Avance : {amount}",
+  "@advanceLabel": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "overLimitBadge": "Limite dépassée",
+  "creditLimitShort": "Limite : {amount}",
+  "@creditLimitShort": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "noCustomers": "Aucun client. Ajoutez-en un avec le bouton +.",
+  "searchCustomer": "Nom ou téléphone",
+  "receivePayment": "Encaisser un paiement",
+  "paymentAmountLabel": "Montant",
+  "amountInvalid": "Entrez un montant valide",
+  "paymentTooHigh": "Plus que la dette ({amount})",
+  "@paymentTooHigh": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentSaved": "Paiement enregistré",
+  "customerHistory": "Historique du compte",
+  "entryCreditSale": "Vente à crédit n°{number}",
+  "@entryCreditSale": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "entryPayment": "Paiement reçu",
+  "entryRefund": "Retour du ticket n°{number}",
+  "@entryRefund": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "entrySaleDetail": "Total {total} · payé {paid}",
+  "@entrySaleDetail": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      },
+      "paid": {
+        "type": "String"
+      }
+    }
+  },
+  "recordedBy": "par {name}",
+  "@recordedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "noHistory": "Aucune opération pour l'instant.",
+  "archiveTitle": "Archiver {name} ?",
+  "@archiveTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "archiveBody": "Il ne sera plus proposé dans les listes. Son historique est conservé.",
+  "archivedDone": "Archivé",
+  "paymentMode": "Paiement",
+  "payCash": "Comptant",
+  "payCredit": "Crédit",
+  "chooseCustomer": "Choisir un client",
+  "currentDebt": "Dette actuelle : {amount}",
+  "@currentDebt": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "paidNowLabel": "Payé maintenant",
+  "leftOnCredit": "Reste à crédit",
+  "newDebtLabel": "Nouvelle dette du client",
+  "overLimitWarning": "Dépasse la limite de crédit ({limit})",
+  "@overLimitWarning": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "customerRequired": "Choisissez un client pour une vente à crédit.",
+  "creditLimitTitle": "Limite de crédit dépassée",
+  "creditLimitAsk": "{name} devra {debt}, plus que sa limite de {limit}. Autoriser quand même ?",
+  "@creditLimitAsk": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "debt": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "creditLimitWorker": "Limite de crédit dépassée ({limit}). Demandez au patron.",
+  "@creditLimitWorker": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "allowAnyway": "Autoriser",
+  "saleSavedCredit": "Vente n°{number} enregistrée · {amount} sur le compte de {name}",
+  "@saleSavedCredit": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "amount": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "customerLabel": "Client",
+  "paidLabel": "Payé",
+  "onCreditLabel": "À crédit",
+  "creditChip": "Crédit",
+  "refundModeLabel": "Remboursement",
+  "refundToCredit": "Déduire de la dette",
+  "refundCash": "Rendre en espèces",
+  "refundToAccount": "À déduire du compte de {name} : {amount}",
+  "@refundToAccount": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "returnSavedCredit": "Retour enregistré. {amount} déduit du compte du client.",
+  "@returnSavedCredit": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "newSupplier": "Nouveau fournisseur",
+  "editSupplier": "Modifier le fournisseur",
+  "supplierNameHint": "ex : Hamoud Boualem",
+  "noSuppliers": "Aucun fournisseur. Ajoutez-en un avec le bouton +.",
+  "totalOwedToSuppliers": "Total à payer aux fournisseurs",
+  "supplierOwes": "Reste à payer : {amount}",
+  "@supplierOwes": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "supplierAdvance": "Payé d'avance : {amount}",
+  "@supplierAdvance": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "pendingAmount": "En attente : {amount}",
+  "@pendingAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "deliveredLabel": "Livré",
+  "paidValidatedLabel": "Payé (validé)",
+  "leftToPayLabel": "Reste à payer",
+  "recordSupplierPayment": "Enregistrer un paiement",
+  "workerPaymentNotice": "Le patron devra valider ce paiement avant qu'il soit compté.",
+  "paymentPendingSaved": "Paiement envoyé au patron pour validation",
+  "statusPending": "En attente",
+  "statusValidated": "Validé",
+  "statusRejected": "Refusé",
+  "paymentsSection": "Paiements",
+  "deliveriesSection": "Livraisons",
+  "noPayments": "Aucun paiement.",
+  "noDeliveries": "Aucune livraison. Choisissez ce fournisseur lors d'une réception de stock.",
+  "paidBy": "Payé par {name}",
+  "@paidBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "validatedBy": "validé par {name}",
+  "@validatedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "rejectedBy": "refusé par {name}",
+  "@rejectedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "validate": "Valider",
+  "reject": "Refuser",
+  "rejectPaymentTitle": "Refuser ce paiement ?",
+  "rejectPaymentBody": "Le paiement de {amount} à {name} ne sera pas compté.",
+  "@rejectPaymentBody": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentValidated": "Paiement validé",
+  "paymentRejected": "Paiement refusé",
+  "noPendingPayments": "Aucun paiement en attente.",
+  "supplierOptional": "Fournisseur (facultatif)",
+  "noSupplier": "Aucun fournisseur",
+  "searchSupplier": "Rechercher un fournisseur",
+  "savedLabel": "Enregistré"
 }

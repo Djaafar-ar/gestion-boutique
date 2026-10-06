@@ -59,6 +59,7 @@ class Products extends Table with SyncColumns {
 /// and losses, so it is never typed in by hand.
 @DataClassName('DeliveryRow')
 @TableIndex(name: 'deliveries_product', columns: {#productId})
+@TableIndex(name: 'deliveries_supplier', columns: {#supplierId})
 class Deliveries extends Table with SyncColumns {
   TextColumn get productId => text()();
   IntColumn get quantity => integer()();
@@ -144,8 +145,68 @@ class ReturnItems extends Table with SyncColumns {
   Set<Column> get primaryKey => {id};
 }
 
+/// People and companies the shop buys from.
+@DataClassName('SupplierRow')
+class Suppliers extends Table with SyncColumns {
+  TextColumn get name => text()();
+  TextColumn get phone => text().withDefault(const Constant(''))();
+  TextColumn get note => text().nullable()();
+  BoolColumn get active => boolean().withDefault(const Constant(true))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Money given to a supplier. `userId` is who paid. A worker's payment is
+/// 'pending' until the owner validates (or rejects) it; only validated
+/// payments lower what the shop owes.
+@DataClassName('SupplierPaymentRow')
+@TableIndex(name: 'supplier_payments_supplier', columns: {#supplierId})
+@TableIndex(name: 'supplier_payments_status', columns: {#status})
+class SupplierPayments extends Table with SyncColumns {
+  TextColumn get supplierId => text()();
+  IntColumn get amount => integer()(); // centimes
+  TextColumn get note => text().nullable()();
+  TextColumn get status => text()(); // pending, validated, rejected
+  TextColumn get validatedBy => text().nullable()();
+  DateTimeColumn get validatedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Customers who buy on credit (the "carnet").
+@DataClassName('CustomerRow')
+class Customers extends Table with SyncColumns {
+  TextColumn get name => text()();
+  TextColumn get phone => text().withDefault(const Constant(''))();
+  TextColumn get note => text().nullable()();
+
+  /// Highest debt allowed (centimes), or null for no limit. Set by the
+  /// owner only.
+  IntColumn get creditLimit => integer().nullable()();
+  BoolColumn get active => boolean().withDefault(const Constant(true))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// A customer paying back part of their debt. `userId` is who received
+/// the money.
+@DataClassName('CustomerPaymentRow')
+@TableIndex(name: 'customer_payments_customer', columns: {#customerId})
+class CustomerPayments extends Table with SyncColumns {
+  TextColumn get customerId => text()();
+  IntColumn get amount => integer()(); // centimes
+  TextColumn get note => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DataClassName('SaleRow')
 @TableIndex(name: 'sales_created', columns: {#createdAt})
+@TableIndex(name: 'sales_customer', columns: {#customerId})
 class Sales extends Table with SyncColumns {
   /// Ticket number shown to people and printed on the receipt.
   IntColumn get number => integer()();

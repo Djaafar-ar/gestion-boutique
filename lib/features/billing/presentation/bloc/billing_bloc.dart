@@ -4,6 +4,7 @@ import '../../data/receipt_printer.dart';
 import '../../domain/entities/cart_item.dart';
 import '../../domain/entities/sale.dart';
 import '../../domain/repositories/sale_repository.dart';
+import 'package:billing_app/features/customers/domain/entities/customer.dart';
 import 'package:billing_app/features/product/domain/entities/product.dart';
 import 'package:billing_app/features/product/domain/usecases/product_usecases.dart';
 import 'package:billing_app/features/shop/domain/entities/shop.dart';
@@ -29,6 +30,13 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
     on<SetDiscountEvent>((event, emit) => emit(event.discount == null
         ? state.copyWith(clearDiscount: true)
         : state.copyWith(discount: event.discount)));
+    on<SetCreditModeEvent>(
+        (event, emit) => emit(state.copyWith(onCredit: event.onCredit)));
+    on<SetCustomerEvent>((event, emit) => emit(event.customer == null
+        ? state.copyWith(clearCustomer: true)
+        : state.copyWith(customer: event.customer)));
+    on<SetPaidNowEvent>(
+        (event, emit) => emit(state.copyWith(paidNow: event.paidNow)));
     on<CheckoutEvent>(_onCheckout);
   }
 
@@ -93,20 +101,33 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
   Future<void> _onCheckout(
       CheckoutEvent event, Emitter<BillingState> emit) async {
     if (state.cartItems.isEmpty || state.isProcessing) return;
+    final customer = state.onCredit ? state.customer : null;
+    if (state.onCredit && customer == null) {
+      emit(state.copyWith(error: BillingError.customerMissing));
+      return;
+    }
     emit(state.copyWith(isProcessing: true));
 
-    final saved = await saleRepository.saveSale(state.cartItems,
-        discount: state.discountAmount);
+    final saved = await saleRepository.saveSale(
+      state.cartItems,
+      discount: state.discountAmount,
+      customerId: customer?.id,
+      paidNow: state.paidAtCounter,
+      allowOverLimit: event.allowOverLimit,
+    );
     if (saved.isLeft()) {
       final failure = saved.getLeft().toNullable();
       emit(state.copyWith(
         isProcessing: false,
-        error: failure is DiscountLimitFailure
-            ? BillingError.discountTooHigh
-            : BillingError.saveFailed,
+        error: switch (failure) {
+          DiscountLimitFailure() => BillingError.discountTooHigh,
+          CreditLimitFailure() => BillingError.creditLimit,
+          _ => BillingError.saveFailed,
+        },
         errorDetail: failure is DiscountLimitFailure
             ? '${failure.maxPercent}'
             : failure?.message,
+        creditLimit: failure is CreditLimitFailure ? failure : null,
       ));
       return;
     }
@@ -114,7 +135,12 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
 
     PrintResult? printed;
     if (event.print) {
-      printed = await receiptPrinter.printSale(sale, event.shop);
+      // A credit receipt also shows everything the customer now owes.
+      final debt = customer == null
+          ? null
+          : await saleRepository.customerDebt(customer.id);
+      printed =
+          await receiptPrinter.printSale(sale, event.shop, customerDebt: debt);
     }
 
     // A fresh state empties the cart for the next customer.

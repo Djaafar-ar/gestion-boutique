@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/l10n/app_localizations.dart';
+import '../../../../core/session/session_cubit.dart';
+import '../../../customers/presentation/widgets/customer_picker.dart';
+import '../../../customers/presentation/widgets/debt_text.dart';
 import '../../../../core/utils/money.dart';
 import '../../../../core/widgets/app_snack.dart';
 import '../../../shop/domain/entities/shop.dart';
@@ -79,6 +82,8 @@ class CheckoutPage extends StatelessWidget {
                       ),
                     ),
                     _StockWarning(items: billingState.cartItems),
+                    const SizedBox(height: 12),
+                    _PaymentSection(state: billingState),
                   ],
                 ),
               ),
@@ -184,16 +189,59 @@ class CheckoutPage extends StatelessWidget {
     }
   }
 
-  void _checkout(BuildContext context, {required bool print}) {
+  Future<void> _checkout(BuildContext context, {required bool print}) async {
+    final l10n = AppLocalizations.of(context);
+    final billing = context.read<BillingBloc>().state;
+    var allowOverLimit = false;
+    if (billing.onCredit && billing.overCreditLimit) {
+      final customer = billing.customer!;
+      final limit = formatDAForUi(customer.creditLimit!);
+      // A worker cannot go over the limit; the owner decides.
+      if (!context.read<SessionCubit>().state.isOwner) {
+        showAppSnack(context, l10n.creditLimitWorker(limit),
+            kind: SnackKind.error);
+        return;
+      }
+      final ok = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: Text(l10n.creditLimitTitle),
+          content: Text(l10n.creditLimitAsk(
+              customer.name, formatDAForUi(billing.debtAfter!), limit)),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(dialogContext, false),
+                child: Text(l10n.commonCancel)),
+            FilledButton(
+                onPressed: () => Navigator.pop(dialogContext, true),
+                child: Text(l10n.allowAnyway)),
+          ],
+        ),
+      );
+      if (ok != true || !context.mounted) return;
+      allowOverLimit = true;
+    }
     final shopState = context.read<ShopBloc>().state;
     final shop = shopState is ShopLoaded ? shopState.shop : const Shop();
-    context.read<BillingBloc>().add(CheckoutEvent(print: print, shop: shop));
+    context.read<BillingBloc>().add(CheckoutEvent(
+        print: print, shop: shop, allowOverLimit: allowOverLimit));
   }
 
   void _onResult(
       BuildContext context, AppLocalizations l10n, BillingState state) {
     if (state.error == BillingError.saveFailed) {
       showAppSnack(context, l10n.saleSaveFailed, kind: SnackKind.error);
+      return;
+    }
+    if (state.error == BillingError.customerMissing) {
+      showAppSnack(context, l10n.customerRequired, kind: SnackKind.error);
+      return;
+    }
+    if (state.error == BillingError.creditLimit) {
+      // Only when the debt changed since the customer was chosen.
+      showAppSnack(context,
+          l10n.creditLimitWorker(formatDAForUi(state.creditLimit?.limit ?? 0)),
+          kind: SnackKind.error);
       return;
     }
     if (state.error == BillingError.discountTooHigh) {
@@ -208,6 +256,12 @@ class CheckoutPage extends StatelessWidget {
     context.read<ProductBloc>().add(LoadProducts());
 
     switch (state.printOutcome) {
+      case null || PrintOutcome.printed when sale.isCredit && sale.onCredit > 0:
+        showAppSnack(
+            context,
+            l10n.saleSavedCredit(sale.number, formatDAForUi(sale.onCredit),
+                sale.customerName ?? ''),
+            kind: SnackKind.success);
       case null:
         showAppSnack(context, l10n.saleSaved(sale.number),
             kind: SnackKind.success);
@@ -332,6 +386,134 @@ class _StockWarning extends StatelessWidget {
                       TextStyle(fontSize: 12, color: scheme.onErrorContainer)),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Cash or credit. On credit: the customer, what they pay now, what goes
+/// on their account and a warning above their credit limit.
+class _PaymentSection extends StatefulWidget {
+  final BillingState state;
+
+  const _PaymentSection({required this.state});
+
+  @override
+  State<_PaymentSection> createState() => _PaymentSectionState();
+}
+
+class _PaymentSectionState extends State<_PaymentSection> {
+  late final _paidNow = TextEditingController(
+      text: widget.state.paidNow > 0
+          ? centimesToInput(widget.state.paidNow)
+          : '');
+
+  @override
+  void dispose() {
+    _paidNow.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickCustomer() async {
+    final customer = await pickCustomer(context);
+    if (customer != null && mounted) {
+      context.read<BillingBloc>().add(SetCustomerEvent(customer));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final state = widget.state;
+    final customer = state.customer;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(l10n.paymentMode,
+                style: const TextStyle(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            SegmentedButton<bool>(
+              showSelectedIcon: false,
+              segments: [
+                ButtonSegment(
+                    value: false,
+                    icon: const Icon(Icons.payments_outlined, size: 18),
+                    label: Text(l10n.payCash)),
+                ButtonSegment(
+                    value: true,
+                    icon: const Icon(Icons.menu_book_outlined, size: 18),
+                    label: Text(l10n.payCredit)),
+              ],
+              selected: {state.onCredit},
+              onSelectionChanged: state.isProcessing
+                  ? null
+                  : (s) => context
+                      .read<BillingBloc>()
+                      .add(SetCreditModeEvent(s.first)),
+            ),
+            if (state.onCredit) ...[
+              const SizedBox(height: 8),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(Icons.person_outline, color: scheme.primary),
+                title: Text(customer?.name ?? l10n.chooseCustomer,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: customer == null ? scheme.primary : null)),
+                subtitle: customer == null
+                    ? null
+                    : Row(
+                        children: [
+                          Text('${l10n.debtLabel} : '),
+                          DebtText(debt: customer.debt),
+                        ],
+                      ),
+                trailing: const Icon(Icons.search),
+                onTap: state.isProcessing ? null : _pickCustomer,
+              ),
+              TextField(
+                controller: _paidNow,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: l10n.paidNowLabel,
+                  hintText: '0,00',
+                  suffixText: 'DA',
+                ),
+                onChanged: (text) => context
+                    .read<BillingBloc>()
+                    .add(SetPaidNowEvent(parseDA(text) ?? 0)),
+              ),
+              const SizedBox(height: 12),
+              _AmountRow(label: l10n.leftOnCredit, amount: state.leftOnCredit),
+              if (state.debtAfter != null)
+                _AmountRow(label: l10n.newDebtLabel, amount: state.debtAfter!),
+              if (state.overCreditLimit)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Row(
+                    children: [
+                      Icon(Icons.warning_amber_rounded, color: scheme.error),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          l10n.overLimitWarning(
+                              formatDAForUi(customer!.creditLimit!)),
+                          style: TextStyle(
+                              color: scheme.error, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ],
         ),
       ),
     );

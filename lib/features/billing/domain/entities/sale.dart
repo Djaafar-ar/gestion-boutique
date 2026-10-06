@@ -52,6 +52,10 @@ class Sale extends Equatable {
   /// Money already given back for returns (centimes).
   final int refunded;
 
+  /// The customer of a credit sale (null for a cash sale).
+  final String? customerId;
+  final String? customerName;
+
   const Sale({
     required this.id,
     required this.number,
@@ -64,7 +68,15 @@ class Sale extends Equatable {
     this.sellerName,
     required this.items,
     this.refunded = 0,
+    this.customerId,
+    this.customerName,
   });
+
+  /// A sale put (partly) on a customer's account.
+  bool get isCredit => customerId != null;
+
+  /// What was not paid at the counter and went on the customer's debt.
+  int get onCredit => total - paidNow;
 
   int get itemCount => items.fold(0, (sum, line) => sum + line.quantity);
 
@@ -87,7 +99,9 @@ class Sale extends Equatable {
         createdAt,
         userId,
         items,
-        refunded
+        refunded,
+        customerId,
+        customerName
       ];
 }
 

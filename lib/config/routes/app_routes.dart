@@ -9,6 +9,15 @@ import '../../core/session/session_cubit.dart';
 import '../../core/widgets/coming_soon_page.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../features/billing/presentation/pages/home_page.dart';
+import '../../features/customers/domain/entities/customer.dart';
+import '../../features/customers/presentation/pages/customer_detail_page.dart';
+import '../../features/customers/presentation/pages/customer_form_page.dart';
+import '../../features/customers/presentation/pages/customers_page.dart';
+import '../../features/suppliers/domain/entities/supplier.dart';
+import '../../features/suppliers/presentation/pages/pending_payments_page.dart';
+import '../../features/suppliers/presentation/pages/supplier_detail_page.dart';
+import '../../features/suppliers/presentation/pages/supplier_form_page.dart';
+import '../../features/suppliers/presentation/pages/suppliers_page.dart';
 import '../../features/billing/presentation/pages/return_page.dart';
 import '../../features/stock/presentation/pages/add_delivery_page.dart';
 import '../../features/stock/presentation/pages/losses_page.dart';
@@ -201,6 +210,65 @@ final router = GoRouter(
       path: '/scanner',
       parentNavigatorKey: rootNavigatorKey,
       builder: (context, state) => const ScannerPage(),
+    ),
+    // Customers and suppliers sit above the tabs, so they can be opened
+    // from anywhere (More tab, checkout, stock delivery...).
+    GoRoute(
+      path: '/customers',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) => const CustomersPage(),
+      routes: [
+        GoRoute(
+          path: 'new',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) => const CustomerFormPage(),
+        ),
+        GoRoute(
+          path: ':id',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) =>
+              CustomerDetailPage(customerId: state.pathParameters['id']!),
+          routes: [
+            GoRoute(
+              path: 'edit',
+              parentNavigatorKey: rootNavigatorKey,
+              builder: (context, state) =>
+                  CustomerFormPage(customer: state.extra as Customer?),
+            ),
+          ],
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/suppliers',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) => const SuppliersPage(),
+      routes: [
+        GoRoute(
+          path: 'new',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) => const SupplierFormPage(),
+        ),
+        GoRoute(
+          path: ':id',
+          parentNavigatorKey: rootNavigatorKey,
+          builder: (context, state) =>
+              SupplierDetailPage(supplierId: state.pathParameters['id']!),
+          routes: [
+            GoRoute(
+              path: 'edit',
+              parentNavigatorKey: rootNavigatorKey,
+              builder: (context, state) =>
+                  SupplierFormPage(supplier: state.extra as Supplier?),
+            ),
+          ],
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/payments',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) => const PendingPaymentsPage(),
     ),
   ],
 );

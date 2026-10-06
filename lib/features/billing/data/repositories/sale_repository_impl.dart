@@ -3,9 +3,12 @@ import 'package:fpdart/fpdart.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/database/user_names.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/session/session_cubit.dart';
 import '../../../../core/settings/settings_store.dart';
+import '../../../customers/data/customer_debts.dart';
+import '../../../customers/domain/entities/customer.dart';
 import '../../../shop/data/repositories/shop_repository_impl.dart';
 import '../../../stock/data/stock_ledger.dart';
 import '../../../stock/domain/entities/loss.dart';
@@ -30,18 +33,45 @@ class SaleRepositoryImpl implements SaleRepository {
   }
 
   @override
+  Future<int> customerDebt(String customerId) =>
+      customerDebts(db, ids: [customerId]).then((d) => d[customerId] ?? 0);
+
+  @override
   Future<Either<Failure, Sale>> saveSale(List<CartItem> items,
-      {int discount = 0}) async {
+      {int discount = 0,
+      String? customerId,
+      int paidNow = 0,
+      bool allowOverLimit = false}) async {
     if (items.isEmpty) return const Left(CacheFailure('Empty cart'));
     final subtotal = items.fold<int>(0, (sum, item) => sum + item.total);
     if (discount < 0 || discount > subtotal) {
       return const Left(CacheFailure('Invalid discount'));
     }
+    final total = subtotal - discount;
+    // A cash sale is paid in full; a credit sale between 0 and the total.
+    final paid = customerId == null ? total : paidNow;
+    if (paid < 0 || paid > total) {
+      return const Left(CacheFailure('Invalid amount paid'));
+    }
     try {
-      // Checked here too, so the rule holds whatever the screen does.
+      // Checked here too, so the rules hold whatever the screen does.
       final max = await maxDiscountPercent();
       if (max != null && discount * 100 > subtotal * max) {
         return Left(DiscountLimitFailure(max));
+      }
+      if (customerId != null) {
+        final customer = await (db.select(db.customers)
+              ..where((c) => c.id.equals(customerId)))
+            .getSingleOrNull();
+        if (customer == null || !customer.active) {
+          return Left(NotFoundFailure(customerId));
+        }
+        final limit = customer.creditLimit;
+        final debtAfter = await customerDebt(customerId) + total - paid;
+        final mayGoOver = allowOverLimit && session.state.isOwner;
+        if (limit != null && total > paid && debtAfter > limit && !mayGoOver) {
+          return Left(CreditLimitFailure(limit: limit, debtAfter: debtAfter));
+        }
       }
 
       // Everything below is saved together, or nothing is saved.
@@ -57,7 +87,6 @@ class SaleRepositoryImpl implements SaleRepository {
             .map((row) => row.read(maxNumber))
             .getSingle();
 
-        final total = subtotal - discount;
         await db.into(db.sales).insert(SalesCompanion.insert(
               id: saleId,
               createdAt: now,
@@ -68,7 +97,8 @@ class SaleRepositoryImpl implements SaleRepository {
               subtotal: subtotal,
               discount: Value(discount),
               total: total,
-              paidNow: total,
+              paidNow: paid,
+              customerId: Value(customerId),
             ));
 
         for (final (index, item) in items.indexed) {
@@ -208,13 +238,16 @@ class SaleRepositoryImpl implements SaleRepository {
   Future<Either<Failure, int>> createReturn(
       {required String saleId,
       required List<ReturnLine> lines,
-      String? reason}) async {
+      String? reason,
+      bool toCredit = false}) async {
     try {
       final wanted = lines.where((l) => l.quantity > 0).toList();
       if (wanted.isEmpty) return const Left(CacheFailure('Nothing to return'));
 
       final refund = await db.transaction(() async {
         final sale = (await getSale(saleId)).getOrElse((f) => throw f.message);
+        // Only a credit sale has a customer account to put money back on.
+        if (toCredit && !sale.isCredit) throw 'Not a credit sale';
         final byId = {for (final line in sale.items) line.id: line};
         for (final line in wanted) {
           final saleLine = byId[line.saleItemId];
@@ -239,6 +272,7 @@ class SaleRepositoryImpl implements SaleRepository {
               userId: Value(userId),
               saleId: saleId,
               total: refund,
+              refundMode: Value(toCredit ? 'credit' : 'cash'),
               reason: Value(reason?.trim().isEmpty ?? true ? null : reason),
             ));
 
@@ -333,24 +367,25 @@ class SaleRepositoryImpl implements SaleRepository {
         row.read(db.returns.saleId)!: row.read(refundSum) ?? 0,
     };
 
-    final names = await _userNames(sales.map((s) => s.userId));
+    final names = await userNames(db, sales.map((s) => s.userId));
+    final customerIds = sales.map((s) => s.customerId).whereType<String>();
+    final customers = customerIds.isEmpty
+        ? <String, String>{}
+        : {
+            for (final c in await (db.select(db.customers)
+                  ..where((c) => c.id.isIn(customerIds)))
+                .get())
+              c.id: c.name,
+          };
     return [
       for (final sale in sales)
         _toSale(sale, linesBySale[sale.id] ?? [], names, returned,
-            refunded[sale.id] ?? 0),
+            refunded[sale.id] ?? 0, customers),
     ];
   }
 
-  Future<Map<String, String>> _userNames(Iterable<String?> ids) async {
-    final wanted = ids.whereType<String>().toSet();
-    if (wanted.isEmpty) return {};
-    final rows =
-        await (db.select(db.users)..where((u) => u.id.isIn(wanted))).get();
-    return {for (final row in rows) row.id: row.name};
-  }
-
   Sale _toSale(SaleRow sale, List<SaleItemRow> lines, Map<String, String> names,
-      Map<String, int> returned, int refunded) {
+      Map<String, int> returned, int refunded, Map<String, String> customers) {
     // Keep the order in which items were added to the cart.
     lines.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     return Sale(
@@ -364,6 +399,8 @@ class SaleRepositoryImpl implements SaleRepository {
       userId: sale.userId,
       sellerName: names[sale.userId],
       refunded: refunded,
+      customerId: sale.customerId,
+      customerName: customers[sale.customerId],
       items: lines
           .map((l) => SaleLine(
                 id: l.id,

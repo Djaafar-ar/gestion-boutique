@@ -10,6 +10,7 @@ import 'generated/schema_v1.dart' as v1;
 import 'generated/schema_v2.dart' as v2;
 import 'generated/schema_v3.dart' as v3;
 import 'generated/schema_v4.dart' as v4;
+import 'generated/schema_v5.dart' as v5;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -170,6 +171,54 @@ void main() {
         expect((await newDb.select(newDb.sales).get()).single.id, 's1');
         expect(await newDb.select(newDb.losses).get(), isEmpty);
         expect(await newDb.select(newDb.stockAllocations).get(), isEmpty);
+      },
+    );
+  });
+
+  // Phase 4 adds suppliers and customer credit: old sales stay cash sales
+  // and old deliveries have no supplier.
+  test('migration from v4 to v5 keeps deliveries and sales', () async {
+    const at = '2026-10-06T14:32:00.000';
+    const delivery = v4.DeliveriesData(
+        id: 'd1',
+        createdAt: at,
+        updatedAt: at,
+        deviceId: 'phone-1',
+        deleted: 0,
+        productId: 'p1',
+        quantity: 7,
+        buyPrice: 4000,
+        receivedAt: at);
+    const sale = v4.SalesData(
+        id: 's1',
+        createdAt: at,
+        updatedAt: at,
+        deviceId: 'phone-1',
+        deleted: 0,
+        number: 1,
+        subtotal: 100,
+        discount: 0,
+        total: 100,
+        paidNow: 100);
+
+    await verifier.testWithDataIntegrity(
+      oldVersion: 4,
+      newVersion: 5,
+      createOld: v4.DatabaseAtV4.new,
+      createNew: v5.DatabaseAtV5.new,
+      openTestedDatabase: AppDatabase.new,
+      createItems: (batch, oldDb) {
+        batch.insert(oldDb.deliveries, delivery);
+        batch.insert(oldDb.sales, sale);
+      },
+      validateItems: (newDb) async {
+        final deliveries = await newDb.select(newDb.deliveries).get();
+        expect(deliveries.map((d) => (d.id, d.supplierId)), [('d1', null)]);
+        final sales = await newDb.select(newDb.sales).get();
+        expect(sales.map((s) => (s.id, s.customerId, s.paidNow)),
+            [('s1', null, 100)]);
+        expect(await newDb.select(newDb.suppliers).get(), isEmpty);
+        expect(await newDb.select(newDb.customers).get(), isEmpty);
       },
     );
   });

@@ -27,7 +27,11 @@ class _WorkersPageState extends State<WorkersPage> {
   /// Opens the form, then reloads the list when coming back.
   Future<void> _open(String location, {AppUser? user}) async {
     await context.push(location, extra: user);
-    if (mounted) setState(() => _users = _load());
+    if (mounted) {
+      setState(() {
+        _users = _load();
+      });
+    }
   }
 
   @override

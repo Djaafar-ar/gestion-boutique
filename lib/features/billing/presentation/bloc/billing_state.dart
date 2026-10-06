@@ -1,6 +1,16 @@
 part of 'billing_bloc.dart';
 
-enum BillingError { productNotFound, saveFailed, discountTooHigh }
+enum BillingError {
+  productNotFound,
+  saveFailed,
+  discountTooHigh,
+
+  /// Credit sale without a customer.
+  customerMissing,
+
+  /// Over the customer's credit limit (see [BillingState.creditLimit]).
+  creditLimit,
+}
 
 class BillingState extends Equatable {
   final List<CartItem> cartItems;
@@ -9,9 +19,18 @@ class BillingState extends Equatable {
   /// Discount on the whole ticket, or null.
   final Discount? discount;
 
+  /// Credit sale: [customer] pays [paidNow] now, the rest goes on their
+  /// account.
+  final bool onCredit;
+  final Customer? customer;
+  final int paidNow;
+
   /// One-time signals, cleared by the next change unless passed again.
   final BillingError? error;
   final String? errorDetail;
+
+  /// Details of a [BillingError.creditLimit].
+  final CreditLimitFailure? creditLimit;
 
   /// Set right after a successful checkout.
   final Sale? completedSale;
@@ -23,8 +42,12 @@ class BillingState extends Equatable {
     this.cartItems = const [],
     this.isProcessing = false,
     this.discount,
+    this.onCredit = false,
+    this.customer,
+    this.paidNow = 0,
     this.error,
     this.errorDetail,
+    this.creditLimit,
     this.completedSale,
     this.printOutcome,
   });
@@ -40,21 +63,49 @@ class BillingState extends Equatable {
 
   int get itemCount => cartItems.fold(0, (sum, item) => sum + item.quantity);
 
-  /// [clearDiscount] removes the discount.
+  /// Paid at the counter: everything for cash, [paidNow] (never more than
+  /// the total) on credit.
+  int get paidAtCounter =>
+      onCredit ? paidNow.clamp(0, totalAmount) : totalAmount;
+
+  /// What goes on the customer's account.
+  int get leftOnCredit => totalAmount - paidAtCounter;
+
+  /// The customer's debt after this sale (credit sales only).
+  int? get debtAfter =>
+      onCredit && customer != null ? customer!.debt + leftOnCredit : null;
+
+  /// True when this credit sale goes over the customer's credit limit.
+  bool get overCreditLimit {
+    final limit = customer?.creditLimit;
+    final after = debtAfter;
+    return limit != null && after != null && leftOnCredit > 0 && after > limit;
+  }
+
+  /// [clearDiscount] removes the discount, [clearCustomer] the customer.
   BillingState copyWith({
     List<CartItem>? cartItems,
     bool? isProcessing,
     Discount? discount,
     bool clearDiscount = false,
+    bool? onCredit,
+    Customer? customer,
+    bool clearCustomer = false,
+    int? paidNow,
     BillingError? error,
     String? errorDetail,
+    CreditLimitFailure? creditLimit,
   }) {
     return BillingState(
       cartItems: cartItems ?? this.cartItems,
       isProcessing: isProcessing ?? this.isProcessing,
       discount: clearDiscount ? null : (discount ?? this.discount),
+      onCredit: onCredit ?? this.onCredit,
+      customer: clearCustomer ? null : (customer ?? this.customer),
+      paidNow: paidNow ?? this.paidNow,
       error: error,
       errorDetail: errorDetail,
+      creditLimit: creditLimit,
     );
   }
 
@@ -63,8 +114,12 @@ class BillingState extends Equatable {
         cartItems,
         isProcessing,
         discount,
+        onCredit,
+        customer,
+        paidNow,
         error,
         errorDetail,
+        creditLimit,
         completedSale,
         printOutcome
       ];

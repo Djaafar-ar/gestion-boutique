@@ -24,6 +24,12 @@ class ReceiptData {
   final int discount;
   final int total;
 
+  /// Credit sales only: the customer, what they paid now and, when known,
+  /// everything they owe after this sale.
+  final String? customerName;
+  final int? paidNow;
+  final int? customerDebt;
+
   const ReceiptData({
     required this.shopName,
     required this.address1,
@@ -36,9 +42,13 @@ class ReceiptData {
     required this.subtotal,
     required this.discount,
     required this.total,
+    this.customerName,
+    this.paidNow,
+    this.customerDebt,
   });
 
-  factory ReceiptData.fromSale(Sale sale, Shop shop) => ReceiptData(
+  factory ReceiptData.fromSale(Sale sale, Shop shop, {int? customerDebt}) =>
+      ReceiptData(
         shopName: shop.name,
         address1: shop.addressLine1,
         address2: shop.addressLine2,
@@ -50,6 +60,9 @@ class ReceiptData {
         subtotal: sale.subtotal,
         discount: sale.discount,
         total: sale.total,
+        customerName: sale.isCredit ? (sale.customerName ?? '?') : null,
+        paidNow: sale.isCredit ? sale.paidNow : null,
+        customerDebt: sale.isCredit ? customerDebt : null,
       );
 }
 
@@ -91,6 +104,18 @@ List<String> buildReceiptBody(ReceiptData data, {bool asciiOnly = true}) {
   }
   out.addAll(_amountRow('TOTAL', formatDA(data.total)));
   out.add(dashes);
+
+  final customer = data.customerName;
+  if (customer != null) {
+    out.addAll(wrapText(p('Client : $customer'), receiptWidth));
+    final paid = data.paidNow ?? 0;
+    out.addAll(_amountRow(p('Payé'), formatDA(paid)));
+    out.addAll(_amountRow(p('Reste (crédit)'), formatDA(data.total - paid)));
+    if (data.customerDebt != null) {
+      out.addAll(_amountRow(p('Total dû'), formatDA(data.customerDebt!)));
+    }
+    out.add(dashes);
+  }
 
   if (data.footer.trim().isNotEmpty) out.addAll(_centered(p(data.footer)));
   return out;

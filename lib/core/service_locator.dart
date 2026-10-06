@@ -7,6 +7,10 @@ import '../../features/billing/data/receipt_printer.dart';
 import '../../features/billing/data/repositories/sale_repository_impl.dart';
 import '../../features/billing/domain/repositories/sale_repository.dart';
 import '../../features/billing/presentation/bloc/billing_bloc.dart';
+import '../../features/customers/data/repositories/customer_repository_impl.dart';
+import '../../features/customers/domain/repositories/customer_repository.dart';
+import '../../features/suppliers/data/repositories/supplier_repository_impl.dart';
+import '../../features/suppliers/domain/repositories/supplier_repository.dart';
 import '../../features/product/data/repositories/product_repository_impl.dart';
 import '../../features/product/domain/repositories/product_repository.dart';
 import '../../features/product/domain/usecases/product_usecases.dart';
@@ -122,6 +126,14 @@ Future<void> init() async {
   sl.registerLazySingleton(() => StockLedger(sl()));
   sl.registerLazySingleton<StockRepository>(
     () => StockRepositoryImpl(sl(), sl(), sl(), sl(), sl()),
+  );
+
+  // Features - Customers (carnet) and suppliers
+  sl.registerLazySingleton<CustomerRepository>(
+    () => CustomerRepositoryImpl(sl(), sl(), sl()),
+  );
+  sl.registerLazySingleton<SupplierRepository>(
+    () => SupplierRepositoryImpl(sl(), sl(), sl()),
   );
 
   // Features - Settings / Printer

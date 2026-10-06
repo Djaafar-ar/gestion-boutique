@@ -108,7 +108,9 @@ class _LoginPageState extends State<LoginPage> {
       context.read<SessionCubit>().login(recovered);
     } else if (mounted) {
       // The owner may have been unlocked; reload the list and status.
-      setState(() => _users = _loadUsers());
+      setState(() {
+        _users = _loadUsers();
+      });
       final user = _selected;
       if (user != null) await _select(user);
     }

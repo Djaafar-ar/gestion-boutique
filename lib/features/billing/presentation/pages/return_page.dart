@@ -34,6 +34,10 @@ class _ReturnPageState extends State<ReturnPage> {
   final _reason = TextEditingController();
   bool _saving = false;
 
+  /// For a credit sale: take the refund off the customer's debt (default)
+  /// instead of giving cash back.
+  bool _toCredit = true;
+
   @override
   void dispose() {
     _reason.dispose();
@@ -59,8 +63,12 @@ class _ReturnPageState extends State<ReturnPage> {
       return;
     }
     setState(() => _saving = true);
-    final result = await sl<SaleRepository>()
-        .createReturn(saleId: sale.id, lines: lines, reason: _reason.text);
+    final toCredit = sale.isCredit && _toCredit;
+    final result = await sl<SaleRepository>().createReturn(
+        saleId: sale.id,
+        lines: lines,
+        reason: _reason.text,
+        toCredit: toCredit);
     if (!mounted) return;
     setState(() => _saving = false);
     result.fold(
@@ -68,7 +76,11 @@ class _ReturnPageState extends State<ReturnPage> {
           kind: SnackKind.error),
       (refund) {
         context.read<ProductBloc>().add(LoadProducts());
-        showAppSnack(context, l10n.returnSaved(formatDA(refund)),
+        showAppSnack(
+            context,
+            toCredit
+                ? l10n.returnSavedCredit(formatDA(refund))
+                : l10n.returnSaved(formatDA(refund)),
             kind: SnackKind.success);
         context.pop(true);
       },
@@ -116,13 +128,43 @@ class _ReturnPageState extends State<ReturnPage> {
                           decoration: InputDecoration(
                               labelText: l10n.returnReasonLabel),
                         ),
+                        if (sale.isCredit) ...[
+                          const SizedBox(height: 16),
+                          Text(l10n.refundModeLabel,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600)),
+                          const SizedBox(height: 8),
+                          SegmentedButton<bool>(
+                            showSelectedIcon: false,
+                            segments: [
+                              ButtonSegment(
+                                  value: true,
+                                  icon: const Icon(Icons.menu_book_outlined,
+                                      size: 18),
+                                  label: Text(l10n.refundToCredit)),
+                              ButtonSegment(
+                                  value: false,
+                                  icon: const Icon(Icons.payments_outlined,
+                                      size: 18),
+                                  label: Text(l10n.refundCash)),
+                            ],
+                            selected: {_toCredit},
+                            onSelectionChanged: (s) =>
+                                setState(() => _toCredit = s.first),
+                          ),
+                        ],
                         const SizedBox(height: 16),
                         Card(
                           color: scheme.primaryContainer,
                           child: Padding(
                             padding: const EdgeInsets.all(16),
                             child: Text(
-                              l10n.refundToGive(formatDAForUi(_refund(sale))),
+                              sale.isCredit && _toCredit
+                                  ? l10n.refundToAccount(
+                                      sale.customerName ?? '',
+                                      formatDAForUi(_refund(sale)))
+                                  : l10n.refundToGive(
+                                      formatDAForUi(_refund(sale))),
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,

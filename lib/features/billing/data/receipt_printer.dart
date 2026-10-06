@@ -22,7 +22,9 @@ class ReceiptPrinter {
   ReceiptPrinter(this.settings, [PrinterHelper? printer])
       : printer = printer ?? PrinterHelper();
 
-  Future<PrintResult> printSale(Sale sale, Shop shop) async {
+  /// [customerDebt]: for a credit sale, what the customer owes in all.
+  Future<PrintResult> printSale(Sale sale, Shop shop,
+      {int? customerDebt}) async {
     if (!printer.isConnected) {
       final savedMac = settings.get(SettingsKeys.printerMac);
       if (savedMac == null) {
@@ -33,7 +35,8 @@ class ReceiptPrinter {
       }
     }
     try {
-      await printer.printReceipt(ReceiptData.fromSale(sale, shop));
+      await printer.printReceipt(
+          ReceiptData.fromSale(sale, shop, customerDebt: customerDebt));
       return const PrintResult(PrintOutcome.printed);
     } catch (e) {
       return PrintResult(PrintOutcome.failed, e.toString());

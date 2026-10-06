@@ -8,6 +8,7 @@ import '../../../../core/service_locator.dart';
 import '../../../../core/session/session_cubit.dart';
 import '../../../../core/widgets/app_snack.dart';
 import '../../../billing/presentation/bloc/billing_bloc.dart';
+import '../../../suppliers/domain/repositories/supplier_repository.dart';
 import '../../../users/domain/repositories/user_repository.dart';
 import '../../../users/presentation/widgets/user_avatar.dart';
 import '../../../shop/presentation/bloc/shop_bloc.dart';
@@ -36,12 +37,28 @@ class _MorePageState extends State<MorePage> {
   /// Whether the owner has made a recovery code (null for workers).
   Future<bool>? _hasRecoveryCode;
 
+  /// Supplier payments waiting for the owner (null for workers).
+  Future<int>? _pendingPayments;
+
   @override
   void initState() {
     super.initState();
     // Re-read the saved printer whenever this page opens
     context.read<PrinterBloc>().add(InitPrinterEvent());
     _checkRecoveryCode();
+    _countPending();
+  }
+
+  void _countPending() {
+    _pendingPayments = context.read<SessionCubit>().state.isOwner
+        ? sl<SupplierRepository>().pendingCount()
+        : null;
+  }
+
+  /// Opens a page, then counts the payments to validate again.
+  Future<void> _open(String location) async {
+    await context.push(location);
+    if (mounted) setState(_countPending);
   }
 
   void _checkRecoveryCode() {
@@ -103,6 +120,46 @@ class _MorePageState extends State<MorePage> {
                 );
               },
             ),
+          _SectionHeader(l10n.creditSection),
+          _Group(children: [
+            ListTile(
+              leading: const _TileIcon(Icons.menu_book_outlined),
+              title: Text(l10n.customersTitle),
+              subtitle: Text(l10n.customersSub),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => _open('/customers'),
+            ),
+            const Divider(indent: 72),
+            ListTile(
+              leading: const _TileIcon(Icons.local_shipping_outlined),
+              title: Text(l10n.suppliersTitle),
+              subtitle: Text(l10n.suppliersSub),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => _open('/suppliers'),
+            ),
+            if (_pendingPayments != null) ...[
+              const Divider(indent: 72),
+              FutureBuilder<int>(
+                future: _pendingPayments,
+                builder: (context, snapshot) {
+                  final count = snapshot.data ?? 0;
+                  return ListTile(
+                    leading: const _TileIcon(Icons.fact_check_outlined),
+                    title: Text(l10n.pendingPaymentsTitle),
+                    subtitle: Text(l10n.pendingPaymentsSub(count)),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (count > 0) Badge(label: Text('$count')),
+                        const Icon(Icons.chevron_right),
+                      ],
+                    ),
+                    onTap: () => _open('/payments'),
+                  );
+                },
+              ),
+            ],
+          ]),
           // Shop details and the team are managed by the owner only.
           if (session.isOwner) ...[
             _SectionHeader(l10n.sectionShop),

@@ -1021,4 +1021,339 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get daysInvalid => 'بين 0 و 60';
+
+  @override
+  String get creditSection => 'الكرني والموردون';
+
+  @override
+  String get customersTitle => 'الزبائن (الكرني)';
+
+  @override
+  String get customersSub => 'ديون الزبائن ومدفوعاتهم';
+
+  @override
+  String get suppliersTitle => 'الموردون';
+
+  @override
+  String get suppliersSub => 'التوريدات، المدفوعات، الباقي';
+
+  @override
+  String get pendingPaymentsTitle => 'مدفوعات للمصادقة';
+
+  @override
+  String pendingPaymentsSub(int count) {
+    return '$count في الانتظار';
+  }
+
+  @override
+  String get newCustomer => 'زبون جديد';
+
+  @override
+  String get editCustomer => 'تعديل الزبون';
+
+  @override
+  String get customerNameHint => 'مثال: محمد سعيدي';
+
+  @override
+  String get nameRequired => 'أدخل اسماً';
+
+  @override
+  String get creditLimitLabel => 'حد الدين (اختياري)';
+
+  @override
+  String get creditLimitHelp => 'فارغ = بلا حد';
+
+  @override
+  String get creditLimitOwnerOnly => 'المالك وحده يحدد حد الدين.';
+
+  @override
+  String get totalOwedByCustomers => 'مجموع ديون الزبائن';
+
+  @override
+  String get debtLabel => 'الدين';
+
+  @override
+  String get noDebt => 'لا شيء مستحق';
+
+  @override
+  String advanceLabel(String amount) {
+    return 'تسبيق: $amount';
+  }
+
+  @override
+  String get overLimitBadge => 'تجاوز الحد';
+
+  @override
+  String creditLimitShort(String amount) {
+    return 'الحد: $amount';
+  }
+
+  @override
+  String get noCustomers => 'لا يوجد زبائن. أضف واحداً بالزر +.';
+
+  @override
+  String get searchCustomer => 'الاسم أو الهاتف';
+
+  @override
+  String get receivePayment => 'تسجيل دفعة';
+
+  @override
+  String get paymentAmountLabel => 'المبلغ';
+
+  @override
+  String get amountInvalid => 'أدخل مبلغاً صحيحاً';
+
+  @override
+  String paymentTooHigh(String amount) {
+    return 'أكثر من الدين ($amount)';
+  }
+
+  @override
+  String get paymentSaved => 'تم تسجيل الدفعة';
+
+  @override
+  String get customerHistory => 'سجل الحساب';
+
+  @override
+  String entryCreditSale(int number) {
+    return 'بيع بالدين رقم $number';
+  }
+
+  @override
+  String get entryPayment => 'دفعة مستلمة';
+
+  @override
+  String entryRefund(int number) {
+    return 'إرجاع التذكرة رقم $number';
+  }
+
+  @override
+  String entrySaleDetail(String total, String paid) {
+    return 'المجموع $total · المدفوع $paid';
+  }
+
+  @override
+  String recordedBy(String name) {
+    return 'بواسطة $name';
+  }
+
+  @override
+  String get noHistory => 'لا توجد عمليات بعد.';
+
+  @override
+  String archiveTitle(String name) {
+    return 'أرشفة $name؟';
+  }
+
+  @override
+  String get archiveBody => 'لن يظهر في القوائم بعد الآن. يُحتفظ بسجله.';
+
+  @override
+  String get archivedDone => 'تمت الأرشفة';
+
+  @override
+  String get paymentMode => 'الدفع';
+
+  @override
+  String get payCash => 'نقداً';
+
+  @override
+  String get payCredit => 'بالدين';
+
+  @override
+  String get chooseCustomer => 'اختر زبوناً';
+
+  @override
+  String currentDebt(String amount) {
+    return 'الدين الحالي: $amount';
+  }
+
+  @override
+  String get paidNowLabel => 'المدفوع الآن';
+
+  @override
+  String get leftOnCredit => 'الباقي بالدين';
+
+  @override
+  String get newDebtLabel => 'دين الزبون الجديد';
+
+  @override
+  String overLimitWarning(String limit) {
+    return 'يتجاوز حد الدين ($limit)';
+  }
+
+  @override
+  String get customerRequired => 'اختر زبوناً للبيع بالدين.';
+
+  @override
+  String get creditLimitTitle => 'تجاوز حد الدين';
+
+  @override
+  String creditLimitAsk(String name, String debt, String limit) {
+    return 'سيصبح على $name $debt، أكثر من حده $limit. السماح رغم ذلك؟';
+  }
+
+  @override
+  String creditLimitWorker(String limit) {
+    return 'تم تجاوز حد الدين ($limit). اسأل المالك.';
+  }
+
+  @override
+  String get allowAnyway => 'السماح';
+
+  @override
+  String saleSavedCredit(int number, String amount, String name) {
+    return 'تم حفظ البيع رقم $number · $amount على حساب $name';
+  }
+
+  @override
+  String get customerLabel => 'الزبون';
+
+  @override
+  String get paidLabel => 'المدفوع';
+
+  @override
+  String get onCreditLabel => 'بالدين';
+
+  @override
+  String get creditChip => 'دين';
+
+  @override
+  String get refundModeLabel => 'طريقة الاسترداد';
+
+  @override
+  String get refundToCredit => 'خصم من الدين';
+
+  @override
+  String get refundCash => 'إرجاع نقداً';
+
+  @override
+  String refundToAccount(String name, String amount) {
+    return 'يُخصم من حساب $name: $amount';
+  }
+
+  @override
+  String returnSavedCredit(String amount) {
+    return 'تم حفظ الإرجاع. خُصم $amount من حساب الزبون.';
+  }
+
+  @override
+  String get newSupplier => 'مورد جديد';
+
+  @override
+  String get editSupplier => 'تعديل المورد';
+
+  @override
+  String get supplierNameHint => 'مثال: حمود بوعلام';
+
+  @override
+  String get noSuppliers => 'لا يوجد موردون. أضف واحداً بالزر +.';
+
+  @override
+  String get totalOwedToSuppliers => 'المستحق للموردين';
+
+  @override
+  String supplierOwes(String amount) {
+    return 'الباقي للدفع: $amount';
+  }
+
+  @override
+  String supplierAdvance(String amount) {
+    return 'مدفوع مسبقاً: $amount';
+  }
+
+  @override
+  String pendingAmount(String amount) {
+    return 'في الانتظار: $amount';
+  }
+
+  @override
+  String get deliveredLabel => 'المورَّد';
+
+  @override
+  String get paidValidatedLabel => 'المدفوع (مصادق عليه)';
+
+  @override
+  String get leftToPayLabel => 'الباقي للدفع';
+
+  @override
+  String get recordSupplierPayment => 'تسجيل دفعة';
+
+  @override
+  String get workerPaymentNotice =>
+      'يجب أن يصادق المالك على هذه الدفعة قبل احتسابها.';
+
+  @override
+  String get paymentPendingSaved => 'أُرسلت الدفعة إلى المالك للمصادقة';
+
+  @override
+  String get statusPending => 'في الانتظار';
+
+  @override
+  String get statusValidated => 'مصادق عليه';
+
+  @override
+  String get statusRejected => 'مرفوض';
+
+  @override
+  String get paymentsSection => 'المدفوعات';
+
+  @override
+  String get deliveriesSection => 'التوريدات';
+
+  @override
+  String get noPayments => 'لا مدفوعات.';
+
+  @override
+  String get noDeliveries => 'لا توريدات. اختر هذا المورد عند استلام المخزون.';
+
+  @override
+  String paidBy(String name) {
+    return 'دفعها $name';
+  }
+
+  @override
+  String validatedBy(String name) {
+    return 'صادق عليها $name';
+  }
+
+  @override
+  String rejectedBy(String name) {
+    return 'رفضها $name';
+  }
+
+  @override
+  String get validate => 'مصادقة';
+
+  @override
+  String get reject => 'رفض';
+
+  @override
+  String get rejectPaymentTitle => 'رفض هذه الدفعة؟';
+
+  @override
+  String rejectPaymentBody(String amount, String name) {
+    return 'لن تُحتسب دفعة $amount إلى $name.';
+  }
+
+  @override
+  String get paymentValidated => 'تمت المصادقة على الدفعة';
+
+  @override
+  String get paymentRejected => 'تم رفض الدفعة';
+
+  @override
+  String get noPendingPayments => 'لا مدفوعات في الانتظار.';
+
+  @override
+  String get supplierOptional => 'المورد (اختياري)';
+
+  @override
+  String get noSupplier => 'بدون مورد';
+
+  @override
+  String get searchSupplier => 'ابحث عن مورد';
+
+  @override
+  String get savedLabel => 'تم الحفظ';
 }

@@ -1881,6 +1881,582 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Entre 0 et 60'**
   String get daysInvalid;
+
+  /// No description provided for @creditSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carnet et fournisseurs'**
+  String get creditSection;
+
+  /// No description provided for @customersTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clients (carnet)'**
+  String get customersTitle;
+
+  /// No description provided for @customersSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédits et paiements des clients'**
+  String get customersSub;
+
+  /// No description provided for @suppliersTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseurs'**
+  String get suppliersTitle;
+
+  /// No description provided for @suppliersSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livraisons, paiements, reste à payer'**
+  String get suppliersSub;
+
+  /// No description provided for @pendingPaymentsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiements à valider'**
+  String get pendingPaymentsTitle;
+
+  /// No description provided for @pendingPaymentsSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} en attente'**
+  String pendingPaymentsSub(int count);
+
+  /// No description provided for @newCustomer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau client'**
+  String get newCustomer;
+
+  /// No description provided for @editCustomer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le client'**
+  String get editCustomer;
+
+  /// No description provided for @customerNameHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : Mohamed Saidi'**
+  String get customerNameHint;
+
+  /// No description provided for @nameRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrez un nom'**
+  String get nameRequired;
+
+  /// No description provided for @creditLimitLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Limite de crédit (facultatif)'**
+  String get creditLimitLabel;
+
+  /// No description provided for @creditLimitHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vide = pas de limite'**
+  String get creditLimitHelp;
+
+  /// No description provided for @creditLimitOwnerOnly.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seul le patron fixe la limite de crédit.'**
+  String get creditLimitOwnerOnly;
+
+  /// No description provided for @totalOwedByCustomers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total dû par les clients'**
+  String get totalOwedByCustomers;
+
+  /// No description provided for @debtLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dette'**
+  String get debtLabel;
+
+  /// No description provided for @noDebt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rien à payer'**
+  String get noDebt;
+
+  /// No description provided for @advanceLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Avance : {amount}'**
+  String advanceLabel(String amount);
+
+  /// No description provided for @overLimitBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Limite dépassée'**
+  String get overLimitBadge;
+
+  /// No description provided for @creditLimitShort.
+  ///
+  /// In fr, this message translates to:
+  /// **'Limite : {amount}'**
+  String creditLimitShort(String amount);
+
+  /// No description provided for @noCustomers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun client. Ajoutez-en un avec le bouton +.'**
+  String get noCustomers;
+
+  /// No description provided for @searchCustomer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom ou téléphone'**
+  String get searchCustomer;
+
+  /// No description provided for @receivePayment.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaisser un paiement'**
+  String get receivePayment;
+
+  /// No description provided for @paymentAmountLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant'**
+  String get paymentAmountLabel;
+
+  /// No description provided for @amountInvalid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrez un montant valide'**
+  String get amountInvalid;
+
+  /// No description provided for @paymentTooHigh.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus que la dette ({amount})'**
+  String paymentTooHigh(String amount);
+
+  /// No description provided for @paymentSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement enregistré'**
+  String get paymentSaved;
+
+  /// No description provided for @customerHistory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Historique du compte'**
+  String get customerHistory;
+
+  /// No description provided for @entryCreditSale.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente à crédit n°{number}'**
+  String entryCreditSale(int number);
+
+  /// No description provided for @entryPayment.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement reçu'**
+  String get entryPayment;
+
+  /// No description provided for @entryRefund.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour du ticket n°{number}'**
+  String entryRefund(int number);
+
+  /// No description provided for @entrySaleDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total {total} · payé {paid}'**
+  String entrySaleDetail(String total, String paid);
+
+  /// No description provided for @recordedBy.
+  ///
+  /// In fr, this message translates to:
+  /// **'par {name}'**
+  String recordedBy(String name);
+
+  /// No description provided for @noHistory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune opération pour l\'instant.'**
+  String get noHistory;
+
+  /// No description provided for @archiveTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archiver {name} ?'**
+  String archiveTitle(String name);
+
+  /// No description provided for @archiveBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Il ne sera plus proposé dans les listes. Son historique est conservé.'**
+  String get archiveBody;
+
+  /// No description provided for @archivedDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Archivé'**
+  String get archivedDone;
+
+  /// No description provided for @paymentMode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement'**
+  String get paymentMode;
+
+  /// No description provided for @payCash.
+  ///
+  /// In fr, this message translates to:
+  /// **'Comptant'**
+  String get payCash;
+
+  /// No description provided for @payCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédit'**
+  String get payCredit;
+
+  /// No description provided for @chooseCustomer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir un client'**
+  String get chooseCustomer;
+
+  /// No description provided for @currentDebt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dette actuelle : {amount}'**
+  String currentDebt(String amount);
+
+  /// No description provided for @paidNowLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé maintenant'**
+  String get paidNowLabel;
+
+  /// No description provided for @leftOnCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste à crédit'**
+  String get leftOnCredit;
+
+  /// No description provided for @newDebtLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle dette du client'**
+  String get newDebtLabel;
+
+  /// No description provided for @overLimitWarning.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dépasse la limite de crédit ({limit})'**
+  String overLimitWarning(String limit);
+
+  /// No description provided for @customerRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez un client pour une vente à crédit.'**
+  String get customerRequired;
+
+  /// No description provided for @creditLimitTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Limite de crédit dépassée'**
+  String get creditLimitTitle;
+
+  /// No description provided for @creditLimitAsk.
+  ///
+  /// In fr, this message translates to:
+  /// **'{name} devra {debt}, plus que sa limite de {limit}. Autoriser quand même ?'**
+  String creditLimitAsk(String name, String debt, String limit);
+
+  /// No description provided for @creditLimitWorker.
+  ///
+  /// In fr, this message translates to:
+  /// **'Limite de crédit dépassée ({limit}). Demandez au patron.'**
+  String creditLimitWorker(String limit);
+
+  /// No description provided for @allowAnyway.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autoriser'**
+  String get allowAnyway;
+
+  /// No description provided for @saleSavedCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente n°{number} enregistrée · {amount} sur le compte de {name}'**
+  String saleSavedCredit(int number, String amount, String name);
+
+  /// No description provided for @customerLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client'**
+  String get customerLabel;
+
+  /// No description provided for @paidLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé'**
+  String get paidLabel;
+
+  /// No description provided for @onCreditLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'À crédit'**
+  String get onCreditLabel;
+
+  /// No description provided for @creditChip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédit'**
+  String get creditChip;
+
+  /// No description provided for @refundModeLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remboursement'**
+  String get refundModeLabel;
+
+  /// No description provided for @refundToCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déduire de la dette'**
+  String get refundToCredit;
+
+  /// No description provided for @refundCash.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rendre en espèces'**
+  String get refundCash;
+
+  /// No description provided for @refundToAccount.
+  ///
+  /// In fr, this message translates to:
+  /// **'À déduire du compte de {name} : {amount}'**
+  String refundToAccount(String name, String amount);
+
+  /// No description provided for @returnSavedCredit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour enregistré. {amount} déduit du compte du client.'**
+  String returnSavedCredit(String amount);
+
+  /// No description provided for @newSupplier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau fournisseur'**
+  String get newSupplier;
+
+  /// No description provided for @editSupplier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le fournisseur'**
+  String get editSupplier;
+
+  /// No description provided for @supplierNameHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'ex : Hamoud Boualem'**
+  String get supplierNameHint;
+
+  /// No description provided for @noSuppliers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun fournisseur. Ajoutez-en un avec le bouton +.'**
+  String get noSuppliers;
+
+  /// No description provided for @totalOwedToSuppliers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total à payer aux fournisseurs'**
+  String get totalOwedToSuppliers;
+
+  /// No description provided for @supplierOwes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste à payer : {amount}'**
+  String supplierOwes(String amount);
+
+  /// No description provided for @supplierAdvance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé d\'avance : {amount}'**
+  String supplierAdvance(String amount);
+
+  /// No description provided for @pendingAmount.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente : {amount}'**
+  String pendingAmount(String amount);
+
+  /// No description provided for @deliveredLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livré'**
+  String get deliveredLabel;
+
+  /// No description provided for @paidValidatedLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé (validé)'**
+  String get paidValidatedLabel;
+
+  /// No description provided for @leftToPayLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Reste à payer'**
+  String get leftToPayLabel;
+
+  /// No description provided for @recordSupplierPayment.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer un paiement'**
+  String get recordSupplierPayment;
+
+  /// No description provided for @workerPaymentNotice.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le patron devra valider ce paiement avant qu\'il soit compté.'**
+  String get workerPaymentNotice;
+
+  /// No description provided for @paymentPendingSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement envoyé au patron pour validation'**
+  String get paymentPendingSaved;
+
+  /// No description provided for @statusPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente'**
+  String get statusPending;
+
+  /// No description provided for @statusValidated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Validé'**
+  String get statusValidated;
+
+  /// No description provided for @statusRejected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refusé'**
+  String get statusRejected;
+
+  /// No description provided for @paymentsSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiements'**
+  String get paymentsSection;
+
+  /// No description provided for @deliveriesSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livraisons'**
+  String get deliveriesSection;
+
+  /// No description provided for @noPayments.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun paiement.'**
+  String get noPayments;
+
+  /// No description provided for @noDeliveries.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune livraison. Choisissez ce fournisseur lors d\'une réception de stock.'**
+  String get noDeliveries;
+
+  /// No description provided for @paidBy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé par {name}'**
+  String paidBy(String name);
+
+  /// No description provided for @validatedBy.
+  ///
+  /// In fr, this message translates to:
+  /// **'validé par {name}'**
+  String validatedBy(String name);
+
+  /// No description provided for @rejectedBy.
+  ///
+  /// In fr, this message translates to:
+  /// **'refusé par {name}'**
+  String rejectedBy(String name);
+
+  /// No description provided for @validate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Valider'**
+  String get validate;
+
+  /// No description provided for @reject.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refuser'**
+  String get reject;
+
+  /// No description provided for @rejectPaymentTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Refuser ce paiement ?'**
+  String get rejectPaymentTitle;
+
+  /// No description provided for @rejectPaymentBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le paiement de {amount} à {name} ne sera pas compté.'**
+  String rejectPaymentBody(String amount, String name);
+
+  /// No description provided for @paymentValidated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement validé'**
+  String get paymentValidated;
+
+  /// No description provided for @paymentRejected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paiement refusé'**
+  String get paymentRejected;
+
+  /// No description provided for @noPendingPayments.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun paiement en attente.'**
+  String get noPendingPayments;
+
+  /// No description provided for @supplierOptional.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseur (facultatif)'**
+  String get supplierOptional;
+
+  /// No description provided for @noSupplier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun fournisseur'**
+  String get noSupplier;
+
+  /// No description provided for @searchSupplier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un fournisseur'**
+  String get searchSupplier;
+
+  /// No description provided for @savedLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistré'**
+  String get savedLabel;
 }
 
 class _AppLocalizationsDelegate

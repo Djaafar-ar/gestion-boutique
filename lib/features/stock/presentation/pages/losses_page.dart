@@ -39,7 +39,11 @@ class _LossesPageState extends State<LossesPage> {
 
   Future<void> _add() async {
     await context.push('/stock/loss');
-    if (mounted) setState(() => _losses = _load());
+    if (mounted) {
+      setState(() {
+        _losses = _load();
+      });
+    }
   }
 
   @override

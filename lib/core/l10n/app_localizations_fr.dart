@@ -1029,4 +1029,343 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get daysInvalid => 'Entre 0 et 60';
+
+  @override
+  String get creditSection => 'Carnet et fournisseurs';
+
+  @override
+  String get customersTitle => 'Clients (carnet)';
+
+  @override
+  String get customersSub => 'Crédits et paiements des clients';
+
+  @override
+  String get suppliersTitle => 'Fournisseurs';
+
+  @override
+  String get suppliersSub => 'Livraisons, paiements, reste à payer';
+
+  @override
+  String get pendingPaymentsTitle => 'Paiements à valider';
+
+  @override
+  String pendingPaymentsSub(int count) {
+    return '$count en attente';
+  }
+
+  @override
+  String get newCustomer => 'Nouveau client';
+
+  @override
+  String get editCustomer => 'Modifier le client';
+
+  @override
+  String get customerNameHint => 'ex : Mohamed Saidi';
+
+  @override
+  String get nameRequired => 'Entrez un nom';
+
+  @override
+  String get creditLimitLabel => 'Limite de crédit (facultatif)';
+
+  @override
+  String get creditLimitHelp => 'Vide = pas de limite';
+
+  @override
+  String get creditLimitOwnerOnly => 'Seul le patron fixe la limite de crédit.';
+
+  @override
+  String get totalOwedByCustomers => 'Total dû par les clients';
+
+  @override
+  String get debtLabel => 'Dette';
+
+  @override
+  String get noDebt => 'Rien à payer';
+
+  @override
+  String advanceLabel(String amount) {
+    return 'Avance : $amount';
+  }
+
+  @override
+  String get overLimitBadge => 'Limite dépassée';
+
+  @override
+  String creditLimitShort(String amount) {
+    return 'Limite : $amount';
+  }
+
+  @override
+  String get noCustomers => 'Aucun client. Ajoutez-en un avec le bouton +.';
+
+  @override
+  String get searchCustomer => 'Nom ou téléphone';
+
+  @override
+  String get receivePayment => 'Encaisser un paiement';
+
+  @override
+  String get paymentAmountLabel => 'Montant';
+
+  @override
+  String get amountInvalid => 'Entrez un montant valide';
+
+  @override
+  String paymentTooHigh(String amount) {
+    return 'Plus que la dette ($amount)';
+  }
+
+  @override
+  String get paymentSaved => 'Paiement enregistré';
+
+  @override
+  String get customerHistory => 'Historique du compte';
+
+  @override
+  String entryCreditSale(int number) {
+    return 'Vente à crédit n°$number';
+  }
+
+  @override
+  String get entryPayment => 'Paiement reçu';
+
+  @override
+  String entryRefund(int number) {
+    return 'Retour du ticket n°$number';
+  }
+
+  @override
+  String entrySaleDetail(String total, String paid) {
+    return 'Total $total · payé $paid';
+  }
+
+  @override
+  String recordedBy(String name) {
+    return 'par $name';
+  }
+
+  @override
+  String get noHistory => 'Aucune opération pour l\'instant.';
+
+  @override
+  String archiveTitle(String name) {
+    return 'Archiver $name ?';
+  }
+
+  @override
+  String get archiveBody =>
+      'Il ne sera plus proposé dans les listes. Son historique est conservé.';
+
+  @override
+  String get archivedDone => 'Archivé';
+
+  @override
+  String get paymentMode => 'Paiement';
+
+  @override
+  String get payCash => 'Comptant';
+
+  @override
+  String get payCredit => 'Crédit';
+
+  @override
+  String get chooseCustomer => 'Choisir un client';
+
+  @override
+  String currentDebt(String amount) {
+    return 'Dette actuelle : $amount';
+  }
+
+  @override
+  String get paidNowLabel => 'Payé maintenant';
+
+  @override
+  String get leftOnCredit => 'Reste à crédit';
+
+  @override
+  String get newDebtLabel => 'Nouvelle dette du client';
+
+  @override
+  String overLimitWarning(String limit) {
+    return 'Dépasse la limite de crédit ($limit)';
+  }
+
+  @override
+  String get customerRequired =>
+      'Choisissez un client pour une vente à crédit.';
+
+  @override
+  String get creditLimitTitle => 'Limite de crédit dépassée';
+
+  @override
+  String creditLimitAsk(String name, String debt, String limit) {
+    return '$name devra $debt, plus que sa limite de $limit. Autoriser quand même ?';
+  }
+
+  @override
+  String creditLimitWorker(String limit) {
+    return 'Limite de crédit dépassée ($limit). Demandez au patron.';
+  }
+
+  @override
+  String get allowAnyway => 'Autoriser';
+
+  @override
+  String saleSavedCredit(int number, String amount, String name) {
+    return 'Vente n°$number enregistrée · $amount sur le compte de $name';
+  }
+
+  @override
+  String get customerLabel => 'Client';
+
+  @override
+  String get paidLabel => 'Payé';
+
+  @override
+  String get onCreditLabel => 'À crédit';
+
+  @override
+  String get creditChip => 'Crédit';
+
+  @override
+  String get refundModeLabel => 'Remboursement';
+
+  @override
+  String get refundToCredit => 'Déduire de la dette';
+
+  @override
+  String get refundCash => 'Rendre en espèces';
+
+  @override
+  String refundToAccount(String name, String amount) {
+    return 'À déduire du compte de $name : $amount';
+  }
+
+  @override
+  String returnSavedCredit(String amount) {
+    return 'Retour enregistré. $amount déduit du compte du client.';
+  }
+
+  @override
+  String get newSupplier => 'Nouveau fournisseur';
+
+  @override
+  String get editSupplier => 'Modifier le fournisseur';
+
+  @override
+  String get supplierNameHint => 'ex : Hamoud Boualem';
+
+  @override
+  String get noSuppliers =>
+      'Aucun fournisseur. Ajoutez-en un avec le bouton +.';
+
+  @override
+  String get totalOwedToSuppliers => 'Total à payer aux fournisseurs';
+
+  @override
+  String supplierOwes(String amount) {
+    return 'Reste à payer : $amount';
+  }
+
+  @override
+  String supplierAdvance(String amount) {
+    return 'Payé d\'avance : $amount';
+  }
+
+  @override
+  String pendingAmount(String amount) {
+    return 'En attente : $amount';
+  }
+
+  @override
+  String get deliveredLabel => 'Livré';
+
+  @override
+  String get paidValidatedLabel => 'Payé (validé)';
+
+  @override
+  String get leftToPayLabel => 'Reste à payer';
+
+  @override
+  String get recordSupplierPayment => 'Enregistrer un paiement';
+
+  @override
+  String get workerPaymentNotice =>
+      'Le patron devra valider ce paiement avant qu\'il soit compté.';
+
+  @override
+  String get paymentPendingSaved => 'Paiement envoyé au patron pour validation';
+
+  @override
+  String get statusPending => 'En attente';
+
+  @override
+  String get statusValidated => 'Validé';
+
+  @override
+  String get statusRejected => 'Refusé';
+
+  @override
+  String get paymentsSection => 'Paiements';
+
+  @override
+  String get deliveriesSection => 'Livraisons';
+
+  @override
+  String get noPayments => 'Aucun paiement.';
+
+  @override
+  String get noDeliveries =>
+      'Aucune livraison. Choisissez ce fournisseur lors d\'une réception de stock.';
+
+  @override
+  String paidBy(String name) {
+    return 'Payé par $name';
+  }
+
+  @override
+  String validatedBy(String name) {
+    return 'validé par $name';
+  }
+
+  @override
+  String rejectedBy(String name) {
+    return 'refusé par $name';
+  }
+
+  @override
+  String get validate => 'Valider';
+
+  @override
+  String get reject => 'Refuser';
+
+  @override
+  String get rejectPaymentTitle => 'Refuser ce paiement ?';
+
+  @override
+  String rejectPaymentBody(String amount, String name) {
+    return 'Le paiement de $amount à $name ne sera pas compté.';
+  }
+
+  @override
+  String get paymentValidated => 'Paiement validé';
+
+  @override
+  String get paymentRejected => 'Paiement refusé';
+
+  @override
+  String get noPendingPayments => 'Aucun paiement en attente.';
+
+  @override
+  String get supplierOptional => 'Fournisseur (facultatif)';
+
+  @override
+  String get noSupplier => 'Aucun fournisseur';
+
+  @override
+  String get searchSupplier => 'Rechercher un fournisseur';
+
+  @override
+  String get savedLabel => 'Enregistré';
 }

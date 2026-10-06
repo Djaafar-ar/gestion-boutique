@@ -17,6 +17,10 @@ part 'app_database.g.dart';
   Losses,
   Returns,
   ReturnItems,
+  Suppliers,
+  SupplierPayments,
+  Customers,
+  CustomerPayments,
   Users,
   ChangeLogs,
   FailedLogins,
@@ -35,7 +39,7 @@ class AppDatabase extends _$AppDatabase {
   // 2. run: dart run drift_dev make-migrations
   // 3. add the new step below (the generated tests check it).
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -67,6 +71,18 @@ class AppDatabase extends _$AppDatabase {
             await m.createIndex(schema.returnsSale);
             await m.createTable(schema.returnItems);
             await m.createIndex(schema.returnItemsSaleItem);
+          },
+          // Phase 4: suppliers and their payments, customer credit.
+          from4To5: (m, schema) async {
+            await m.createTable(schema.suppliers);
+            await m.createTable(schema.supplierPayments);
+            await m.createIndex(schema.supplierPaymentsSupplier);
+            await m.createIndex(schema.supplierPaymentsStatus);
+            await m.createTable(schema.customers);
+            await m.createTable(schema.customerPayments);
+            await m.createIndex(schema.customerPaymentsCustomer);
+            await m.createIndex(schema.salesCustomer);
+            await m.createIndex(schema.deliveriesSupplier);
           },
         ),
       );
