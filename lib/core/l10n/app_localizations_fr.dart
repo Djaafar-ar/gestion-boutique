@@ -41,17 +41,6 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get comingSoonTitle => 'Bientôt disponible';
-
-  @override
-  String get comingSoonStats =>
-      'Les statistiques arrivent dans une prochaine étape.';
-
-  @override
-  String get comingSoonAlerts =>
-      'Les alertes et notifications arrivent dans une prochaine étape.';
-
-  @override
   String get priceRequired => 'Entrez un prix';
 
   @override
@@ -1537,4 +1526,105 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get notificationChannel => 'Alertes de la boutique';
+
+  @override
+  String get statsTitle => 'Statistiques';
+
+  @override
+  String get periodCustom => 'Choisir…';
+
+  @override
+  String get everyone => 'Tout le monde';
+
+  @override
+  String get statProfit => 'Bénéfice';
+
+  @override
+  String get statAverageTicket => 'Panier moyen';
+
+  @override
+  String get statDiscounts => 'Remises accordées';
+
+  @override
+  String get statReturns => 'Retours';
+
+  @override
+  String returnsCountSub(int count) {
+    return '$count retour(s)';
+  }
+
+  @override
+  String get statLossesValue => 'Pertes';
+
+  @override
+  String get revenuePerDay => 'Chiffre d\'affaires par jour';
+
+  @override
+  String get revenuePerMonth => 'Chiffre d\'affaires par mois';
+
+  @override
+  String get salesPerWorker => 'Ventes par personne';
+
+  @override
+  String workerLine(int count, String discounts, String collected) {
+    return '$count vente(s) · remises $discounts · reçu des clients $collected';
+  }
+
+  @override
+  String get costLabel => 'Prix d\'achat des articles vendus';
+
+  @override
+  String get grossProfitLabel => 'Bénéfice brut';
+
+  @override
+  String get stockLossesLabel => 'Pertes de stock';
+
+  @override
+  String get netProfitLabel => 'Bénéfice net';
+
+  @override
+  String get cashSection => 'Caisse';
+
+  @override
+  String get paidAtCounterLabel => 'Encaissé au comptoir';
+
+  @override
+  String get customerPaymentsLabel => 'Payé par les clients (carnet)';
+
+  @override
+  String get cashRefundsLabel => 'Rendu en espèces (retours)';
+
+  @override
+  String get cashInHandLabel => 'Argent en caisse';
+
+  @override
+  String supplierPaidLabel(String amount) {
+    return 'Payé aux fournisseurs : $amount';
+  }
+
+  @override
+  String get creditStatsSection => 'Crédit';
+
+  @override
+  String get cashSalesLabel => 'Payé comptant';
+
+  @override
+  String get topDebtors => 'Plus gros débiteurs';
+
+  @override
+  String get lossesByReason => 'Pertes par raison';
+
+  @override
+  String get topProducts => 'Meilleures ventes';
+
+  @override
+  String productSoldQty(int quantity) {
+    return '$quantity vendu(s)';
+  }
+
+  @override
+  String get noSalesPeriod => 'Aucune vente sur cette période.';
+
+  @override
+  String get myStatsNote => 'Vous voyez seulement vos propres chiffres.';
 }

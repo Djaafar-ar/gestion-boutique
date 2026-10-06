@@ -17,9 +17,6 @@
       }
     }
   },
-  "comingSoonTitle": "Bientôt disponible",
-  "comingSoonStats": "Les statistiques arrivent dans une prochaine étape.",
-  "comingSoonAlerts": "Les alertes et notifications arrivent dans une prochaine étape.",
   "priceRequired": "Entrez un prix",
   "priceInvalid": "Prix invalide (ex : 1250 ou 1250,50)",
   "priceNegative": "Le prix ne peut pas être négatif",
@@ -1044,5 +1041,70 @@
   "sendTestNotification": "Envoyer une notification de test",
   "testNotificationTitle": "Notification de test",
   "testNotificationBody": "Les notifications fonctionnent.",
-  "notificationChannel": "Alertes de la boutique"
+  "notificationChannel": "Alertes de la boutique",
+  "statsTitle": "Statistiques",
+  "periodCustom": "Choisir…",
+  "everyone": "Tout le monde",
+  "statProfit": "Bénéfice",
+  "statAverageTicket": "Panier moyen",
+  "statDiscounts": "Remises accordées",
+  "statReturns": "Retours",
+  "returnsCountSub": "{count} retour(s)",
+  "@returnsCountSub": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "statLossesValue": "Pertes",
+  "revenuePerDay": "Chiffre d'affaires par jour",
+  "revenuePerMonth": "Chiffre d'affaires par mois",
+  "salesPerWorker": "Ventes par personne",
+  "workerLine": "{count} vente(s) · remises {discounts} · reçu des clients {collected}",
+  "@workerLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "discounts": {
+        "type": "String"
+      },
+      "collected": {
+        "type": "String"
+      }
+    }
+  },
+  "costLabel": "Prix d'achat des articles vendus",
+  "grossProfitLabel": "Bénéfice brut",
+  "stockLossesLabel": "Pertes de stock",
+  "netProfitLabel": "Bénéfice net",
+  "cashSection": "Caisse",
+  "paidAtCounterLabel": "Encaissé au comptoir",
+  "customerPaymentsLabel": "Payé par les clients (carnet)",
+  "cashRefundsLabel": "Rendu en espèces (retours)",
+  "cashInHandLabel": "Argent en caisse",
+  "supplierPaidLabel": "Payé aux fournisseurs : {amount}",
+  "@supplierPaidLabel": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "creditStatsSection": "Crédit",
+  "cashSalesLabel": "Payé comptant",
+  "topDebtors": "Plus gros débiteurs",
+  "lossesByReason": "Pertes par raison",
+  "topProducts": "Meilleures ventes",
+  "productSoldQty": "{quantity} vendu(s)",
+  "@productSoldQty": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      }
+    }
+  },
+  "noSalesPeriod": "Aucune vente sur cette période.",
+  "myStatsNote": "Vous voyez seulement vos propres chiffres."
 }

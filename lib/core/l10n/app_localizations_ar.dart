@@ -41,15 +41,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get comingSoonTitle => 'قريبًا';
-
-  @override
-  String get comingSoonStats => 'الإحصائيات ستتوفر في مرحلة قادمة.';
-
-  @override
-  String get comingSoonAlerts => 'التنبيهات والإشعارات ستتوفر في مرحلة قادمة.';
-
-  @override
   String get priceRequired => 'أدخل السعر';
 
   @override
@@ -1525,4 +1516,105 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get notificationChannel => 'تنبيهات المتجر';
+
+  @override
+  String get statsTitle => 'الإحصائيات';
+
+  @override
+  String get periodCustom => 'اختيار…';
+
+  @override
+  String get everyone => 'الجميع';
+
+  @override
+  String get statProfit => 'الربح';
+
+  @override
+  String get statAverageTicket => 'متوسط التذكرة';
+
+  @override
+  String get statDiscounts => 'التخفيضات الممنوحة';
+
+  @override
+  String get statReturns => 'الإرجاعات';
+
+  @override
+  String returnsCountSub(int count) {
+    return '$count إرجاع';
+  }
+
+  @override
+  String get statLossesValue => 'الخسائر';
+
+  @override
+  String get revenuePerDay => 'رقم الأعمال يومياً';
+
+  @override
+  String get revenuePerMonth => 'رقم الأعمال شهرياً';
+
+  @override
+  String get salesPerWorker => 'المبيعات حسب الشخص';
+
+  @override
+  String workerLine(int count, String discounts, String collected) {
+    return '$count بيع · تخفيضات $discounts · من الزبائن $collected';
+  }
+
+  @override
+  String get costLabel => 'سعر شراء السلع المباعة';
+
+  @override
+  String get grossProfitLabel => 'الربح الإجمالي';
+
+  @override
+  String get stockLossesLabel => 'خسائر المخزون';
+
+  @override
+  String get netProfitLabel => 'الربح الصافي';
+
+  @override
+  String get cashSection => 'الصندوق';
+
+  @override
+  String get paidAtCounterLabel => 'المحصَّل عند البيع';
+
+  @override
+  String get customerPaymentsLabel => 'مدفوعات الزبائن (الكرني)';
+
+  @override
+  String get cashRefundsLabel => 'المُرجع نقداً (الإرجاعات)';
+
+  @override
+  String get cashInHandLabel => 'المال في الصندوق';
+
+  @override
+  String supplierPaidLabel(String amount) {
+    return 'المدفوع للموردين: $amount';
+  }
+
+  @override
+  String get creditStatsSection => 'الدين';
+
+  @override
+  String get cashSalesLabel => 'مدفوع نقداً';
+
+  @override
+  String get topDebtors => 'أكبر المدينين';
+
+  @override
+  String get lossesByReason => 'الخسائر حسب السبب';
+
+  @override
+  String get topProducts => 'الأكثر مبيعاً';
+
+  @override
+  String productSoldQty(int quantity) {
+    return '$quantity مباعة';
+  }
+
+  @override
+  String get noSalesPeriod => 'لا مبيعات في هذه الفترة.';
+
+  @override
+  String get myStatsNote => 'ترى أرقامك فقط.';
 }

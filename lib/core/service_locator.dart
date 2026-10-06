@@ -26,6 +26,7 @@ import '../../features/shop/domain/usecases/shop_usecases.dart';
 import '../../features/shop/presentation/bloc/shop_bloc.dart';
 import '../../features/settings/data/repositories/printer_repository_impl.dart';
 import '../../features/stock/data/repositories/stock_repository_impl.dart';
+import '../../features/stats/data/stats_repository.dart';
 import '../../features/stock/data/stock_ledger.dart';
 import '../../features/stock/domain/repositories/stock_repository.dart';
 import '../../features/settings/domain/repositories/printer_repository.dart';
@@ -146,6 +147,9 @@ Future<void> init() async {
   sl.registerLazySingleton<PrinterRepository>(
     () => PrinterRepositoryImpl(sl()),
   );
+
+  // Features - Statistics
+  sl.registerLazySingleton(() => StatsRepository(sl()));
 
   // Features - Alerts and phone notifications
   final notifier = LocalPhoneNotifier(settings);

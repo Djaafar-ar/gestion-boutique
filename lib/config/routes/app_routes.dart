@@ -6,11 +6,11 @@ import 'package:go_router/go_router.dart';
 import '../../core/l10n/app_localizations.dart';
 import '../../core/service_locator.dart';
 import '../../core/session/session_cubit.dart';
-import '../../core/widgets/coming_soon_page.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../features/alerts/presentation/pages/alerts_page.dart';
 import '../../features/alerts/presentation/pages/notification_settings_page.dart';
 import '../../features/billing/presentation/pages/home_page.dart';
+import '../../features/stats/presentation/pages/stats_page.dart';
 import '../../features/customers/domain/entities/customer.dart';
 import '../../features/customers/presentation/pages/customer_detail_page.dart';
 import '../../features/customers/presentation/pages/customer_form_page.dart';
@@ -156,7 +156,7 @@ final router = GoRouter(
         StatefulShellBranch(routes: [
           GoRoute(
             path: '/stats',
-            builder: (context, state) => const ComingSoonPage.stats(),
+            builder: (context, state) => const StatsPage(),
           ),
         ]),
         StatefulShellBranch(routes: [

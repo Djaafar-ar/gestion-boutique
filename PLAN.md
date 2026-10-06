@@ -345,6 +345,7 @@ At the **end of every phase**:
 - Filters: date range picker + worker picker.
 - Workers: same screen, locked to their own data.
 - Tests: statistics queries against a known sample dataset.
+- **Rules chosen while building:** returns count against the person who made the sale (as on the profile page); cash given back counts for the person who gave it. Net profit = revenue − buying price of items sold (items put back on the shelf are not counted) − stock losses (damaged returns are already in the buying price). Workers see their own figures without buying prices, profit or what all customers owe. Periods longer than 62 days are shown month by month. Supplier payments are shown under the cash drawer but not taken out of "Argent en caisse".
 
 ### Phase 7: Wi-Fi sync
 - First launch choice: "Create a new shop (owner)" / "Join a shop (worker) → scan QR".

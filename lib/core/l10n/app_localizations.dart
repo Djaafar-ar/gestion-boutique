@@ -160,24 +160,6 @@ abstract class AppLocalizations {
   /// **'Erreur : {detail}'**
   String errorWithDetail(String detail);
 
-  /// No description provided for @comingSoonTitle.
-  ///
-  /// In fr, this message translates to:
-  /// **'Bientôt disponible'**
-  String get comingSoonTitle;
-
-  /// No description provided for @comingSoonStats.
-  ///
-  /// In fr, this message translates to:
-  /// **'Les statistiques arrivent dans une prochaine étape.'**
-  String get comingSoonStats;
-
-  /// No description provided for @comingSoonAlerts.
-  ///
-  /// In fr, this message translates to:
-  /// **'Les alertes et notifications arrivent dans une prochaine étape.'**
-  String get comingSoonAlerts;
-
   /// No description provided for @priceRequired.
   ///
   /// In fr, this message translates to:
@@ -2721,6 +2703,192 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Alertes de la boutique'**
   String get notificationChannel;
+
+  /// No description provided for @statsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statistiques'**
+  String get statsTitle;
+
+  /// No description provided for @periodCustom.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir…'**
+  String get periodCustom;
+
+  /// No description provided for @everyone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout le monde'**
+  String get everyone;
+
+  /// No description provided for @statProfit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bénéfice'**
+  String get statProfit;
+
+  /// No description provided for @statAverageTicket.
+  ///
+  /// In fr, this message translates to:
+  /// **'Panier moyen'**
+  String get statAverageTicket;
+
+  /// No description provided for @statDiscounts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remises accordées'**
+  String get statDiscounts;
+
+  /// No description provided for @statReturns.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retours'**
+  String get statReturns;
+
+  /// No description provided for @returnsCountSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} retour(s)'**
+  String returnsCountSub(int count);
+
+  /// No description provided for @statLossesValue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pertes'**
+  String get statLossesValue;
+
+  /// No description provided for @revenuePerDay.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chiffre d\'affaires par jour'**
+  String get revenuePerDay;
+
+  /// No description provided for @revenuePerMonth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chiffre d\'affaires par mois'**
+  String get revenuePerMonth;
+
+  /// No description provided for @salesPerWorker.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes par personne'**
+  String get salesPerWorker;
+
+  /// No description provided for @workerLine.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} vente(s) · remises {discounts} · reçu des clients {collected}'**
+  String workerLine(int count, String discounts, String collected);
+
+  /// No description provided for @costLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prix d\'achat des articles vendus'**
+  String get costLabel;
+
+  /// No description provided for @grossProfitLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bénéfice brut'**
+  String get grossProfitLabel;
+
+  /// No description provided for @stockLossesLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pertes de stock'**
+  String get stockLossesLabel;
+
+  /// No description provided for @netProfitLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bénéfice net'**
+  String get netProfitLabel;
+
+  /// No description provided for @cashSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Caisse'**
+  String get cashSection;
+
+  /// No description provided for @paidAtCounterLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Encaissé au comptoir'**
+  String get paidAtCounterLabel;
+
+  /// No description provided for @customerPaymentsLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé par les clients (carnet)'**
+  String get customerPaymentsLabel;
+
+  /// No description provided for @cashRefundsLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rendu en espèces (retours)'**
+  String get cashRefundsLabel;
+
+  /// No description provided for @cashInHandLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Argent en caisse'**
+  String get cashInHandLabel;
+
+  /// No description provided for @supplierPaidLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé aux fournisseurs : {amount}'**
+  String supplierPaidLabel(String amount);
+
+  /// No description provided for @creditStatsSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédit'**
+  String get creditStatsSection;
+
+  /// No description provided for @cashSalesLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé comptant'**
+  String get cashSalesLabel;
+
+  /// No description provided for @topDebtors.
+  ///
+  /// In fr, this message translates to:
+  /// **'Plus gros débiteurs'**
+  String get topDebtors;
+
+  /// No description provided for @lossesByReason.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pertes par raison'**
+  String get lossesByReason;
+
+  /// No description provided for @topProducts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Meilleures ventes'**
+  String get topProducts;
+
+  /// No description provided for @productSoldQty.
+  ///
+  /// In fr, this message translates to:
+  /// **'{quantity} vendu(s)'**
+  String productSoldQty(int quantity);
+
+  /// No description provided for @noSalesPeriod.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune vente sur cette période.'**
+  String get noSalesPeriod;
+
+  /// No description provided for @myStatsNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous voyez seulement vos propres chiffres.'**
+  String get myStatsNote;
 }
 
 class _AppLocalizationsDelegate

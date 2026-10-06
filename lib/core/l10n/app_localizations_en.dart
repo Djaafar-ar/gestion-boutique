@@ -41,16 +41,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get comingSoonTitle => 'Coming soon';
-
-  @override
-  String get comingSoonStats => 'Statistics are coming in a next step.';
-
-  @override
-  String get comingSoonAlerts =>
-      'Alerts and notifications are coming in a next step.';
-
-  @override
   String get priceRequired => 'Enter a price';
 
   @override
@@ -1520,4 +1510,105 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationChannel => 'Shop alerts';
+
+  @override
+  String get statsTitle => 'Statistics';
+
+  @override
+  String get periodCustom => 'Pick…';
+
+  @override
+  String get everyone => 'Everyone';
+
+  @override
+  String get statProfit => 'Profit';
+
+  @override
+  String get statAverageTicket => 'Average ticket';
+
+  @override
+  String get statDiscounts => 'Discounts given';
+
+  @override
+  String get statReturns => 'Returns';
+
+  @override
+  String returnsCountSub(int count) {
+    return '$count return(s)';
+  }
+
+  @override
+  String get statLossesValue => 'Losses';
+
+  @override
+  String get revenuePerDay => 'Revenue per day';
+
+  @override
+  String get revenuePerMonth => 'Revenue per month';
+
+  @override
+  String get salesPerWorker => 'Sales per person';
+
+  @override
+  String workerLine(int count, String discounts, String collected) {
+    return '$count sale(s) · discounts $discounts · from customers $collected';
+  }
+
+  @override
+  String get costLabel => 'Buying price of items sold';
+
+  @override
+  String get grossProfitLabel => 'Gross profit';
+
+  @override
+  String get stockLossesLabel => 'Stock losses';
+
+  @override
+  String get netProfitLabel => 'Net profit';
+
+  @override
+  String get cashSection => 'Cash drawer';
+
+  @override
+  String get paidAtCounterLabel => 'Taken at the counter';
+
+  @override
+  String get customerPaymentsLabel => 'Paid by customers (credit book)';
+
+  @override
+  String get cashRefundsLabel => 'Cash given back (returns)';
+
+  @override
+  String get cashInHandLabel => 'Cash in hand';
+
+  @override
+  String supplierPaidLabel(String amount) {
+    return 'Paid to suppliers: $amount';
+  }
+
+  @override
+  String get creditStatsSection => 'Credit';
+
+  @override
+  String get cashSalesLabel => 'Paid in cash';
+
+  @override
+  String get topDebtors => 'Biggest debtors';
+
+  @override
+  String get lossesByReason => 'Losses by reason';
+
+  @override
+  String get topProducts => 'Best sellers';
+
+  @override
+  String productSoldQty(int quantity) {
+    return '$quantity sold';
+  }
+
+  @override
+  String get noSalesPeriod => 'No sales in this period.';
+
+  @override
+  String get myStatsNote => 'You only see your own figures.';
 }
