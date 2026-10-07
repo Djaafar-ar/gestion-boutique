@@ -15,6 +15,7 @@ import 'generated/schema_v6.dart' as v6;
 import 'generated/schema_v7.dart' as v7;
 import 'generated/schema_v8.dart' as v8;
 import 'generated/schema_v9.dart' as v9;
+import 'generated/schema_v10.dart' as v10;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -370,6 +371,45 @@ void main() {
         final row = await newDb.select(newDb.shops).getSingle();
         expect((row.name, row.shopSecret, row.workersSellWithoutStock),
             ('Épicerie El Baraka', 'secret', 0));
+      },
+    );
+  });
+
+  // Phase 8: the shop keeps its data, has no sheet yet, and nothing is
+  // waiting to be sent.
+  test('migration from v9 to v10 keeps the shop, no sheet yet', () async {
+    const at = '2026-10-07T09:00:00.000';
+    const shop = v9.ShopsData(
+        id: 'shop1',
+        createdAt: at,
+        updatedAt: at,
+        deviceId: 'phone-1',
+        deleted: 0,
+        name: 'Épicerie El Baraka',
+        address1: '',
+        address2: '',
+        phone: '',
+        footer: '',
+        shopSecret: 'secret',
+        expiryWarnDays: 3,
+        maxWorkerDiscountPct: 10,
+        workersSellWithoutStock: 1);
+
+    await verifier.testWithDataIntegrity(
+      oldVersion: 9,
+      newVersion: 10,
+      createOld: v9.DatabaseAtV9.new,
+      createNew: v10.DatabaseAtV10.new,
+      openTestedDatabase: AppDatabase.new,
+      createItems: (batch, oldDb) => batch.insert(oldDb.shops, shop),
+      validateItems: (newDb) async {
+        final row = await newDb.select(newDb.shops).getSingle();
+        expect(
+            (row.name, row.workersSellWithoutStock, row.sheetUrl,
+                row.sheetWriteKey),
+            ('Épicerie El Baraka', 1, null, null));
+        expect(await newDb.select(newDb.sheetQueue).get(), isEmpty);
+        expect(await newDb.select(newDb.liveSales).get(), isEmpty);
       },
     );
   });

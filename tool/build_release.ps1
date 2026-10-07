@@ -27,6 +27,10 @@ $buildTools = Get-ChildItem "$env:LOCALAPPDATA\Android\Sdk\build-tools" -Directo
     Sort-Object { [version]$_.Name } -Descending | Select-Object -First 1
 $apksigner = Join-Path $buildTools.FullName 'apksigner.bat'
 
+# Flutter and apksigner print warnings (Gradle version, Java...) on the
+# error output: only their exit codes say whether they failed.
+$ErrorActionPreference = 'Continue'
+
 Write-Host '1/3 Building the release APK...'
 flutter build apk --release
 if ($LASTEXITCODE -ne 0) { throw 'flutter build failed.' }

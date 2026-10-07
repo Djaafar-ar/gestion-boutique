@@ -1399,5 +1399,237 @@
     }
   },
   "workersSellWithoutStock": "Les employés peuvent vendre sans stock",
-  "workersSellWithoutStockHelp": "Désactivé : un employé ne peut pas vendre plus que le stock enregistré. Le patron peut toujours vendre."
+  "workersSellWithoutStockHelp": "Désactivé : un employé ne peut pas vendre plus que le stock enregistré. Le patron peut toujours vendre.",
+  "sheetTitle": "Google Sheet",
+  "sheetSub": "Ventes en direct, rapport du soir, sauvegarde Drive",
+  "sheetIntro": "Une copie de la boutique dans votre Google Sheet : pour suivre les ventes de loin et garder une sauvegarde dans votre Google Drive. Modifier la feuille ne change jamais l'application.",
+  "sheetNotConfigured": "Pas encore configuré",
+  "sheetNotConfiguredOwner": "Créez la feuille et son script (voir le guide), puis scannez le code de configuration ci-dessous.",
+  "sheetNotConfiguredWorker": "Le patron configure Google Sheet sur son téléphone. Ce téléphone reçoit la configuration par la synchronisation Wi-Fi.",
+  "sheetConnected": "Connecté à Google Sheet",
+  "sheetAllSent": "Tout est envoyé.",
+  "sheetPending": "{count, plural, =1{1 envoi en attente (il partira dès qu'il y a internet)} other{{count} envois en attente (ils partiront dès qu'il y a internet)}}",
+  "@sheetPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sheetLastSend": "Dernier envoi : {time}",
+  "@sheetLastSend": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sheetNeverSent": "Rien n'a encore été envoyé.",
+  "sheetSendNow": "Envoyer maintenant",
+  "sheetSent": "{count, plural, =0{Rien à envoyer} =1{1 envoi fait} other{{count} envois faits}}",
+  "@sheetSent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sheetErrOffline": "Pas d'internet : tout attend dans le téléphone et partira plus tard.",
+  "sheetErrAccess": "Le script refuse l'accès : dans Apps Script, vérifiez « Exécuter en tant que : Moi » et « Qui a accès : Tout le monde ».",
+  "sheetErrSignature": "Clé refusée : les clés ont changé dans la feuille. Scannez le nouveau code de configuration.",
+  "sheetErrServer": "Erreur du script Google. Réessayez plus tard.",
+  "sheetSetupSection": "Configuration",
+  "sheetScan": "Scanner le code de configuration",
+  "sheetScanSub": "Dans la feuille : menu Boutique → Afficher le code de configuration",
+  "sheetPaste": "Coller le code",
+  "sheetPasteSub": "Sans caméra (émulateur) : copiez le code sous le QR dans la feuille et collez-le ici.",
+  "sheetPasteHint": "Collez le code ici",
+  "sheetNotConfigCode": "Ce n'est pas un code de configuration Google Sheet de la boutique.",
+  "sheetChecking": "Vérification avec Google…",
+  "sheetConfigured": "Connecté à « {name} ». Tout ce qui est déjà dans la boutique part vers la feuille.",
+  "@sheetConfigured": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sheetDisconnect": "Déconnecter Google Sheet",
+  "sheetDisconnectConfirm": "Les téléphones n'enverront plus rien à la feuille (les téléphones des employés après la prochaine synchronisation Wi-Fi). La feuille garde ce qu'elle a déjà.",
+  "sheetPrivacy": "Seul le téléphone du patron peut lire les chiffres (clé de lecture). Les téléphones des employés peuvent seulement ajouter des lignes (clé d'écriture). Ne partagez pas la feuille.",
+  "liveSalesTitle": "Ventes en direct",
+  "liveSalesSub": "Les ventes du jour de tous les téléphones",
+  "liveNotifyLabel": "Notification pour chaque vente",
+  "liveNotifySub": "Numéro du ticket, vendeur et total",
+  "liveSalesChannel": "Ventes en direct",
+  "liveSaleTitle": "Nouvelle vente n°{ticket}",
+  "@liveSaleTitle": {
+    "placeholders": {
+      "ticket": {
+        "type": "String"
+      }
+    }
+  },
+  "liveSaleBody": "{seller} · {total}",
+  "@liveSaleBody": {
+    "placeholders": {
+      "seller": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "liveSalesManyTitle": "{count} nouvelles ventes",
+  "@liveSalesManyTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "liveSalesManyBody": "Total : {total}",
+  "@liveSalesManyBody": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "liveToday": "Aujourd'hui (après retours)",
+  "liveSalesCount": "{count, plural, =0{aucune vente} =1{1 vente} other{{count} ventes}}",
+  "@liveSalesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "liveCheckedAt": "Vérifié à {time}",
+  "@liveCheckedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "liveNote": "Mise à jour toutes les 30 secondes tant que cet écran est ouvert. Application fermée, Android vérifie environ toutes les 15 minutes : les notifications arrivent alors par petits groupes.",
+  "liveEmpty": "Aucune vente aujourd'hui pour l'instant.",
+  "liveSaleTicket": "Vente n°{ticket}",
+  "@liveSaleTicket": {
+    "placeholders": {
+      "ticket": {
+        "type": "String"
+      }
+    }
+  },
+  "liveReturn": "Retour {ticket}",
+  "@liveReturn": {
+    "placeholders": {
+      "ticket": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyReportLabel": "Rapport du soir",
+  "dailyReportSub": "Chaque soir : ventes, chiffre d'affaires, bénéfice, argent en caisse et retours du jour",
+  "dailyReportTime": "Heure du rapport",
+  "dailyReportOpen": "Voir le rapport",
+  "dailyReportChannel": "Rapport du soir",
+  "dailyReportTitle": "Rapport du {date}",
+  "@dailyReportTitle": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyReportBody": "{sales} ventes · CA {revenue} · Bénéfice {profit} · Caisse {cash} · Retours {returns}",
+  "@dailyReportBody": {
+    "placeholders": {
+      "sales": {
+        "type": "int"
+      },
+      "revenue": {
+        "type": "String"
+      },
+      "profit": {
+        "type": "String"
+      },
+      "cash": {
+        "type": "String"
+      },
+      "returns": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyReportNone": "Pas encore de rapport. Il arrive chaque soir à l'heure choisie.",
+  "dailyReportToday": "Calculer aujourd'hui",
+  "reportSales": "Ventes",
+  "reportRevenue": "Chiffre d'affaires",
+  "reportProfit": "Bénéfice",
+  "reportCash": "Argent en caisse",
+  "reportReturns": "Retours",
+  "reportFromSheet": "D'après la Google Sheet (tous les téléphones qui avaient internet).",
+  "reportFromPhone": "D'après ce téléphone (ventes reçues par Wi-Fi).",
+  "driveSection": "Sauvegarde Google Drive",
+  "driveNever": "Aucune sauvegarde dans Google Drive pour le moment.",
+  "driveLast": "Dernière sauvegarde Drive : {time}",
+  "@driveLast": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "driveInfo": "Une fois par jour, quand le téléphone a internet (de préférence le Wi-Fi), une sauvegarde part dans le dossier « Sauvegardes Boutique » de votre Google Drive. Les 30 dernières sont gardées.",
+  "driveBackupNow": "Sauvegarder maintenant",
+  "driveDone": "Sauvegarde envoyée dans Google Drive.",
+  "backupWarning": "Aucune sauvegarde hors du téléphone depuis plus de 7 jours. Si le téléphone est perdu, les données sont perdues.",
+  "backupTitle": "Sauvegarde et restauration",
+  "backupSub": "Garder une copie hors du téléphone",
+  "backupIntro": "Une sauvegarde est un fichier .zip avec toutes les données de la boutique. Gardez-en une hors du téléphone : Google Drive, WhatsApp, clé USB…",
+  "backupNeverOff": "Aucune sauvegarde n'est encore sortie du téléphone.",
+  "backupLastOff": "Dernière sauvegarde hors du téléphone : {time}",
+  "@backupLastOff": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "backupShare": "Créer et envoyer une sauvegarde",
+  "backupShareSub": "Drive, WhatsApp, e-mail, Bluetooth…",
+  "backupShareSubject": "Sauvegarde de la boutique",
+  "backupDriveTile": "Sauvegarde automatique Google Drive",
+  "backupDriveOn": "Activée : une fois par jour",
+  "backupDriveOff": "Configurez Google Sheet pour l'activer",
+  "backupPrivate": "Une sauvegarde contient toute la boutique (ventes, clients, prix d'achat). Envoyez-la seulement à vous-même, jamais dans un groupe.",
+  "restoreTitle": "Restaurer une sauvegarde",
+  "restoreSub": "Remplace les données de ce téléphone",
+  "restoreFromBackup": "Restaurer une sauvegarde (nouveau téléphone)",
+  "restoreIntro": "Choisissez un fichier de sauvegarde de cette boutique (dans Téléchargements, ou dans Google Drive → Sauvegardes Boutique).",
+  "restoreIntroNew": "Nouveau téléphone : choisissez la dernière sauvegarde de votre boutique (Google Drive → Sauvegardes Boutique). Vous devrez taper le code PIN du patron.",
+  "restorePick": "Choisir le fichier de sauvegarde",
+  "restoreMadeOn": "Sauvegarde du {time}",
+  "@restoreMadeOn": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "restoreWarning": "Les données actuelles de ce téléphone seront remplacées par celles de la sauvegarde. Une sauvegarde des données actuelles est faite avant, au cas où.",
+  "restoreButton": "Restaurer",
+  "restorePinTitle": "Code PIN du patron",
+  "restoreReadyTitle": "Restauration prête",
+  "restoreReadyBody": "L'application va se fermer. Rouvrez-la : elle démarrera avec les données de la sauvegarde. Ensuite, scannez de nouveau le code Google Sheet si vous l'utilisez.",
+  "restoreClose": "Fermer l'application",
+  "restoreErrNotBackup": "Ce fichier n'est pas une sauvegarde de cette application (ou il est abîmé).",
+  "restoreErrNewer": "Cette sauvegarde vient d'une version plus récente de l'application. Mettez d'abord ce téléphone à jour.",
+  "restoreErrOtherShop": "Cette sauvegarde est celle d'une autre boutique.",
+  "restoreErrPin": "Code PIN du patron incorrect.",
+  "restoreErrWorker": "Un téléphone d'employé reçoit ses données du téléphone principal : restaurez sur le téléphone principal."
 }

@@ -512,6 +512,42 @@ void main() {
       expect(fake, isNull);
     });
   });
+
+  // Phase 8: the owner's phone restored an older backup. It lost what was
+  // done after that backup; the worker phones send it everything again.
+  test('a restored main phone gets back what the workers did', () async {
+    final (worker, client) = await joinWorker();
+    final users = UserRepositoryImpl(worker.db, worker.settings);
+    worker.session.login((await users.getUsers())
+        .getOrElse((f) => fail(f.message))
+        .firstWhere((u) => u.name == 'Amine'));
+    await worker.sales.saveSale(const [CartItem(product: soda, quantity: 3)]);
+    await client.sync();
+    expect(await hubPhone.count('sales'), 1);
+
+    // The restore: the hub's data is from before the sale...
+    for (final table in ['sale_items', 'stock_allocations', 'sales']) {
+      await hubPhone.db.customStatement(
+          "DELETE FROM $table WHERE device_id <> '${hubPhone.settings.deviceId}'");
+    }
+    await hubPhone.settings.setSyncEpoch(null); // what a restore does
+    // ...and the owner changes a price afterwards.
+    await hubPhone.products.updateProduct(soda.copyWith(sellPrice: 7000));
+
+    await client.sync();
+    expect(await hubPhone.count('sales'), 1, reason: 'sent again, once');
+    expect(await hubPhone.stockOf('soda'), 21);
+    final product = (await worker.products.getProducts())
+        .getOrElse((f) => fail(f.message))
+        .single;
+    expect(product.sellPrice, 7000);
+    expect(worker.settings.resendAll, isFalse);
+    expect(await worker.store.outboxCount(), 0);
+
+    // Everyday sync goes on as before.
+    await client.sync();
+    expect(await hubPhone.count('sales'), 1);
+  });
 }
 
 /// Delivers the request to the hub but loses the answer once, as when the

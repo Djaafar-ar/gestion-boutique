@@ -12,6 +12,11 @@ import '../../features/alerts/presentation/pages/notification_settings_page.dart
 import '../../features/billing/presentation/pages/home_page.dart';
 import '../../features/stats/presentation/pages/stats_page.dart';
 import '../../features/sync/presentation/pages/join_page.dart';
+import '../../features/backup/presentation/pages/backup_page.dart';
+import '../../features/backup/presentation/pages/restore_page.dart';
+import '../../features/sheet/presentation/pages/daily_report_page.dart';
+import '../../features/sheet/presentation/pages/live_sales_page.dart';
+import '../../features/sheet/presentation/pages/sheet_page.dart';
 import '../../features/sync/presentation/pages/sync_page.dart';
 import '../../features/customers/domain/entities/customer.dart';
 import '../../features/customers/presentation/pages/customer_detail_page.dart';
@@ -69,6 +74,11 @@ final router = GoRouter(
     GoRoute(
       path: '/join',
       builder: (context, state) => const JoinPage(),
+    ),
+    GoRoute(
+      path: '/restore',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (context, state) => const RestorePage(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, shell) => AppShell(shell: shell),
@@ -209,6 +219,28 @@ final router = GoRouter(
                 path: 'notifications',
                 parentNavigatorKey: rootNavigatorKey,
                 builder: (context, state) => const NotificationSettingsPage(),
+              ),
+              GoRoute(
+                path: 'sheet',
+                parentNavigatorKey: rootNavigatorKey,
+                builder: (context, state) => const SheetPage(),
+                routes: [
+                  GoRoute(
+                    path: 'live',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => const LiveSalesPage(),
+                  ),
+                  GoRoute(
+                    path: 'report',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => const DailyReportPage(),
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: 'backup',
+                parentNavigatorKey: rootNavigatorKey,
+                builder: (context, state) => const BackupPage(),
               ),
               GoRoute(
                 path: 'security',

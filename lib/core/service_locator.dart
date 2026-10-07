@@ -9,6 +9,11 @@ import '../../features/alerts/presentation/alerts_cubit.dart';
 import '../../features/auth/data/login_guard.dart';
 import '../../features/auth/data/owner_approval.dart';
 import '../../features/auth/data/login_service.dart';
+import '../../features/backup/data/backup_service.dart';
+import '../../features/sheet/data/cloud_background.dart';
+import '../../features/sheet/data/cloud_jobs.dart';
+import '../../features/sheet/data/sheet_settings.dart';
+import '../../features/sheet/presentation/sheet_cubit.dart';
 import '../../features/billing/data/receipt_printer.dart';
 import '../../features/billing/data/repositories/sale_repository_impl.dart';
 import '../../features/billing/domain/repositories/sale_repository.dart';
@@ -38,6 +43,7 @@ import '../../features/sync/data/hub_service.dart';
 import '../../features/sync/data/merge_service.dart';
 import '../../features/sync/data/sync_client.dart';
 import '../../features/sync/data/sync_network.dart';
+import '../../features/sync/data/sync_settings.dart';
 import '../../features/sync/data/sync_store.dart';
 import '../../features/sync/presentation/sync_cubit.dart';
 import '../../features/users/data/repositories/user_repository_impl.dart';
@@ -51,12 +57,21 @@ import 'settings/settings_store.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  // A backup restored last time replaces the database before it opens.
+  var restored = false;
+  try {
+    restored = await BackupService.applyPendingRestore();
+  } catch (e, stack) {
+    debugPrint('Restore failed: $e\n$stack');
+  }
+
   // Core - Database & phone settings
   final db = AppDatabase();
   sl.registerSingleton<AppDatabase>(db);
   final settings = SettingsStore(db);
   await settings.load();
   sl.registerSingleton<SettingsStore>(settings);
+  if (restored) await afterRestore(settings);
 
   // Bring over the data of the previous app version (only once).
   try {
@@ -197,6 +212,33 @@ Future<void> init() async {
         session: sl(),
         locale: () => notificationLocale(settings),
       ));
+
+  // Features - Google Sheet, live sales, evening report, backups
+  sl.registerLazySingleton(() => BackupService(sl(), sl()));
+  final jobs = CloudJobs.build(
+    db: db,
+    settings: settings,
+    notifier: notifier,
+    locale: () => notificationLocale(settings),
+  );
+  sl.registerSingleton(jobs);
+  final scheduler = WorkmanagerCloudScheduler();
+  sl.registerSingleton<CloudScheduler>(scheduler);
+  sl.registerSingleton(SheetCubit(
+    db: db,
+    settings: settings,
+    jobs: jobs,
+    store: store,
+    scheduler: scheduler,
+  ));
+}
+
+/// After a backup was restored: the worker phones must send everything
+/// again (new sync epoch), and "Ventes en direct" starts from today.
+Future<void> afterRestore(SettingsStore settings) async {
+  await settings.setSyncEpoch(null);
+  await settings.set(SheetSettings.liveSalesRowName, null);
+  await settings.set(SheetSettings.liveReturnsRowName, null);
 }
 
 /// The language of phone notifications: the one chosen in the app, or

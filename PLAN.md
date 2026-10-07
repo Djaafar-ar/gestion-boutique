@@ -410,17 +410,29 @@ At the **end of every phase**:
 - Packages: `http`, `connectivity_plus` (already planned for Phase 7), `workmanager` for the 15-minute background check.
 - Tests: queue keeps records until the script confirms them; duplicates are ignored; offline then online sends everything once; signatures are checked; a fake script server in tests.
 - **You test:** install the script, sell on a worker phone with mobile data, see the row appear in the sheet, then sell offline and see it arrive when data comes back. Open "Ventes en direct" on the owner phone away from the shop's Wi-Fi.
+- **How it was built (decisions made when starting Phase 8):**
+  - **Setup in the owner's own Gmail:** `tool/google_sheet/Code.gs` + `docs/google_sheet_setup.md` (every click, and the "Google hasn't verified this app" screens). The sheet menu **Boutique → 1. Installer** creates the tabs and formulas, creates both keys by itself and shows a QR code (script URL + write key + read key). In the app: Plus → Google Sheet → "Scanner le code de configuration" (or "Coller le code" on the emulator). The keys are checked with Google before anything is saved.
+  - **Where the keys live:** the address and the write key are on the shop record (database v10), so they reach the worker phones by Wi-Fi sync. The read key is a phone setting of the owner's phone only, never synced, never in a backup. A worker phone cannot set up the sheet. "Changer les clés (téléphone perdu)" in the sheet makes new keys.
+  - **Queue:** `sheet_queue`, filled by database triggers when a sheet is set up (a worker phone queues only its own records). Sent 5 seconds after a change, every 2 minutes while the app is open, and about every 15 minutes by Android (`workmanager`) when it is closed. Batches of 100 records, compact rows, removed only once the script confirms.
+  - **Sheet rows:** Sales (one row per sale, return, exchange or customer payment, with "Ventes", "Bénéfice", "Retours", "Encaissé" columns), Sale items (with "Sortie de stock"), Stock deliveries, Losses, Supplier payments (updated in place), Customer credit (name, current debt, last payment date; no phone numbers; sent by the owner's phone only). Current stock, Daily summary and Stats per worker are QUERY formulas in the sheet. The script stores ids already written (hidden tab `_recus`) and turns any text starting with = + - @ into plain text.
+  - **Security:** HMAC-SHA256 with the key, a time (10 minutes allowed; a phone with the wrong time corrects itself) and a one-time number (replays refused). The write key can only add rows; reading (live sales, summary) and Drive backups need the read key.
+  - **Ventes en direct (owner):** sales arrive by Wi-Fi sync and from the sheet; both go into `live_sales` by ticket id, so each sale is shown and announced once. One notification per new sale (ticket, seller, total; more than 5 at once: one summary), switch to turn it off, own sales never announced. Checks every 30 s while the screen is open.
+  - **Evening report (owner's phone, never a worker phone):** at 21:00 by default (time can be changed), a notification with sales, revenue, profit, cash in the drawer and returns; it uses the sheet's figures or this phone's, whichever knows more sales. Notifications are "private" (hidden on the lock screen).
+  - **Backups moved here from Phase 9:** backup file (VACUUM INTO + info.json, .zip, the last 10 kept on the phone), share it (Drive, WhatsApp, USB...), restore (owner only, owner PIN, same shop, not from a newer version, never on a worker phone, a backup of the current data first; the restored database is put in place when the app starts again). A new phone can restore from its first screen with the backup's owner PIN.
+  - **Daily Google Drive backup:** once a day through the script, into "Sauvegardes Boutique", the last 30 kept; waits for Wi-Fi unless the last one is 3 days old; "Sauvegarder maintenant"; warning (Plus and Google Sheet page) when no backup left the phone for 7 days.
+  - **Restored main phone:** after a restore the hub gets a new "epoch"; worker phones see it, send everything they have again, then download everything (nothing counted twice).
+  - **Not done:** reading a backup straight from Drive inside the app (the Android file picker opens Drive instead); Customer credit is not split per worker.
 
 ### Phase 9: Printer and final polish
 - New receipt layout (§3.6): French always, DA, ticket number, worker name, wrapped names, accents/code page, "Remove accents" option, test print, reprint from the sales list.
 - New receipt lines for discount and credit, plus an optional "Ticket de retour".
-- **Backup & restore (owner only):**
+- **Backup & restore (owner only):** *done in Phase 8, except the automatic local backup kept 7 days on the phone.*
   - "Create backup" makes a safe copy of the database while the app runs (SQLite `VACUUM INTO`) and packs it with a small info file (shop name, date, app version, database version) into `sauvegarde_<shop>_<date>.zip`. Then you choose where it goes: Downloads, USB, WhatsApp, Bluetooth... via the Android share menu.
   - **Automatic local backup** once a day, keeping the last 7 days, in the app's folder (no internet).
   - "Restore": pick a `.zip`. The app checks it belongs to this shop and is not from a newer app version, shows its date, and asks for confirmation + the owner PIN. It makes a backup of the current data first ("just in case"), replaces the database, and restarts the app.
   - After a restore on the owner's phone: worker phones re-send anything newer at the next sync (same UUIDs, so no duplicates).
   - Tests: backup → restore round trip gives identical data; wrong-shop or newer-version files are refused.
-- **Easy to send off the phone (requested after Phase 7):**
+- **Easy to send off the phone (requested after Phase 7):** *done in Phase 8 (share button, daily Drive backup, 7-day warning).*
   - Every backup can be sent off the phone in two taps: Google Drive, WhatsApp, e-mail, or copied to a USB stick or a computer.
   - The app remembers when a backup last left the phone. When that is more than 7 days ago, the owner sees a reminder (banner in Plus, plus an alert) until a new backup is sent.
 - **"Remplacer le téléphone principal" (owner only, requested after Phase 7):** for when the owner's phone (the hub) is lost, stolen or broken.

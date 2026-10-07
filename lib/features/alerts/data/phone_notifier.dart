@@ -33,13 +33,17 @@ abstract class PhoneNotifier {
   Future<bool> isAllowed();
   Future<void> openSettings();
 
-  /// Shows (or replaces) the notification named [key].
+  /// Shows (or replaces) the notification named [key]. [channelId] lets
+  /// the owner silence one kind in the phone's settings; [private] hides
+  /// the text on the lock screen (figures of the shop).
   Future<void> show(
       {required String key,
       required String title,
       required String body,
       required String payload,
-      required String channelName});
+      required String channelName,
+      String channelId = alertsChannelId,
+      bool private = false});
   Future<void> cancel(String key);
 
   /// Replaces every planned reminder with [reminders].
@@ -53,6 +57,11 @@ abstract class PhoneNotifier {
   /// opened the app), and forgets it.
   String? takePendingTap();
 }
+
+/// The channels of the app's notifications.
+const alertsChannelId = 'shop_alerts';
+const liveSalesChannelId = 'live_sales';
+const dailyReportChannelId = 'daily_report';
 
 /// Turns a key like 'lowStock:<id>' into a notification number that stays
 /// the same, so a new notification replaces the old one.
@@ -70,7 +79,6 @@ class LocalPhoneNotifier implements PhoneNotifier {
   final _taps = StreamController<String>.broadcast();
   String? _pending;
 
-  static const _channelId = 'shop_alerts';
   static const _scheduledKey = 'scheduled_reminders';
 
   LocalPhoneNotifier(this.settings);
@@ -116,10 +124,15 @@ class LocalPhoneNotifier implements PhoneNotifier {
     }
   }
 
-  NotificationDetails _details(String channelName) => NotificationDetails(
-        android: AndroidNotificationDetails(_channelId, channelName,
+  NotificationDetails _details(String channelName,
+          {String channelId = alertsChannelId, bool private = false}) =>
+      NotificationDetails(
+        android: AndroidNotificationDetails(channelId, channelName,
             importance: Importance.high,
             priority: Priority.high,
+            visibility: private
+                ? NotificationVisibility.private
+                : NotificationVisibility.public,
             styleInformation: const BigTextStyleInformation('')),
       );
 
@@ -129,12 +142,15 @@ class LocalPhoneNotifier implements PhoneNotifier {
       required String title,
       required String body,
       required String payload,
-      required String channelName}) async {
+      required String channelName,
+      String channelId = alertsChannelId,
+      bool private = false}) async {
     await _plugin.show(
       id: notificationIdOf(key),
       title: title,
       body: body,
-      notificationDetails: _details(channelName),
+      notificationDetails:
+          _details(channelName, channelId: channelId, private: private),
       payload: payload,
     );
   }

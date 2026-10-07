@@ -97,6 +97,19 @@ class SyncStore {
     );
   }
 
+  /// Worker: puts every shared row of this phone in the outbox, to send
+  /// them all to a hub restored from a backup. The hub keeps the newest
+  /// version of each row, so nothing is counted twice.
+  Future<void> queueEverything() async {
+    await db.transaction(() async {
+      for (final table in syncedTables) {
+        await db.customStatement(
+            'INSERT OR IGNORE INTO sync_log (entity, row_id) '
+            "SELECT '$table', id FROM $table");
+      }
+    });
+  }
+
   /// Worker: the hub has the rows up to [upTo]. A row changed again since
   /// has a bigger number, so it stays to be sent next time.
   Future<void> clearOutbox(int upTo) =>
@@ -223,6 +236,8 @@ class SyncStore {
       await db.delete(db.alertReads).go();
       await db.delete(db.alerts).go();
       await db.delete(db.syncLog).go();
+      await db.delete(db.sheetQueue).go();
+      await db.delete(db.liveSales).go();
     });
     db.notifyUpdates({
       for (final table in db.allTables) TableUpdate.onTable(table),

@@ -1966,4 +1966,384 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get workersSellWithoutStockHelp =>
       'Désactivé : un employé ne peut pas vendre plus que le stock enregistré. Le patron peut toujours vendre.';
+
+  @override
+  String get sheetTitle => 'Google Sheet';
+
+  @override
+  String get sheetSub => 'Ventes en direct, rapport du soir, sauvegarde Drive';
+
+  @override
+  String get sheetIntro =>
+      'Une copie de la boutique dans votre Google Sheet : pour suivre les ventes de loin et garder une sauvegarde dans votre Google Drive. Modifier la feuille ne change jamais l\'application.';
+
+  @override
+  String get sheetNotConfigured => 'Pas encore configuré';
+
+  @override
+  String get sheetNotConfiguredOwner =>
+      'Créez la feuille et son script (voir le guide), puis scannez le code de configuration ci-dessous.';
+
+  @override
+  String get sheetNotConfiguredWorker =>
+      'Le patron configure Google Sheet sur son téléphone. Ce téléphone reçoit la configuration par la synchronisation Wi-Fi.';
+
+  @override
+  String get sheetConnected => 'Connecté à Google Sheet';
+
+  @override
+  String get sheetAllSent => 'Tout est envoyé.';
+
+  @override
+  String sheetPending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count envois en attente (ils partiront dès qu\'il y a internet)',
+      one: '1 envoi en attente (il partira dès qu\'il y a internet)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sheetLastSend(String time) {
+    return 'Dernier envoi : $time';
+  }
+
+  @override
+  String get sheetNeverSent => 'Rien n\'a encore été envoyé.';
+
+  @override
+  String get sheetSendNow => 'Envoyer maintenant';
+
+  @override
+  String sheetSent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count envois faits',
+      one: '1 envoi fait',
+      zero: 'Rien à envoyer',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sheetErrOffline =>
+      'Pas d\'internet : tout attend dans le téléphone et partira plus tard.';
+
+  @override
+  String get sheetErrAccess =>
+      'Le script refuse l\'accès : dans Apps Script, vérifiez « Exécuter en tant que : Moi » et « Qui a accès : Tout le monde ».';
+
+  @override
+  String get sheetErrSignature =>
+      'Clé refusée : les clés ont changé dans la feuille. Scannez le nouveau code de configuration.';
+
+  @override
+  String get sheetErrServer => 'Erreur du script Google. Réessayez plus tard.';
+
+  @override
+  String get sheetSetupSection => 'Configuration';
+
+  @override
+  String get sheetScan => 'Scanner le code de configuration';
+
+  @override
+  String get sheetScanSub =>
+      'Dans la feuille : menu Boutique → Afficher le code de configuration';
+
+  @override
+  String get sheetPaste => 'Coller le code';
+
+  @override
+  String get sheetPasteSub =>
+      'Sans caméra (émulateur) : copiez le code sous le QR dans la feuille et collez-le ici.';
+
+  @override
+  String get sheetPasteHint => 'Collez le code ici';
+
+  @override
+  String get sheetNotConfigCode =>
+      'Ce n\'est pas un code de configuration Google Sheet de la boutique.';
+
+  @override
+  String get sheetChecking => 'Vérification avec Google…';
+
+  @override
+  String sheetConfigured(String name) {
+    return 'Connecté à « $name ». Tout ce qui est déjà dans la boutique part vers la feuille.';
+  }
+
+  @override
+  String get sheetDisconnect => 'Déconnecter Google Sheet';
+
+  @override
+  String get sheetDisconnectConfirm =>
+      'Les téléphones n\'enverront plus rien à la feuille (les téléphones des employés après la prochaine synchronisation Wi-Fi). La feuille garde ce qu\'elle a déjà.';
+
+  @override
+  String get sheetPrivacy =>
+      'Seul le téléphone du patron peut lire les chiffres (clé de lecture). Les téléphones des employés peuvent seulement ajouter des lignes (clé d\'écriture). Ne partagez pas la feuille.';
+
+  @override
+  String get liveSalesTitle => 'Ventes en direct';
+
+  @override
+  String get liveSalesSub => 'Les ventes du jour de tous les téléphones';
+
+  @override
+  String get liveNotifyLabel => 'Notification pour chaque vente';
+
+  @override
+  String get liveNotifySub => 'Numéro du ticket, vendeur et total';
+
+  @override
+  String get liveSalesChannel => 'Ventes en direct';
+
+  @override
+  String liveSaleTitle(String ticket) {
+    return 'Nouvelle vente n°$ticket';
+  }
+
+  @override
+  String liveSaleBody(String seller, String total) {
+    return '$seller · $total';
+  }
+
+  @override
+  String liveSalesManyTitle(int count) {
+    return '$count nouvelles ventes';
+  }
+
+  @override
+  String liveSalesManyBody(String total) {
+    return 'Total : $total';
+  }
+
+  @override
+  String get liveToday => 'Aujourd\'hui (après retours)';
+
+  @override
+  String liveSalesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ventes',
+      one: '1 vente',
+      zero: 'aucune vente',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String liveCheckedAt(String time) {
+    return 'Vérifié à $time';
+  }
+
+  @override
+  String get liveNote =>
+      'Mise à jour toutes les 30 secondes tant que cet écran est ouvert. Application fermée, Android vérifie environ toutes les 15 minutes : les notifications arrivent alors par petits groupes.';
+
+  @override
+  String get liveEmpty => 'Aucune vente aujourd\'hui pour l\'instant.';
+
+  @override
+  String liveSaleTicket(String ticket) {
+    return 'Vente n°$ticket';
+  }
+
+  @override
+  String liveReturn(String ticket) {
+    return 'Retour $ticket';
+  }
+
+  @override
+  String get dailyReportLabel => 'Rapport du soir';
+
+  @override
+  String get dailyReportSub =>
+      'Chaque soir : ventes, chiffre d\'affaires, bénéfice, argent en caisse et retours du jour';
+
+  @override
+  String get dailyReportTime => 'Heure du rapport';
+
+  @override
+  String get dailyReportOpen => 'Voir le rapport';
+
+  @override
+  String get dailyReportChannel => 'Rapport du soir';
+
+  @override
+  String dailyReportTitle(String date) {
+    return 'Rapport du $date';
+  }
+
+  @override
+  String dailyReportBody(
+      int sales, String revenue, String profit, String cash, String returns) {
+    return '$sales ventes · CA $revenue · Bénéfice $profit · Caisse $cash · Retours $returns';
+  }
+
+  @override
+  String get dailyReportNone =>
+      'Pas encore de rapport. Il arrive chaque soir à l\'heure choisie.';
+
+  @override
+  String get dailyReportToday => 'Calculer aujourd\'hui';
+
+  @override
+  String get reportSales => 'Ventes';
+
+  @override
+  String get reportRevenue => 'Chiffre d\'affaires';
+
+  @override
+  String get reportProfit => 'Bénéfice';
+
+  @override
+  String get reportCash => 'Argent en caisse';
+
+  @override
+  String get reportReturns => 'Retours';
+
+  @override
+  String get reportFromSheet =>
+      'D\'après la Google Sheet (tous les téléphones qui avaient internet).';
+
+  @override
+  String get reportFromPhone =>
+      'D\'après ce téléphone (ventes reçues par Wi-Fi).';
+
+  @override
+  String get driveSection => 'Sauvegarde Google Drive';
+
+  @override
+  String get driveNever =>
+      'Aucune sauvegarde dans Google Drive pour le moment.';
+
+  @override
+  String driveLast(String time) {
+    return 'Dernière sauvegarde Drive : $time';
+  }
+
+  @override
+  String get driveInfo =>
+      'Une fois par jour, quand le téléphone a internet (de préférence le Wi-Fi), une sauvegarde part dans le dossier « Sauvegardes Boutique » de votre Google Drive. Les 30 dernières sont gardées.';
+
+  @override
+  String get driveBackupNow => 'Sauvegarder maintenant';
+
+  @override
+  String get driveDone => 'Sauvegarde envoyée dans Google Drive.';
+
+  @override
+  String get backupWarning =>
+      'Aucune sauvegarde hors du téléphone depuis plus de 7 jours. Si le téléphone est perdu, les données sont perdues.';
+
+  @override
+  String get backupTitle => 'Sauvegarde et restauration';
+
+  @override
+  String get backupSub => 'Garder une copie hors du téléphone';
+
+  @override
+  String get backupIntro =>
+      'Une sauvegarde est un fichier .zip avec toutes les données de la boutique. Gardez-en une hors du téléphone : Google Drive, WhatsApp, clé USB…';
+
+  @override
+  String get backupNeverOff =>
+      'Aucune sauvegarde n\'est encore sortie du téléphone.';
+
+  @override
+  String backupLastOff(String time) {
+    return 'Dernière sauvegarde hors du téléphone : $time';
+  }
+
+  @override
+  String get backupShare => 'Créer et envoyer une sauvegarde';
+
+  @override
+  String get backupShareSub => 'Drive, WhatsApp, e-mail, Bluetooth…';
+
+  @override
+  String get backupShareSubject => 'Sauvegarde de la boutique';
+
+  @override
+  String get backupDriveTile => 'Sauvegarde automatique Google Drive';
+
+  @override
+  String get backupDriveOn => 'Activée : une fois par jour';
+
+  @override
+  String get backupDriveOff => 'Configurez Google Sheet pour l\'activer';
+
+  @override
+  String get backupPrivate =>
+      'Une sauvegarde contient toute la boutique (ventes, clients, prix d\'achat). Envoyez-la seulement à vous-même, jamais dans un groupe.';
+
+  @override
+  String get restoreTitle => 'Restaurer une sauvegarde';
+
+  @override
+  String get restoreSub => 'Remplace les données de ce téléphone';
+
+  @override
+  String get restoreFromBackup =>
+      'Restaurer une sauvegarde (nouveau téléphone)';
+
+  @override
+  String get restoreIntro =>
+      'Choisissez un fichier de sauvegarde de cette boutique (dans Téléchargements, ou dans Google Drive → Sauvegardes Boutique).';
+
+  @override
+  String get restoreIntroNew =>
+      'Nouveau téléphone : choisissez la dernière sauvegarde de votre boutique (Google Drive → Sauvegardes Boutique). Vous devrez taper le code PIN du patron.';
+
+  @override
+  String get restorePick => 'Choisir le fichier de sauvegarde';
+
+  @override
+  String restoreMadeOn(String time) {
+    return 'Sauvegarde du $time';
+  }
+
+  @override
+  String get restoreWarning =>
+      'Les données actuelles de ce téléphone seront remplacées par celles de la sauvegarde. Une sauvegarde des données actuelles est faite avant, au cas où.';
+
+  @override
+  String get restoreButton => 'Restaurer';
+
+  @override
+  String get restorePinTitle => 'Code PIN du patron';
+
+  @override
+  String get restoreReadyTitle => 'Restauration prête';
+
+  @override
+  String get restoreReadyBody =>
+      'L\'application va se fermer. Rouvrez-la : elle démarrera avec les données de la sauvegarde. Ensuite, scannez de nouveau le code Google Sheet si vous l\'utilisez.';
+
+  @override
+  String get restoreClose => 'Fermer l\'application';
+
+  @override
+  String get restoreErrNotBackup =>
+      'Ce fichier n\'est pas une sauvegarde de cette application (ou il est abîmé).';
+
+  @override
+  String get restoreErrNewer =>
+      'Cette sauvegarde vient d\'une version plus récente de l\'application. Mettez d\'abord ce téléphone à jour.';
+
+  @override
+  String get restoreErrOtherShop =>
+      'Cette sauvegarde est celle d\'une autre boutique.';
+
+  @override
+  String get restoreErrPin => 'Code PIN du patron incorrect.';
+
+  @override
+  String get restoreErrWorker =>
+      'Un téléphone d\'employé reçoit ses données du téléphone principal : restaurez sur le téléphone principal.';
 }

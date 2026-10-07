@@ -67,18 +67,41 @@ class SyncClient {
     var sent = 0, received = 0;
     for (var round = 0; round < 1000; round++) {
       final outbox = await store.outbox(limit: syncPageSize);
+      final resend = settings.resendAll;
       final answer = await _send(shopId, secret, {
         'type': 'sync',
         'shop': shopId,
         'device': settings.deviceId,
         'schema': db.schemaVersion,
         'now': clock().toIso8601String(),
-        'cursor': settings.syncCursor,
+        // While sending everything again, nothing is downloaded yet.
+        'cursor': resend ? _nothing : settings.syncCursor,
         'rows': encodeRows(outbox.rows),
       });
       // The hub has them now.
       await store.clearOutbox(outbox.upTo);
       sent += outbox.rows.length;
+
+      // The hub was restored from a backup: it may have lost what was
+      // done after that backup. This phone sends it everything it has,
+      // then downloads everything again.
+      final epoch = answer['epoch'] as String?;
+      if (epoch != null && epoch != settings.hubEpoch) {
+        final known = settings.hubEpoch;
+        await settings.setHubEpoch(epoch);
+        if (known != null) {
+          await store.queueEverything();
+          await settings.setResendAll(true);
+          continue;
+        }
+      }
+      if (resend) {
+        if (outbox.rows.length < syncPageSize) {
+          await settings.setResendAll(false);
+          await settings.setSyncCursor(0);
+        }
+        continue;
+      }
       final rows = decodeRows(answer['rows']);
       await store.applyFromHub(rows);
       received += rows.length;
@@ -88,6 +111,9 @@ class SyncClient {
     await settings.setLastSync(clock());
     return (sent: sent, received: received);
   }
+
+  /// A cursor after every change: the hub answers with no rows.
+  static const _nothing = 1 << 52;
 
   Future<Map<String, Object?>> _send(
       String shopId, String secret, Map<String, Object?> message) async {

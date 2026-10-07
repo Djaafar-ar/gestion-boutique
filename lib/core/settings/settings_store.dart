@@ -34,6 +34,19 @@ class SettingsStore {
 
   String? get(String key) => _cache[key];
 
+  /// Reads [keys] again from the database: the background job (Google
+  /// Sheet) may have changed them while the app was open.
+  Future<void> reload(Iterable<String> keys) async {
+    final wanted = keys.toSet();
+    final rows = await (db.select(db.appSettings)
+          ..where((s) => s.key.isIn(wanted)))
+        .get();
+    for (final key in wanted) {
+      _cache.remove(key);
+    }
+    _cache.addEntries(rows.map((r) => MapEntry(r.key, r.value)));
+  }
+
   /// Saves a setting. A null [value] removes it.
   Future<void> set(String key, String? value) async {
     if (value == null) {

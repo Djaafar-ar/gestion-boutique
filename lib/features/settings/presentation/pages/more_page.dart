@@ -8,6 +8,7 @@ import '../../../../core/service_locator.dart';
 import '../../../../core/session/session_cubit.dart';
 import '../../../../core/widgets/app_snack.dart';
 import '../../../billing/presentation/bloc/billing_bloc.dart';
+import '../../../sheet/presentation/sheet_cubit.dart';
 import '../../../suppliers/domain/repositories/supplier_repository.dart';
 import '../../../users/domain/repositories/user_repository.dart';
 import '../../../users/presentation/widgets/user_avatar.dart';
@@ -98,6 +99,27 @@ class _MorePageState extends State<MorePage> {
                 onTap: _openProfile,
               ),
             ]),
+          // No backup left the phone for 7 days.
+          if (session.isOwner &&
+              context.select((SheetCubit c) => c.state.backupWarning))
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              child: Card(
+                color: Theme.of(context).colorScheme.errorContainer,
+                child: ListTile(
+                  leading: Icon(Icons.backup_outlined,
+                      color: Theme.of(context).colorScheme.onErrorContainer),
+                  title: Text(l10n.backupWarning,
+                      style: TextStyle(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onErrorContainer)),
+                  trailing: Icon(Icons.chevron_right,
+                      color: Theme.of(context).colorScheme.onErrorContainer),
+                  onTap: () => context.push('/more/backup'),
+                ),
+              ),
+            ),
           if (_hasRecoveryCode != null)
             FutureBuilder<bool>(
               future: _hasRecoveryCode,
@@ -128,6 +150,14 @@ class _MorePageState extends State<MorePage> {
               subtitle: Text(l10n.syncSub),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push('/more/sync'),
+            ),
+            const Divider(indent: 72),
+            ListTile(
+              leading: const _TileIcon(Icons.table_chart_outlined),
+              title: Text(l10n.sheetTitle),
+              subtitle: Text(l10n.sheetSub),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push('/more/sheet'),
             ),
           ]),
           _SectionHeader(l10n.creditSection),
@@ -180,6 +210,14 @@ class _MorePageState extends State<MorePage> {
                 subtitle: Text(l10n.shopDetailsSub),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => context.push('/more/shop'),
+              ),
+              const Divider(indent: 72),
+              ListTile(
+                leading: const _TileIcon(Icons.backup_outlined),
+                title: Text(l10n.backupTitle),
+                subtitle: Text(l10n.backupSub),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/more/backup'),
               ),
             ]),
             _SectionHeader(l10n.teamSection),

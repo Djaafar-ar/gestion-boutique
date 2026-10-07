@@ -23,6 +23,9 @@ extension SyncSettings on SettingsStore {
   static const _lastSync = 'sync_last';
   static const _code = 'sync_device_code';
   static const _hubRunning = 'sync_hub_running';
+  static const epochName = 'sync_epoch';
+  static const _hubEpoch = 'sync_hub_epoch';
+  static const _resend = 'sync_resend';
 
   SyncRole get syncRole =>
       SyncRole.values.asNameMap()[get(_role)] ?? SyncRole.none;
@@ -70,6 +73,19 @@ extension SyncSettings on SettingsStore {
   bool get hubRunning => get(_hubRunning) == 'true';
   Future<void> setHubRunning(bool on) => set(_hubRunning, on ? 'true' : null);
 
+  /// Hub: changes when the hub's data is restored from a backup, so the
+  /// worker phones know to send everything again.
+  String? get syncEpoch => get(epochName);
+  Future<void> setSyncEpoch(String? epoch) => set(epochName, epoch);
+
+  /// Worker: the hub's epoch at the last sync.
+  String? get hubEpoch => get(_hubEpoch);
+  Future<void> setHubEpoch(String epoch) => set(_hubEpoch, epoch);
+
+  /// Worker: sending everything again to a restored hub.
+  bool get resendAll => get(_resend) == 'true';
+  Future<void> setResendAll(bool on) => set(_resend, on ? 'true' : null);
+
   /// Forgets everything about the sync (before joining another shop).
   Future<void> clearSync() async {
     for (final key in [
@@ -82,7 +98,23 @@ extension SyncSettings on SettingsStore {
       _lastSync,
       _code,
       _hubRunning,
+      epochName,
+      _hubEpoch,
+      _resend,
       'alerts_since',
+      // Google Sheet (Phase 8): the other shop has its own.
+      'sheet_read_key',
+      'sheet_last_send',
+      'sheet_last_error',
+      'live_sheet_cursor',
+      'live_sales_rowid',
+      'live_returns_rowid',
+      'daily_report_last',
+      'daily_report_json',
+      'drive_backup_last',
+      'drive_backup_try',
+      'drive_backup_error',
+      'backup_off_phone_last',
     ]) {
       await set(key, null);
     }

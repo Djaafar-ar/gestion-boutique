@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/settings/settings_store.dart';
@@ -29,6 +30,16 @@ class HubService {
     final row = await currentShopRow(db);
     if (row == null) return null;
     return (id: row.id, secret: row.shopSecret, name: row.name);
+  }
+
+  /// Changes after the hub's data was restored from a backup (see
+  /// [SyncClient.sync]).
+  Future<String> epoch() async {
+    final current = settings.syncEpoch;
+    if (current != null) return current;
+    final fresh = const Uuid().v4();
+    await settings.setSyncEpoch(fresh);
+    return fresh;
   }
 
   /// Makes this phone the hub of the shop (letter A).
@@ -82,6 +93,7 @@ class HubService {
           'more': changes.more,
           'rows': encodeRows(changes.rows),
           'now': '$now',
+          'epoch': await epoch(),
         };
       default:
         return _error(SyncError.other);

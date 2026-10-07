@@ -4999,6 +4999,930 @@ i1.GeneratedColumn<int> _column_87(String aliasedName) =>
         $customConstraints:
             'NOT NULL DEFAULT 0 CHECK (workers_sell_without_stock IN (0, 1))',
         defaultValue: const i1.CustomExpression('0'));
+
+final class Schema10 extends i0.VersionedSchema {
+  Schema10({required super.database}) : super(version: 10);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    sheetQueue,
+    sales,
+    shops,
+    appSettings,
+    sheetSalesInsert,
+    returns,
+    sheetReturnsInsert,
+    deliveries,
+    sheetDeliveriesInsert,
+    losses,
+    sheetLossesInsert,
+    supplierPayments,
+    sheetSupplierPaymentsInsert,
+    sheetSupplierPaymentsUpdate,
+    customerPayments,
+    sheetCustomerPaymentsInsert,
+    sheetCreditSales,
+    sheetCreditPayments,
+    sheetCreditReturns,
+    customers,
+    sheetCreditCustomers,
+    categories,
+    products,
+    saleItems,
+    stockAllocations,
+    returnItems,
+    suppliers,
+    users,
+    changeLogs,
+    failedLogins,
+    devices,
+    alerts,
+    alertReads,
+    liveSales,
+    productsBarcode,
+    deliveriesProduct,
+    deliveriesSupplier,
+    stockAllocationsProduct,
+    stockAllocationsSource,
+    lossesProduct,
+    returnsSale,
+    returnsExchangeSale,
+    returnItemsSaleItem,
+    supplierPaymentsSupplier,
+    supplierPaymentsStatus,
+    customerPaymentsCustomer,
+    salesCreated,
+    salesCustomer,
+    saleItemsSale,
+    saleItemsProduct,
+    failedLoginsSeen,
+    changeLogsEntity,
+    alertsActive,
+    liveSalesAt,
+    syncLog,
+    syncLogShopsInsert,
+    syncLogShopsUpdate,
+    syncLogCategoriesInsert,
+    syncLogCategoriesUpdate,
+    syncLogProductsInsert,
+    syncLogProductsUpdate,
+    syncLogDeliveriesInsert,
+    syncLogDeliveriesUpdate,
+    syncLogStockAllocationsInsert,
+    syncLogStockAllocationsUpdate,
+    syncLogLossesInsert,
+    syncLogLossesUpdate,
+    syncLogReturnsInsert,
+    syncLogReturnsUpdate,
+    syncLogReturnItemsInsert,
+    syncLogReturnItemsUpdate,
+    syncLogSuppliersInsert,
+    syncLogSuppliersUpdate,
+    syncLogSupplierPaymentsInsert,
+    syncLogSupplierPaymentsUpdate,
+    syncLogCustomersInsert,
+    syncLogCustomersUpdate,
+    syncLogCustomerPaymentsInsert,
+    syncLogCustomerPaymentsUpdate,
+    syncLogSalesInsert,
+    syncLogSalesUpdate,
+    syncLogSaleItemsInsert,
+    syncLogSaleItemsUpdate,
+    syncLogUsersInsert,
+    syncLogUsersUpdate,
+    syncLogFailedLoginsInsert,
+    syncLogFailedLoginsUpdate,
+    syncLogChangeLogsInsert,
+    syncLogChangeLogsUpdate,
+    syncLogDevicesInsert,
+    syncLogDevicesUpdate,
+  ];
+  late final Shape26 sheetQueue = Shape26(
+      source: i0.VersionedTable(
+        entityName: 'sheet_queue',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'UNIQUE(kind, row_id)',
+        ],
+        columns: [
+          _column_84,
+          _column_52,
+          _column_85,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape4 sales = Shape4(
+      source: i0.VersionedTable(
+        entityName: 'sales',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_27,
+          _column_28,
+          _column_29,
+          _column_30,
+          _column_31,
+          _column_32,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape27 shops = Shape27(
+      source: i0.VersionedTable(
+        entityName: 'shops',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_7,
+          _column_8,
+          _column_9,
+          _column_10,
+          _column_11,
+          _column_12,
+          _column_13,
+          _column_87,
+          _column_88,
+          _column_89,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape8 appSettings = Shape8(
+      source: i0.VersionedTable(
+        entityName: 'app_settings',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY("key")',
+        ],
+        columns: [
+          _column_45,
+          _column_46,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Trigger sheetSalesInsert = i1.Trigger(
+      'CREATE TRIGGER sheet_sales_insert AFTER INSERT ON sales WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND(new.device_id = (SELECT value FROM app_settings WHERE "key" = \'device_id\') OR coalesce((SELECT value FROM app_settings WHERE "key" = \'sync_role\'), \'\') <> \'worker\')BEGIN DELETE FROM sheet_queue WHERE kind = \'sale\' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES (\'sale\', new.id);END',
+      'sheet_sales_insert');
+  late final Shape21 returns = Shape21(
+      source: i0.VersionedTable(
+        entityName: 'returns',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_79,
+          _column_30,
+          _column_59,
+          _column_60,
+          _column_80,
+          _column_81,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Trigger sheetReturnsInsert = i1.Trigger(
+      'CREATE TRIGGER sheet_returns_insert AFTER INSERT ON returns WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND(new.device_id = (SELECT value FROM app_settings WHERE "key" = \'device_id\') OR coalesce((SELECT value FROM app_settings WHERE "key" = \'sync_role\'), \'\') <> \'worker\')BEGIN DELETE FROM sheet_queue WHERE kind = \'return\' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES (\'return\', new.id);END',
+      'sheet_returns_insert');
+  late final Shape3 deliveries = Shape3(
+      source: i0.VersionedTable(
+        entityName: 'deliveries',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_20,
+          _column_21,
+          _column_22,
+          _column_23,
+          _column_24,
+          _column_25,
+          _column_26,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Trigger sheetDeliveriesInsert = i1.Trigger(
+      'CREATE TRIGGER sheet_deliveries_insert AFTER INSERT ON deliveries WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND(new.device_id = (SELECT value FROM app_settings WHERE "key" = \'device_id\') OR coalesce((SELECT value FROM app_settings WHERE "key" = \'sync_role\'), \'\') <> \'worker\')BEGIN DELETE FROM sheet_queue WHERE kind = \'delivery\' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES (\'delivery\', new.id);END',
+      'sheet_deliveries_insert');
+  late final Shape12 losses = Shape12(
+      source: i0.VersionedTable(
+        entityName: 'losses',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_20,
+          _column_21,
+          _column_57,
+          _column_26,
+          _column_35,
+          _column_54,
+          _column_58,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Trigger sheetLossesInsert = i1.Trigger(
+      'CREATE TRIGGER sheet_losses_insert AFTER INSERT ON losses WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND(new.device_id = (SELECT value FROM app_settings WHERE "key" = \'device_id\') OR coalesce((SELECT value FROM app_settings WHERE "key" = \'sync_role\'), \'\') <> \'worker\')BEGIN DELETE FROM sheet_queue WHERE kind = \'loss\' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES (\'loss\', new.id);END',
+      'sheet_losses_insert');
+  late final Shape16 supplierPayments = Shape16(
+      source: i0.VersionedTable(
+        entityName: 'supplier_payments',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_65,
+          _column_66,
+          _column_26,
+          _column_67,
+          _column_68,
+          _column_69,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Trigger sheetSupplierPaymentsInsert = i1.Trigger(
+      'CREATE TRIGGER sheet_supplier_payments_insert AFTER INSERT ON supplier_payments WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND(new.device_id = (SELECT value FROM app_settings WHERE "key" = \'device_id\') OR coalesce((SELECT value FROM app_settings WHERE "key" = \'sync_role\'), \'\') <> \'worker\')BEGIN DELETE FROM sheet_queue WHERE kind = \'supplierPayment\' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES (\'supplierPayment\', new.id);END',
+      'sheet_supplier_payments_insert');
+  final i1.Trigger sheetSupplierPaymentsUpdate = i1.Trigger(
+      'CREATE TRIGGER sheet_supplier_payments_update AFTER UPDATE ON supplier_payments WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND(new.device_id = (SELECT value FROM app_settings WHERE "key" = \'device_id\') OR coalesce((SELECT value FROM app_settings WHERE "key" = \'sync_role\'), \'\') <> \'worker\')BEGIN DELETE FROM sheet_queue WHERE kind = \'supplierPayment\' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES (\'supplierPayment\', new.id);END',
+      'sheet_supplier_payments_update');
+  late final Shape18 customerPayments = Shape18(
+      source: i0.VersionedTable(
+        entityName: 'customer_payments',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_71,
+          _column_66,
+          _column_26,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Trigger sheetCustomerPaymentsInsert = i1.Trigger(
+      'CREATE TRIGGER sheet_customer_payments_insert AFTER INSERT ON customer_payments WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND(new.device_id = (SELECT value FROM app_settings WHERE "key" = \'device_id\') OR coalesce((SELECT value FROM app_settings WHERE "key" = \'sync_role\'), \'\') <> \'worker\')BEGIN DELETE FROM sheet_queue WHERE kind = \'customerPayment\' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES (\'customerPayment\', new.id);END',
+      'sheet_customer_payments_insert');
+  final i1.Trigger sheetCreditSales = i1.Trigger(
+      'CREATE TRIGGER sheet_credit_sales AFTER INSERT ON sales WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND coalesce((SELECT value FROM app_settings WHERE "key" = \'sync_role\'), \'\') <> \'worker\' AND new.customer_id IS NOT NULL BEGIN DELETE FROM sheet_queue WHERE kind = \'credit\' AND row_id = new.customer_id;INSERT INTO sheet_queue (kind, row_id) VALUES (\'credit\', new.customer_id);END',
+      'sheet_credit_sales');
+  final i1.Trigger sheetCreditPayments = i1.Trigger(
+      'CREATE TRIGGER sheet_credit_payments AFTER INSERT ON customer_payments WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND coalesce((SELECT value FROM app_settings WHERE "key" = \'sync_role\'), \'\') <> \'worker\' BEGIN DELETE FROM sheet_queue WHERE kind = \'credit\' AND row_id = new.customer_id;INSERT INTO sheet_queue (kind, row_id) VALUES (\'credit\', new.customer_id);END',
+      'sheet_credit_payments');
+  final i1.Trigger sheetCreditReturns = i1.Trigger(
+      'CREATE TRIGGER sheet_credit_returns AFTER INSERT ON returns WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND coalesce((SELECT value FROM app_settings WHERE "key" = \'sync_role\'), \'\') <> \'worker\' AND new.refund_mode = \'credit\' AND (SELECT customer_id FROM sales WHERE id = new.sale_id) IS NOT NULL BEGIN DELETE FROM sheet_queue WHERE kind = \'credit\' AND row_id = (SELECT customer_id FROM sales WHERE id = new.sale_id);INSERT INTO sheet_queue (kind, row_id) VALUES (\'credit\', (SELECT customer_id FROM sales WHERE id = new.sale_id));END',
+      'sheet_credit_returns');
+  late final Shape17 customers = Shape17(
+      source: i0.VersionedTable(
+        entityName: 'customers',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_9,
+          _column_26,
+          _column_70,
+          _column_39,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Trigger sheetCreditCustomers = i1.Trigger(
+      'CREATE TRIGGER sheet_credit_customers AFTER UPDATE ON customers WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND coalesce((SELECT value FROM app_settings WHERE "key" = \'sync_role\'), \'\') <> \'worker\' BEGIN DELETE FROM sheet_queue WHERE kind = \'credit\' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES (\'credit\', new.id);END',
+      'sheet_credit_customers');
+  late final Shape1 categories = Shape1(
+      source: i0.VersionedTable(
+        entityName: 'categories',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape2 products = Shape2(
+      source: i0.VersionedTable(
+        entityName: 'products',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_14,
+          _column_15,
+          _column_16,
+          _column_17,
+          _column_18,
+          _column_19,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape5 saleItems = Shape5(
+      source: i0.VersionedTable(
+        entityName: 'sale_items',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_33,
+          _column_20,
+          _column_34,
+          _column_15,
+          _column_35,
+          _column_21,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape11 stockAllocations = Shape11(
+      source: i0.VersionedTable(
+        entityName: 'stock_allocations',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_20,
+          _column_54,
+          _column_21,
+          _column_55,
+          _column_56,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape22 returnItems = Shape22(
+      source: i0.VersionedTable(
+        entityName: 'return_items',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_61,
+          _column_82,
+          _column_20,
+          _column_21,
+          _column_63,
+          _column_64,
+          _column_83,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape15 suppliers = Shape15(
+      source: i0.VersionedTable(
+        entityName: 'suppliers',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_9,
+          _column_26,
+          _column_39,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape9 users = Shape9(
+      source: i0.VersionedTable(
+        entityName: 'users',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_9,
+          _column_36,
+          _column_37,
+          _column_38,
+          _column_39,
+          _column_47,
+          _column_48,
+          _column_49,
+          _column_50,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape7 changeLogs = Shape7(
+      source: i0.VersionedTable(
+        entityName: 'change_logs',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_40,
+          _column_41,
+          _column_42,
+          _column_43,
+          _column_44,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape10 failedLogins = Shape10(
+      source: i0.VersionedTable(
+        entityName: 'failed_logins',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_51,
+          _column_52,
+          _column_53,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape24 devices = Shape24(
+      source: i0.VersionedTable(
+        entityName: 'devices',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_86,
+          _column_6,
+          _column_36,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape19 alerts = Shape19(
+      source: i0.VersionedTable(
+        entityName: 'alerts',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_72,
+          _column_73,
+          _column_74,
+          _column_75,
+          _column_39,
+          _column_1,
+          _column_2,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape20 alertReads = Shape20(
+      source: i0.VersionedTable(
+        entityName: 'alert_reads',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(alert_id, user_id)',
+        ],
+        columns: [
+          _column_76,
+          _column_77,
+          _column_78,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape28 liveSales = Shape28(
+      source: i0.VersionedTable(
+        entityName: 'live_sales',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_90,
+          _column_91,
+          _column_92,
+          _column_52,
+          _column_30,
+          _column_93,
+          _column_94,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Index productsBarcode = i1.Index('products_barcode',
+      'CREATE INDEX products_barcode ON products (barcode)');
+  final i1.Index deliveriesProduct = i1.Index('deliveries_product',
+      'CREATE INDEX deliveries_product ON deliveries (product_id)');
+  final i1.Index deliveriesSupplier = i1.Index('deliveries_supplier',
+      'CREATE INDEX deliveries_supplier ON deliveries (supplier_id)');
+  final i1.Index stockAllocationsProduct = i1.Index('stock_allocations_product',
+      'CREATE INDEX stock_allocations_product ON stock_allocations (product_id)');
+  final i1.Index stockAllocationsSource = i1.Index('stock_allocations_source',
+      'CREATE INDEX stock_allocations_source ON stock_allocations (source_id)');
+  final i1.Index lossesProduct = i1.Index(
+      'losses_product', 'CREATE INDEX losses_product ON losses (product_id)');
+  final i1.Index returnsSale = i1.Index(
+      'returns_sale', 'CREATE INDEX returns_sale ON returns (sale_id)');
+  final i1.Index returnsExchangeSale = i1.Index('returns_exchange_sale',
+      'CREATE INDEX returns_exchange_sale ON returns (exchange_sale_id)');
+  final i1.Index returnItemsSaleItem = i1.Index('return_items_sale_item',
+      'CREATE INDEX return_items_sale_item ON return_items (sale_item_id)');
+  final i1.Index supplierPaymentsSupplier = i1.Index(
+      'supplier_payments_supplier',
+      'CREATE INDEX supplier_payments_supplier ON supplier_payments (supplier_id)');
+  final i1.Index supplierPaymentsStatus = i1.Index('supplier_payments_status',
+      'CREATE INDEX supplier_payments_status ON supplier_payments (status)');
+  final i1.Index customerPaymentsCustomer = i1.Index(
+      'customer_payments_customer',
+      'CREATE INDEX customer_payments_customer ON customer_payments (customer_id)');
+  final i1.Index salesCreated = i1.Index(
+      'sales_created', 'CREATE INDEX sales_created ON sales (created_at)');
+  final i1.Index salesCustomer = i1.Index(
+      'sales_customer', 'CREATE INDEX sales_customer ON sales (customer_id)');
+  final i1.Index saleItemsSale = i1.Index('sale_items_sale',
+      'CREATE INDEX sale_items_sale ON sale_items (sale_id)');
+  final i1.Index saleItemsProduct = i1.Index('sale_items_product',
+      'CREATE INDEX sale_items_product ON sale_items (product_id)');
+  final i1.Index failedLoginsSeen = i1.Index('failed_logins_seen',
+      'CREATE INDEX failed_logins_seen ON failed_logins (seen)');
+  final i1.Index changeLogsEntity = i1.Index('change_logs_entity',
+      'CREATE INDEX change_logs_entity ON change_logs (entity_id)');
+  final i1.Index alertsActive = i1.Index(
+      'alerts_active', 'CREATE INDEX alerts_active ON alerts (active)');
+  final i1.Index liveSalesAt = i1.Index(
+      'live_sales_at', 'CREATE INDEX live_sales_at ON live_sales (at)');
+  late final Shape23 syncLog = Shape23(
+      source: i0.VersionedTable(
+        entityName: 'sync_log',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'UNIQUE(entity, row_id)',
+        ],
+        columns: [
+          _column_84,
+          _column_40,
+          _column_85,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Trigger syncLogShopsInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_shops_insert AFTER INSERT ON shops BEGIN DELETE FROM sync_log WHERE entity = \'shops\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'shops\', new.id);END',
+      'sync_log_shops_insert');
+  final i1.Trigger syncLogShopsUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_shops_update AFTER UPDATE ON shops BEGIN DELETE FROM sync_log WHERE entity = \'shops\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'shops\', new.id);END',
+      'sync_log_shops_update');
+  final i1.Trigger syncLogCategoriesInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_categories_insert AFTER INSERT ON categories BEGIN DELETE FROM sync_log WHERE entity = \'categories\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'categories\', new.id);END',
+      'sync_log_categories_insert');
+  final i1.Trigger syncLogCategoriesUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_categories_update AFTER UPDATE ON categories BEGIN DELETE FROM sync_log WHERE entity = \'categories\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'categories\', new.id);END',
+      'sync_log_categories_update');
+  final i1.Trigger syncLogProductsInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_products_insert AFTER INSERT ON products BEGIN DELETE FROM sync_log WHERE entity = \'products\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'products\', new.id);END',
+      'sync_log_products_insert');
+  final i1.Trigger syncLogProductsUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_products_update AFTER UPDATE ON products BEGIN DELETE FROM sync_log WHERE entity = \'products\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'products\', new.id);END',
+      'sync_log_products_update');
+  final i1.Trigger syncLogDeliveriesInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_deliveries_insert AFTER INSERT ON deliveries BEGIN DELETE FROM sync_log WHERE entity = \'deliveries\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'deliveries\', new.id);END',
+      'sync_log_deliveries_insert');
+  final i1.Trigger syncLogDeliveriesUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_deliveries_update AFTER UPDATE ON deliveries BEGIN DELETE FROM sync_log WHERE entity = \'deliveries\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'deliveries\', new.id);END',
+      'sync_log_deliveries_update');
+  final i1.Trigger syncLogStockAllocationsInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_stock_allocations_insert AFTER INSERT ON stock_allocations BEGIN DELETE FROM sync_log WHERE entity = \'stock_allocations\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'stock_allocations\', new.id);END',
+      'sync_log_stock_allocations_insert');
+  final i1.Trigger syncLogStockAllocationsUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_stock_allocations_update AFTER UPDATE ON stock_allocations BEGIN DELETE FROM sync_log WHERE entity = \'stock_allocations\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'stock_allocations\', new.id);END',
+      'sync_log_stock_allocations_update');
+  final i1.Trigger syncLogLossesInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_losses_insert AFTER INSERT ON losses BEGIN DELETE FROM sync_log WHERE entity = \'losses\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'losses\', new.id);END',
+      'sync_log_losses_insert');
+  final i1.Trigger syncLogLossesUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_losses_update AFTER UPDATE ON losses BEGIN DELETE FROM sync_log WHERE entity = \'losses\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'losses\', new.id);END',
+      'sync_log_losses_update');
+  final i1.Trigger syncLogReturnsInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_returns_insert AFTER INSERT ON returns BEGIN DELETE FROM sync_log WHERE entity = \'returns\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'returns\', new.id);END',
+      'sync_log_returns_insert');
+  final i1.Trigger syncLogReturnsUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_returns_update AFTER UPDATE ON returns BEGIN DELETE FROM sync_log WHERE entity = \'returns\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'returns\', new.id);END',
+      'sync_log_returns_update');
+  final i1.Trigger syncLogReturnItemsInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_return_items_insert AFTER INSERT ON return_items BEGIN DELETE FROM sync_log WHERE entity = \'return_items\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'return_items\', new.id);END',
+      'sync_log_return_items_insert');
+  final i1.Trigger syncLogReturnItemsUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_return_items_update AFTER UPDATE ON return_items BEGIN DELETE FROM sync_log WHERE entity = \'return_items\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'return_items\', new.id);END',
+      'sync_log_return_items_update');
+  final i1.Trigger syncLogSuppliersInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_suppliers_insert AFTER INSERT ON suppliers BEGIN DELETE FROM sync_log WHERE entity = \'suppliers\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'suppliers\', new.id);END',
+      'sync_log_suppliers_insert');
+  final i1.Trigger syncLogSuppliersUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_suppliers_update AFTER UPDATE ON suppliers BEGIN DELETE FROM sync_log WHERE entity = \'suppliers\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'suppliers\', new.id);END',
+      'sync_log_suppliers_update');
+  final i1.Trigger syncLogSupplierPaymentsInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_supplier_payments_insert AFTER INSERT ON supplier_payments BEGIN DELETE FROM sync_log WHERE entity = \'supplier_payments\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'supplier_payments\', new.id);END',
+      'sync_log_supplier_payments_insert');
+  final i1.Trigger syncLogSupplierPaymentsUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_supplier_payments_update AFTER UPDATE ON supplier_payments BEGIN DELETE FROM sync_log WHERE entity = \'supplier_payments\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'supplier_payments\', new.id);END',
+      'sync_log_supplier_payments_update');
+  final i1.Trigger syncLogCustomersInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_customers_insert AFTER INSERT ON customers BEGIN DELETE FROM sync_log WHERE entity = \'customers\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'customers\', new.id);END',
+      'sync_log_customers_insert');
+  final i1.Trigger syncLogCustomersUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_customers_update AFTER UPDATE ON customers BEGIN DELETE FROM sync_log WHERE entity = \'customers\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'customers\', new.id);END',
+      'sync_log_customers_update');
+  final i1.Trigger syncLogCustomerPaymentsInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_customer_payments_insert AFTER INSERT ON customer_payments BEGIN DELETE FROM sync_log WHERE entity = \'customer_payments\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'customer_payments\', new.id);END',
+      'sync_log_customer_payments_insert');
+  final i1.Trigger syncLogCustomerPaymentsUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_customer_payments_update AFTER UPDATE ON customer_payments BEGIN DELETE FROM sync_log WHERE entity = \'customer_payments\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'customer_payments\', new.id);END',
+      'sync_log_customer_payments_update');
+  final i1.Trigger syncLogSalesInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_sales_insert AFTER INSERT ON sales BEGIN DELETE FROM sync_log WHERE entity = \'sales\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'sales\', new.id);END',
+      'sync_log_sales_insert');
+  final i1.Trigger syncLogSalesUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_sales_update AFTER UPDATE ON sales BEGIN DELETE FROM sync_log WHERE entity = \'sales\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'sales\', new.id);END',
+      'sync_log_sales_update');
+  final i1.Trigger syncLogSaleItemsInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_sale_items_insert AFTER INSERT ON sale_items BEGIN DELETE FROM sync_log WHERE entity = \'sale_items\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'sale_items\', new.id);END',
+      'sync_log_sale_items_insert');
+  final i1.Trigger syncLogSaleItemsUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_sale_items_update AFTER UPDATE ON sale_items BEGIN DELETE FROM sync_log WHERE entity = \'sale_items\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'sale_items\', new.id);END',
+      'sync_log_sale_items_update');
+  final i1.Trigger syncLogUsersInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_users_insert AFTER INSERT ON users BEGIN DELETE FROM sync_log WHERE entity = \'users\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'users\', new.id);END',
+      'sync_log_users_insert');
+  final i1.Trigger syncLogUsersUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_users_update AFTER UPDATE ON users BEGIN DELETE FROM sync_log WHERE entity = \'users\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'users\', new.id);END',
+      'sync_log_users_update');
+  final i1.Trigger syncLogFailedLoginsInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_failed_logins_insert AFTER INSERT ON failed_logins BEGIN DELETE FROM sync_log WHERE entity = \'failed_logins\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'failed_logins\', new.id);END',
+      'sync_log_failed_logins_insert');
+  final i1.Trigger syncLogFailedLoginsUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_failed_logins_update AFTER UPDATE ON failed_logins BEGIN DELETE FROM sync_log WHERE entity = \'failed_logins\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'failed_logins\', new.id);END',
+      'sync_log_failed_logins_update');
+  final i1.Trigger syncLogChangeLogsInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_change_logs_insert AFTER INSERT ON change_logs BEGIN DELETE FROM sync_log WHERE entity = \'change_logs\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'change_logs\', new.id);END',
+      'sync_log_change_logs_insert');
+  final i1.Trigger syncLogChangeLogsUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_change_logs_update AFTER UPDATE ON change_logs BEGIN DELETE FROM sync_log WHERE entity = \'change_logs\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'change_logs\', new.id);END',
+      'sync_log_change_logs_update');
+  final i1.Trigger syncLogDevicesInsert = i1.Trigger(
+      'CREATE TRIGGER sync_log_devices_insert AFTER INSERT ON devices BEGIN DELETE FROM sync_log WHERE entity = \'devices\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'devices\', new.id);END',
+      'sync_log_devices_insert');
+  final i1.Trigger syncLogDevicesUpdate = i1.Trigger(
+      'CREATE TRIGGER sync_log_devices_update AFTER UPDATE ON devices BEGIN DELETE FROM sync_log WHERE entity = \'devices\' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES (\'devices\', new.id);END',
+      'sync_log_devices_update');
+}
+
+class Shape26 extends i0.VersionedTable {
+  Shape26({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<int> get seq =>
+      columnsByName['seq']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get kind =>
+      columnsByName['kind']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get rowId =>
+      columnsByName['row_id']! as i1.GeneratedColumn<String>;
+}
+
+class Shape27 extends i0.VersionedTable {
+  Shape27({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get createdAt =>
+      columnsByName['created_at']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get updatedAt =>
+      columnsByName['updated_at']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get deviceId =>
+      columnsByName['device_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get userId =>
+      columnsByName['user_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get deleted =>
+      columnsByName['deleted']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get name =>
+      columnsByName['name']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get address1 =>
+      columnsByName['address1']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get address2 =>
+      columnsByName['address2']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get phone =>
+      columnsByName['phone']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get footer =>
+      columnsByName['footer']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get shopSecret =>
+      columnsByName['shop_secret']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get expiryWarnDays =>
+      columnsByName['expiry_warn_days']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get maxWorkerDiscountPct =>
+      columnsByName['max_worker_discount_pct']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get workersSellWithoutStock =>
+      columnsByName['workers_sell_without_stock']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get sheetUrl =>
+      columnsByName['sheet_url']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get sheetWriteKey =>
+      columnsByName['sheet_write_key']! as i1.GeneratedColumn<String>;
+}
+
+i1.GeneratedColumn<String> _column_88(String aliasedName) =>
+    i1.GeneratedColumn<String>('sheet_url', aliasedName, true,
+        type: i1.DriftSqlType.string, $customConstraints: 'NULL');
+i1.GeneratedColumn<String> _column_89(String aliasedName) =>
+    i1.GeneratedColumn<String>('sheet_write_key', aliasedName, true,
+        type: i1.DriftSqlType.string, $customConstraints: 'NULL');
+
+class Shape28 extends i0.VersionedTable {
+  Shape28({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get at =>
+      columnsByName['at']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get ticket =>
+      columnsByName['ticket']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get seller =>
+      columnsByName['seller']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get kind =>
+      columnsByName['kind']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get total =>
+      columnsByName['total']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get mine =>
+      columnsByName['mine']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get notified =>
+      columnsByName['notified']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<String> _column_90(String aliasedName) =>
+    i1.GeneratedColumn<String>('at', aliasedName, false,
+        type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
+i1.GeneratedColumn<String> _column_91(String aliasedName) =>
+    i1.GeneratedColumn<String>('ticket', aliasedName, false,
+        type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
+i1.GeneratedColumn<String> _column_92(String aliasedName) =>
+    i1.GeneratedColumn<String>('seller', aliasedName, false,
+        type: i1.DriftSqlType.string, $customConstraints: 'NOT NULL');
+i1.GeneratedColumn<int> _column_93(String aliasedName) =>
+    i1.GeneratedColumn<int>('mine', aliasedName, false,
+        type: i1.DriftSqlType.int,
+        $customConstraints: 'NOT NULL CHECK (mine IN (0, 1))');
+i1.GeneratedColumn<int> _column_94(String aliasedName) =>
+    i1.GeneratedColumn<int>('notified', aliasedName, false,
+        type: i1.DriftSqlType.int,
+        $customConstraints: 'NOT NULL DEFAULT 0 CHECK (notified IN (0, 1))',
+        defaultValue: const i1.CustomExpression('0'));
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
@@ -5008,6 +5932,7 @@ i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema7 schema) from6To7,
   required Future<void> Function(i1.Migrator m, Schema8 schema) from7To8,
   required Future<void> Function(i1.Migrator m, Schema9 schema) from8To9,
+  required Future<void> Function(i1.Migrator m, Schema10 schema) from9To10,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -5051,6 +5976,11 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from8To9(migrator, schema);
         return 9;
+      case 9:
+        final schema = Schema10(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from9To10(migrator, schema);
+        return 10;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -5066,6 +5996,7 @@ i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema7 schema) from6To7,
   required Future<void> Function(i1.Migrator m, Schema8 schema) from7To8,
   required Future<void> Function(i1.Migrator m, Schema9 schema) from8To9,
+  required Future<void> Function(i1.Migrator m, Schema10 schema) from9To10,
 }) =>
     i0.VersionedSchema.stepByStepHelper(
         step: migrationSteps(
@@ -5077,4 +6008,5 @@ i1.OnUpgrade stepByStep({
       from6To7: from6To7,
       from7To8: from7To8,
       from8To9: from8To9,
+      from9To10: from9To10,
     ));

@@ -3435,6 +3435,595 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Désactivé : un employé ne peut pas vendre plus que le stock enregistré. Le patron peut toujours vendre.'**
   String get workersSellWithoutStockHelp;
+
+  /// No description provided for @sheetTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Google Sheet'**
+  String get sheetTitle;
+
+  /// No description provided for @sheetSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes en direct, rapport du soir, sauvegarde Drive'**
+  String get sheetSub;
+
+  /// No description provided for @sheetIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une copie de la boutique dans votre Google Sheet : pour suivre les ventes de loin et garder une sauvegarde dans votre Google Drive. Modifier la feuille ne change jamais l\'application.'**
+  String get sheetIntro;
+
+  /// No description provided for @sheetNotConfigured.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore configuré'**
+  String get sheetNotConfigured;
+
+  /// No description provided for @sheetNotConfiguredOwner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créez la feuille et son script (voir le guide), puis scannez le code de configuration ci-dessous.'**
+  String get sheetNotConfiguredOwner;
+
+  /// No description provided for @sheetNotConfiguredWorker.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le patron configure Google Sheet sur son téléphone. Ce téléphone reçoit la configuration par la synchronisation Wi-Fi.'**
+  String get sheetNotConfiguredWorker;
+
+  /// No description provided for @sheetConnected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connecté à Google Sheet'**
+  String get sheetConnected;
+
+  /// No description provided for @sheetAllSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout est envoyé.'**
+  String get sheetAllSent;
+
+  /// No description provided for @sheetPending.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =1{1 envoi en attente (il partira dès qu\'il y a internet)} other{{count} envois en attente (ils partiront dès qu\'il y a internet)}}'**
+  String sheetPending(int count);
+
+  /// No description provided for @sheetLastSend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernier envoi : {time}'**
+  String sheetLastSend(String time);
+
+  /// No description provided for @sheetNeverSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rien n\'a encore été envoyé.'**
+  String get sheetNeverSent;
+
+  /// No description provided for @sheetSendNow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Envoyer maintenant'**
+  String get sheetSendNow;
+
+  /// No description provided for @sheetSent.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{Rien à envoyer} =1{1 envoi fait} other{{count} envois faits}}'**
+  String sheetSent(int count);
+
+  /// No description provided for @sheetErrOffline.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas d\'internet : tout attend dans le téléphone et partira plus tard.'**
+  String get sheetErrOffline;
+
+  /// No description provided for @sheetErrAccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le script refuse l\'accès : dans Apps Script, vérifiez « Exécuter en tant que : Moi » et « Qui a accès : Tout le monde ».'**
+  String get sheetErrAccess;
+
+  /// No description provided for @sheetErrSignature.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clé refusée : les clés ont changé dans la feuille. Scannez le nouveau code de configuration.'**
+  String get sheetErrSignature;
+
+  /// No description provided for @sheetErrServer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur du script Google. Réessayez plus tard.'**
+  String get sheetErrServer;
+
+  /// No description provided for @sheetSetupSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Configuration'**
+  String get sheetSetupSection;
+
+  /// No description provided for @sheetScan.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scanner le code de configuration'**
+  String get sheetScan;
+
+  /// No description provided for @sheetScanSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dans la feuille : menu Boutique → Afficher le code de configuration'**
+  String get sheetScanSub;
+
+  /// No description provided for @sheetPaste.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coller le code'**
+  String get sheetPaste;
+
+  /// No description provided for @sheetPasteSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sans caméra (émulateur) : copiez le code sous le QR dans la feuille et collez-le ici.'**
+  String get sheetPasteSub;
+
+  /// No description provided for @sheetPasteHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Collez le code ici'**
+  String get sheetPasteHint;
+
+  /// No description provided for @sheetNotConfigCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce n\'est pas un code de configuration Google Sheet de la boutique.'**
+  String get sheetNotConfigCode;
+
+  /// No description provided for @sheetChecking.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérification avec Google…'**
+  String get sheetChecking;
+
+  /// No description provided for @sheetConfigured.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connecté à « {name} ». Tout ce qui est déjà dans la boutique part vers la feuille.'**
+  String sheetConfigured(String name);
+
+  /// No description provided for @sheetDisconnect.
+  ///
+  /// In fr, this message translates to:
+  /// **'Déconnecter Google Sheet'**
+  String get sheetDisconnect;
+
+  /// No description provided for @sheetDisconnectConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les téléphones n\'enverront plus rien à la feuille (les téléphones des employés après la prochaine synchronisation Wi-Fi). La feuille garde ce qu\'elle a déjà.'**
+  String get sheetDisconnectConfirm;
+
+  /// No description provided for @sheetPrivacy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seul le téléphone du patron peut lire les chiffres (clé de lecture). Les téléphones des employés peuvent seulement ajouter des lignes (clé d\'écriture). Ne partagez pas la feuille.'**
+  String get sheetPrivacy;
+
+  /// No description provided for @liveSalesTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes en direct'**
+  String get liveSalesTitle;
+
+  /// No description provided for @liveSalesSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les ventes du jour de tous les téléphones'**
+  String get liveSalesSub;
+
+  /// No description provided for @liveNotifyLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notification pour chaque vente'**
+  String get liveNotifyLabel;
+
+  /// No description provided for @liveNotifySub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Numéro du ticket, vendeur et total'**
+  String get liveNotifySub;
+
+  /// No description provided for @liveSalesChannel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes en direct'**
+  String get liveSalesChannel;
+
+  /// No description provided for @liveSaleTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle vente n°{ticket}'**
+  String liveSaleTitle(String ticket);
+
+  /// No description provided for @liveSaleBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'{seller} · {total}'**
+  String liveSaleBody(String seller, String total);
+
+  /// No description provided for @liveSalesManyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} nouvelles ventes'**
+  String liveSalesManyTitle(int count);
+
+  /// No description provided for @liveSalesManyBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total : {total}'**
+  String liveSalesManyBody(String total);
+
+  /// No description provided for @liveToday.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aujourd\'hui (après retours)'**
+  String get liveToday;
+
+  /// No description provided for @liveSalesCount.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0{aucune vente} =1{1 vente} other{{count} ventes}}'**
+  String liveSalesCount(int count);
+
+  /// No description provided for @liveCheckedAt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifié à {time}'**
+  String liveCheckedAt(String time);
+
+  /// No description provided for @liveNote.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mise à jour toutes les 30 secondes tant que cet écran est ouvert. Application fermée, Android vérifie environ toutes les 15 minutes : les notifications arrivent alors par petits groupes.'**
+  String get liveNote;
+
+  /// No description provided for @liveEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune vente aujourd\'hui pour l\'instant.'**
+  String get liveEmpty;
+
+  /// No description provided for @liveSaleTicket.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vente n°{ticket}'**
+  String liveSaleTicket(String ticket);
+
+  /// No description provided for @liveReturn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour {ticket}'**
+  String liveReturn(String ticket);
+
+  /// No description provided for @dailyReportLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapport du soir'**
+  String get dailyReportLabel;
+
+  /// No description provided for @dailyReportSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaque soir : ventes, chiffre d\'affaires, bénéfice, argent en caisse et retours du jour'**
+  String get dailyReportSub;
+
+  /// No description provided for @dailyReportTime.
+  ///
+  /// In fr, this message translates to:
+  /// **'Heure du rapport'**
+  String get dailyReportTime;
+
+  /// No description provided for @dailyReportOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir le rapport'**
+  String get dailyReportOpen;
+
+  /// No description provided for @dailyReportChannel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapport du soir'**
+  String get dailyReportChannel;
+
+  /// No description provided for @dailyReportTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapport du {date}'**
+  String dailyReportTitle(String date);
+
+  /// No description provided for @dailyReportBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'{sales} ventes · CA {revenue} · Bénéfice {profit} · Caisse {cash} · Retours {returns}'**
+  String dailyReportBody(
+      int sales, String revenue, String profit, String cash, String returns);
+
+  /// No description provided for @dailyReportNone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas encore de rapport. Il arrive chaque soir à l\'heure choisie.'**
+  String get dailyReportNone;
+
+  /// No description provided for @dailyReportToday.
+  ///
+  /// In fr, this message translates to:
+  /// **'Calculer aujourd\'hui'**
+  String get dailyReportToday;
+
+  /// No description provided for @reportSales.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes'**
+  String get reportSales;
+
+  /// No description provided for @reportRevenue.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chiffre d\'affaires'**
+  String get reportRevenue;
+
+  /// No description provided for @reportProfit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bénéfice'**
+  String get reportProfit;
+
+  /// No description provided for @reportCash.
+  ///
+  /// In fr, this message translates to:
+  /// **'Argent en caisse'**
+  String get reportCash;
+
+  /// No description provided for @reportReturns.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retours'**
+  String get reportReturns;
+
+  /// No description provided for @reportFromSheet.
+  ///
+  /// In fr, this message translates to:
+  /// **'D\'après la Google Sheet (tous les téléphones qui avaient internet).'**
+  String get reportFromSheet;
+
+  /// No description provided for @reportFromPhone.
+  ///
+  /// In fr, this message translates to:
+  /// **'D\'après ce téléphone (ventes reçues par Wi-Fi).'**
+  String get reportFromPhone;
+
+  /// No description provided for @driveSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde Google Drive'**
+  String get driveSection;
+
+  /// No description provided for @driveNever.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune sauvegarde dans Google Drive pour le moment.'**
+  String get driveNever;
+
+  /// No description provided for @driveLast.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernière sauvegarde Drive : {time}'**
+  String driveLast(String time);
+
+  /// No description provided for @driveInfo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une fois par jour, quand le téléphone a internet (de préférence le Wi-Fi), une sauvegarde part dans le dossier « Sauvegardes Boutique » de votre Google Drive. Les 30 dernières sont gardées.'**
+  String get driveInfo;
+
+  /// No description provided for @driveBackupNow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarder maintenant'**
+  String get driveBackupNow;
+
+  /// No description provided for @driveDone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde envoyée dans Google Drive.'**
+  String get driveDone;
+
+  /// No description provided for @backupWarning.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune sauvegarde hors du téléphone depuis plus de 7 jours. Si le téléphone est perdu, les données sont perdues.'**
+  String get backupWarning;
+
+  /// No description provided for @backupTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde et restauration'**
+  String get backupTitle;
+
+  /// No description provided for @backupSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Garder une copie hors du téléphone'**
+  String get backupSub;
+
+  /// No description provided for @backupIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une sauvegarde est un fichier .zip avec toutes les données de la boutique. Gardez-en une hors du téléphone : Google Drive, WhatsApp, clé USB…'**
+  String get backupIntro;
+
+  /// No description provided for @backupNeverOff.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune sauvegarde n\'est encore sortie du téléphone.'**
+  String get backupNeverOff;
+
+  /// No description provided for @backupLastOff.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dernière sauvegarde hors du téléphone : {time}'**
+  String backupLastOff(String time);
+
+  /// No description provided for @backupShare.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer et envoyer une sauvegarde'**
+  String get backupShare;
+
+  /// No description provided for @backupShareSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Drive, WhatsApp, e-mail, Bluetooth…'**
+  String get backupShareSub;
+
+  /// No description provided for @backupShareSubject.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde de la boutique'**
+  String get backupShareSubject;
+
+  /// No description provided for @backupDriveTile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde automatique Google Drive'**
+  String get backupDriveTile;
+
+  /// No description provided for @backupDriveOn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activée : une fois par jour'**
+  String get backupDriveOn;
+
+  /// No description provided for @backupDriveOff.
+  ///
+  /// In fr, this message translates to:
+  /// **'Configurez Google Sheet pour l\'activer'**
+  String get backupDriveOff;
+
+  /// No description provided for @backupPrivate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une sauvegarde contient toute la boutique (ventes, clients, prix d\'achat). Envoyez-la seulement à vous-même, jamais dans un groupe.'**
+  String get backupPrivate;
+
+  /// No description provided for @restoreTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Restaurer une sauvegarde'**
+  String get restoreTitle;
+
+  /// No description provided for @restoreSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remplace les données de ce téléphone'**
+  String get restoreSub;
+
+  /// No description provided for @restoreFromBackup.
+  ///
+  /// In fr, this message translates to:
+  /// **'Restaurer une sauvegarde (nouveau téléphone)'**
+  String get restoreFromBackup;
+
+  /// No description provided for @restoreIntro.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez un fichier de sauvegarde de cette boutique (dans Téléchargements, ou dans Google Drive → Sauvegardes Boutique).'**
+  String get restoreIntro;
+
+  /// No description provided for @restoreIntroNew.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau téléphone : choisissez la dernière sauvegarde de votre boutique (Google Drive → Sauvegardes Boutique). Vous devrez taper le code PIN du patron.'**
+  String get restoreIntroNew;
+
+  /// No description provided for @restorePick.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisir le fichier de sauvegarde'**
+  String get restorePick;
+
+  /// No description provided for @restoreMadeOn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sauvegarde du {time}'**
+  String restoreMadeOn(String time);
+
+  /// No description provided for @restoreWarning.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les données actuelles de ce téléphone seront remplacées par celles de la sauvegarde. Une sauvegarde des données actuelles est faite avant, au cas où.'**
+  String get restoreWarning;
+
+  /// No description provided for @restoreButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Restaurer'**
+  String get restoreButton;
+
+  /// No description provided for @restorePinTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code PIN du patron'**
+  String get restorePinTitle;
+
+  /// No description provided for @restoreReadyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Restauration prête'**
+  String get restoreReadyTitle;
+
+  /// No description provided for @restoreReadyBody.
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'application va se fermer. Rouvrez-la : elle démarrera avec les données de la sauvegarde. Ensuite, scannez de nouveau le code Google Sheet si vous l\'utilisez.'**
+  String get restoreReadyBody;
+
+  /// No description provided for @restoreClose.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermer l\'application'**
+  String get restoreClose;
+
+  /// No description provided for @restoreErrNotBackup.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce fichier n\'est pas une sauvegarde de cette application (ou il est abîmé).'**
+  String get restoreErrNotBackup;
+
+  /// No description provided for @restoreErrNewer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette sauvegarde vient d\'une version plus récente de l\'application. Mettez d\'abord ce téléphone à jour.'**
+  String get restoreErrNewer;
+
+  /// No description provided for @restoreErrOtherShop.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette sauvegarde est celle d\'une autre boutique.'**
+  String get restoreErrOtherShop;
+
+  /// No description provided for @restoreErrPin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code PIN du patron incorrect.'**
+  String get restoreErrPin;
+
+  /// No description provided for @restoreErrWorker.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un téléphone d\'employé reçoit ses données du téléphone principal : restaurez sur le téléphone principal.'**
+  String get restoreErrWorker;
 }
 
 class _AppLocalizationsDelegate

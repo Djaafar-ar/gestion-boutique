@@ -152,6 +152,13 @@ class _SetupPageState extends State<SetupPage> {
                       icon: const Icon(Icons.wifi_tethering),
                       label: Text(l10n.joinShop),
                     ),
+                    // A new phone for the owner: the last backup.
+                    const SizedBox(height: 8),
+                    OutlinedButton.icon(
+                      onPressed: () => context.go('/restore'),
+                      icon: const Icon(Icons.settings_backup_restore),
+                      label: Text(l10n.restoreFromBackup),
+                    ),
                   ],
                   const SizedBox(height: 32),
                   Text('${_step + 1}/$_steps · ${titles[_step]}',

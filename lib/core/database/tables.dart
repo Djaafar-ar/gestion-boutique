@@ -33,6 +33,13 @@ class Shops extends Table with SyncColumns {
   BoolColumn get workersSellWithoutStock =>
       boolean().withDefault(const Constant(false))();
 
+  /// Google Sheet of the shop (Phase 8): the script address and the
+  /// WRITE key. They sync to the worker phones so they can send their
+  /// sales too. The READ key never leaves the owner's phone (it is a phone
+  /// setting, see sheet_settings.dart).
+  TextColumn get sheetUrl => text().nullable()();
+  TextColumn get sheetWriteKey => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -368,6 +375,32 @@ class AlertReads extends Table {
 
   @override
   Set<Column> get primaryKey => {alertId, userId};
+}
+
+/// Owner's phone: the sales and returns of the day as "Ventes en direct"
+/// shows them, from this phone's database (Wi-Fi sync) and from the
+/// Google Sheet (phones on mobile data). The same ticket arriving both
+/// ways is kept once, so it is announced once. Never synced.
+@DataClassName('LiveSaleRow')
+@TableIndex(name: 'live_sales_at', columns: {#at})
+class LiveSales extends Table {
+  TextColumn get id => text()();
+  DateTimeColumn get at => dateTime()();
+  TextColumn get ticket => text()();
+  TextColumn get seller => text()();
+
+  /// 'sale' or 'return'.
+  TextColumn get kind => text()();
+
+  /// Centimes; negative for a return.
+  IntColumn get total => integer()();
+
+  /// Made on this phone (never announced).
+  BoolColumn get mine => boolean()();
+  BoolColumn get notified => boolean().withDefault(const Constant(false))();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 /// Settings that belong to this phone only (language, theme, printer...).

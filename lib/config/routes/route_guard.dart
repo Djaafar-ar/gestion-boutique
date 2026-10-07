@@ -6,6 +6,10 @@ const ownerOnlyPaths = [
   '/more/workers',
   '/more/security',
   '/more/notifications',
+  '/more/sheet/live',
+  '/more/sheet/report',
+  '/more/backup',
+  '/restore',
   '/payments',
 ];
 
@@ -15,10 +19,11 @@ const ownerOnlyPaths = [
 /// - nobody logged in -> the PIN screen,
 /// - a worker asking for an owner page -> back to selling.
 String? guardRoute(SessionState session, String location) {
-  // Before an owner exists: create the shop, or join one (scanning the
-  // owner's code).
+  // Before an owner exists: create the shop, join one (scanning the
+  // owner's code), or restore a backup (new phone).
   if (!session.hasOwner) {
-    return const ['/setup', '/join', '/scanner'].contains(location)
+    return const ['/setup', '/join', '/scanner', '/restore']
+            .contains(location)
         ? null
         : '/setup';
   }

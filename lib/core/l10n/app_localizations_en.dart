@@ -1947,4 +1947,379 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get workersSellWithoutStockHelp =>
       'Off: a worker cannot sell more than the recorded stock. The owner always can.';
+
+  @override
+  String get sheetTitle => 'Google Sheet';
+
+  @override
+  String get sheetSub => 'Live sales, evening report, Drive backup';
+
+  @override
+  String get sheetIntro =>
+      'A copy of the shop in your Google Sheet: follow the sales from afar and keep a backup in your Google Drive. Editing the sheet never changes the app.';
+
+  @override
+  String get sheetNotConfigured => 'Not set up yet';
+
+  @override
+  String get sheetNotConfiguredOwner =>
+      'Create the sheet and its script (see the guide), then scan the setup code below.';
+
+  @override
+  String get sheetNotConfiguredWorker =>
+      'The owner sets up Google Sheet on their phone. This phone gets the setup through the Wi-Fi sync.';
+
+  @override
+  String get sheetConnected => 'Connected to Google Sheet';
+
+  @override
+  String get sheetAllSent => 'Everything is sent.';
+
+  @override
+  String sheetPending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count records waiting (they go as soon as there is internet)',
+      one: '1 record waiting (it goes as soon as there is internet)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sheetLastSend(String time) {
+    return 'Last sent: $time';
+  }
+
+  @override
+  String get sheetNeverSent => 'Nothing sent yet.';
+
+  @override
+  String get sheetSendNow => 'Send now';
+
+  @override
+  String sheetSent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count records sent',
+      one: '1 record sent',
+      zero: 'Nothing to send',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sheetErrOffline =>
+      'No internet: everything waits on the phone and goes later.';
+
+  @override
+  String get sheetErrAccess =>
+      'The script refuses access: in Apps Script, check \"Execute as: Me\" and \"Who has access: Anyone\".';
+
+  @override
+  String get sheetErrSignature =>
+      'Key refused: the keys were changed in the sheet. Scan the new setup code.';
+
+  @override
+  String get sheetErrServer => 'Google script error. Try again later.';
+
+  @override
+  String get sheetSetupSection => 'Setup';
+
+  @override
+  String get sheetScan => 'Scan the setup code';
+
+  @override
+  String get sheetScanSub =>
+      'In the sheet: menu Boutique → Afficher le code de configuration';
+
+  @override
+  String get sheetPaste => 'Paste the code';
+
+  @override
+  String get sheetPasteSub =>
+      'Without a camera (emulator): copy the code under the QR in the sheet and paste it here.';
+
+  @override
+  String get sheetPasteHint => 'Paste the code here';
+
+  @override
+  String get sheetNotConfigCode =>
+      'This is not a Google Sheet setup code of the shop.';
+
+  @override
+  String get sheetChecking => 'Checking with Google…';
+
+  @override
+  String sheetConfigured(String name) {
+    return 'Connected to \"$name\". Everything already in the shop is being sent to the sheet.';
+  }
+
+  @override
+  String get sheetDisconnect => 'Disconnect Google Sheet';
+
+  @override
+  String get sheetDisconnectConfirm =>
+      'The phones will stop sending to the sheet (worker phones after the next Wi-Fi sync). The sheet keeps what it already has.';
+
+  @override
+  String get sheetPrivacy =>
+      'Only the owner\'s phone can read the figures (read key). Worker phones can only add rows (write key). Do not share the sheet.';
+
+  @override
+  String get liveSalesTitle => 'Live sales';
+
+  @override
+  String get liveSalesSub => 'Today\'s sales of every phone';
+
+  @override
+  String get liveNotifyLabel => 'Notification for every sale';
+
+  @override
+  String get liveNotifySub => 'Ticket number, seller and total';
+
+  @override
+  String get liveSalesChannel => 'Live sales';
+
+  @override
+  String liveSaleTitle(String ticket) {
+    return 'New sale no. $ticket';
+  }
+
+  @override
+  String liveSaleBody(String seller, String total) {
+    return '$seller · $total';
+  }
+
+  @override
+  String liveSalesManyTitle(int count) {
+    return '$count new sales';
+  }
+
+  @override
+  String liveSalesManyBody(String total) {
+    return 'Total: $total';
+  }
+
+  @override
+  String get liveToday => 'Today (after returns)';
+
+  @override
+  String liveSalesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sales',
+      one: '1 sale',
+      zero: 'no sales',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String liveCheckedAt(String time) {
+    return 'Checked at $time';
+  }
+
+  @override
+  String get liveNote =>
+      'Updated every 30 seconds while this screen is open. With the app closed, Android checks about every 15 minutes, so notifications then come in small groups.';
+
+  @override
+  String get liveEmpty => 'No sales today yet.';
+
+  @override
+  String liveSaleTicket(String ticket) {
+    return 'Sale no. $ticket';
+  }
+
+  @override
+  String liveReturn(String ticket) {
+    return 'Return $ticket';
+  }
+
+  @override
+  String get dailyReportLabel => 'Evening report';
+
+  @override
+  String get dailyReportSub =>
+      'Every evening: the day\'s sales, revenue, profit, cash and returns';
+
+  @override
+  String get dailyReportTime => 'Report time';
+
+  @override
+  String get dailyReportOpen => 'See the report';
+
+  @override
+  String get dailyReportChannel => 'Evening report';
+
+  @override
+  String dailyReportTitle(String date) {
+    return 'Report of $date';
+  }
+
+  @override
+  String dailyReportBody(
+      int sales, String revenue, String profit, String cash, String returns) {
+    return '$sales sales · Revenue $revenue · Profit $profit · Cash $cash · Returns $returns';
+  }
+
+  @override
+  String get dailyReportNone =>
+      'No report yet. It comes every evening at the chosen time.';
+
+  @override
+  String get dailyReportToday => 'Work out today';
+
+  @override
+  String get reportSales => 'Sales';
+
+  @override
+  String get reportRevenue => 'Revenue';
+
+  @override
+  String get reportProfit => 'Profit';
+
+  @override
+  String get reportCash => 'Cash in the drawer';
+
+  @override
+  String get reportReturns => 'Returns';
+
+  @override
+  String get reportFromSheet =>
+      'From the Google Sheet (every phone that had internet).';
+
+  @override
+  String get reportFromPhone => 'From this phone (sales received by Wi-Fi).';
+
+  @override
+  String get driveSection => 'Google Drive backup';
+
+  @override
+  String get driveNever => 'No backup in Google Drive yet.';
+
+  @override
+  String driveLast(String time) {
+    return 'Last Drive backup: $time';
+  }
+
+  @override
+  String get driveInfo =>
+      'Once a day, when the phone has internet (Wi-Fi preferred), a backup goes to the \"Sauvegardes Boutique\" folder of your Google Drive. The last 30 are kept.';
+
+  @override
+  String get driveBackupNow => 'Back up now';
+
+  @override
+  String get driveDone => 'Backup saved in Google Drive.';
+
+  @override
+  String get backupWarning =>
+      'No backup left the phone for more than 7 days. If the phone is lost, the data is lost.';
+
+  @override
+  String get backupTitle => 'Backup and restore';
+
+  @override
+  String get backupSub => 'Keep a copy off the phone';
+
+  @override
+  String get backupIntro =>
+      'A backup is a .zip file with all the shop data. Keep one off the phone: Google Drive, WhatsApp, USB stick…';
+
+  @override
+  String get backupNeverOff => 'No backup has left the phone yet.';
+
+  @override
+  String backupLastOff(String time) {
+    return 'Last backup off the phone: $time';
+  }
+
+  @override
+  String get backupShare => 'Make and send a backup';
+
+  @override
+  String get backupShareSub => 'Drive, WhatsApp, e-mail, Bluetooth…';
+
+  @override
+  String get backupShareSubject => 'Shop backup';
+
+  @override
+  String get backupDriveTile => 'Automatic Google Drive backup';
+
+  @override
+  String get backupDriveOn => 'On: once a day';
+
+  @override
+  String get backupDriveOff => 'Set up Google Sheet to turn it on';
+
+  @override
+  String get backupPrivate =>
+      'A backup holds the whole shop (sales, customers, buying prices). Only send it to yourself, never to a group.';
+
+  @override
+  String get restoreTitle => 'Restore a backup';
+
+  @override
+  String get restoreSub => 'Replaces this phone\'s data';
+
+  @override
+  String get restoreFromBackup => 'Restore a backup (new phone)';
+
+  @override
+  String get restoreIntro =>
+      'Choose a backup file of this shop (in Downloads, or in Google Drive → Sauvegardes Boutique).';
+
+  @override
+  String get restoreIntroNew =>
+      'New phone: choose the last backup of your shop (Google Drive → Sauvegardes Boutique). You will type the owner PIN.';
+
+  @override
+  String get restorePick => 'Choose the backup file';
+
+  @override
+  String restoreMadeOn(String time) {
+    return 'Backup of $time';
+  }
+
+  @override
+  String get restoreWarning =>
+      'This phone\'s current data will be replaced by the backup\'s. A backup of the current data is made first, just in case.';
+
+  @override
+  String get restoreButton => 'Restore';
+
+  @override
+  String get restorePinTitle => 'Owner PIN';
+
+  @override
+  String get restoreReadyTitle => 'Restore ready';
+
+  @override
+  String get restoreReadyBody =>
+      'The app will close. Open it again: it starts with the backup data. Then scan the Google Sheet code again if you use it.';
+
+  @override
+  String get restoreClose => 'Close the app';
+
+  @override
+  String get restoreErrNotBackup =>
+      'This file is not a backup of this app (or it is damaged).';
+
+  @override
+  String get restoreErrNewer =>
+      'This backup comes from a newer version of the app. Update this phone first.';
+
+  @override
+  String get restoreErrOtherShop => 'This backup belongs to another shop.';
+
+  @override
+  String get restoreErrPin => 'Wrong owner PIN.';
+
+  @override
+  String get restoreErrWorker =>
+      'A worker phone gets its data from the main phone: restore on the main phone.';
 }

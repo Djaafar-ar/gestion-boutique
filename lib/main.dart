@@ -9,6 +9,7 @@ import 'core/theme/app_theme.dart';
 import 'dart:async';
 
 import 'features/alerts/presentation/alerts_cubit.dart';
+import 'features/sheet/presentation/sheet_cubit.dart';
 import 'features/sync/data/sync_store.dart';
 import 'features/sync/presentation/sync_cubit.dart';
 import 'features/billing/presentation/bloc/billing_bloc.dart';
@@ -25,6 +26,8 @@ void main() async {
   di.sl<AlertsCubit>().start();
   // The hub (owner's phone) or the automatic syncs (worker's phone).
   unawaited(di.sl<SyncCubit>().start());
+  // Google Sheet: sending, live sales, evening report, Drive backup.
+  unawaited(di.sl<SheetCubit>().start());
   runApp(const MyApp());
 }
 
@@ -48,6 +51,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<SessionCubit>.value(value: di.sl<SessionCubit>()),
         BlocProvider<AlertsCubit>.value(value: di.sl<AlertsCubit>()),
         BlocProvider<SyncCubit>.value(value: di.sl<SyncCubit>()),
+        BlocProvider<SheetCubit>.value(value: di.sl<SheetCubit>()),
       ],
       child: _ReloadAfterSync(
           child: BlocBuilder<AppPreferencesCubit, AppPreferences>(

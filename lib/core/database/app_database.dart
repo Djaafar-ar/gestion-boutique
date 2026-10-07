@@ -8,7 +8,8 @@ import 'tables.dart';
 part 'app_database.g.dart';
 
 @DriftDatabase(include: {
-  'sync.drift'
+  'sync.drift',
+  'sheet.drift',
 }, tables: [
   Shops,
   Categories,
@@ -30,13 +31,20 @@ part 'app_database.g.dart';
   Devices,
   Alerts,
   AlertReads,
+  LiveSales,
   AppSettings,
 ])
 class AppDatabase extends _$AppDatabase {
   /// Opens the shop database file on the phone. Tests pass an in-memory
   /// [executor] instead.
+  ///
+  /// The app and the background job (Google Sheet, Phase 8) may run at the
+  /// same time: they share one connection to the file.
   AppDatabase([QueryExecutor? executor])
-      : super(executor ?? driftDatabase(name: fileName));
+      : super(executor ??
+            driftDatabase(
+                name: fileName,
+                native: const DriftNativeOptions(shareAcrossIsolates: true)));
 
   static const fileName = 'shop_db';
 
@@ -45,7 +53,7 @@ class AppDatabase extends _$AppDatabase {
   // 2. run: dart run drift_dev make-migrations
   // 3. add the new step below (the generated tests check it).
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -111,6 +119,27 @@ class AppDatabase extends _$AppDatabase {
           from8To9: (m, schema) async {
             await m.addColumn(
                 schema.shops, schema.shops.workersSellWithoutStock);
+          },
+          // Phase 8: Google Sheet. The script address and write key on the
+          // shop (synced), the queue of records to send, and the sales
+          // shown on "Ventes en direct".
+          from9To10: (m, schema) async {
+            await m.addColumn(schema.shops, schema.shops.sheetUrl);
+            await m.addColumn(schema.shops, schema.shops.sheetWriteKey);
+            await m.createTable(schema.liveSales);
+            await m.createIndex(schema.liveSalesAt);
+            await m.createTable(schema.sheetQueue);
+            await m.create(schema.sheetSalesInsert);
+            await m.create(schema.sheetReturnsInsert);
+            await m.create(schema.sheetDeliveriesInsert);
+            await m.create(schema.sheetLossesInsert);
+            await m.create(schema.sheetSupplierPaymentsInsert);
+            await m.create(schema.sheetSupplierPaymentsUpdate);
+            await m.create(schema.sheetCustomerPaymentsInsert);
+            await m.create(schema.sheetCreditSales);
+            await m.create(schema.sheetCreditPayments);
+            await m.create(schema.sheetCreditReturns);
+            await m.create(schema.sheetCreditCustomers);
           },
           // Phase 7: Wi-Fi sync. Phones get letters, and every change of a
           // shared row is written to the change log by triggers.

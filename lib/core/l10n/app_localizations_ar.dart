@@ -1950,4 +1950,380 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get workersSellWithoutStockHelp =>
       'عند التعطيل: لا يمكن للعامل بيع أكثر من المخزون المسجّل. يمكن للمالك البيع دائماً.';
+
+  @override
+  String get sheetTitle => 'Google Sheet';
+
+  @override
+  String get sheetSub => 'المبيعات المباشرة، تقرير المساء، نسخة Drive';
+
+  @override
+  String get sheetIntro =>
+      'نسخة من المحل في Google Sheet الخاصة بك: لمتابعة المبيعات عن بعد والاحتفاظ بنسخة احتياطية في Google Drive. تعديل الورقة لا يغيّر التطبيق أبداً.';
+
+  @override
+  String get sheetNotConfigured => 'لم يتم الإعداد بعد';
+
+  @override
+  String get sheetNotConfiguredOwner =>
+      'أنشئ الورقة والسكريبت (انظر الدليل)، ثم امسح رمز الإعداد أدناه.';
+
+  @override
+  String get sheetNotConfiguredWorker =>
+      'يقوم صاحب المحل بإعداد Google Sheet على هاتفه. يستلم هذا الهاتف الإعداد عبر مزامنة الواي فاي.';
+
+  @override
+  String get sheetConnected => 'متصل بـ Google Sheet';
+
+  @override
+  String get sheetAllSent => 'تم إرسال كل شيء.';
+
+  @override
+  String sheetPending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count سجلات في الانتظار (تُرسل عند توفر الإنترنت)',
+      one: 'سجل واحد في الانتظار (يُرسل عند توفر الإنترنت)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sheetLastSend(String time) {
+    return 'آخر إرسال: $time';
+  }
+
+  @override
+  String get sheetNeverSent => 'لم يُرسل شيء بعد.';
+
+  @override
+  String get sheetSendNow => 'أرسل الآن';
+
+  @override
+  String sheetSent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم إرسال $count سجلات',
+      one: 'تم إرسال سجل واحد',
+      zero: 'لا شيء للإرسال',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sheetErrOffline =>
+      'لا يوجد إنترنت: كل شيء ينتظر في الهاتف وسيُرسل لاحقاً.';
+
+  @override
+  String get sheetErrAccess =>
+      'السكريبت يرفض الوصول: في Apps Script تحقق من «التنفيذ باسم: أنا» و«من لديه حق الوصول: أي شخص».';
+
+  @override
+  String get sheetErrSignature =>
+      'المفتاح مرفوض: تم تغيير المفاتيح في الورقة. امسح رمز الإعداد الجديد.';
+
+  @override
+  String get sheetErrServer => 'خطأ في سكريبت Google. حاول لاحقاً.';
+
+  @override
+  String get sheetSetupSection => 'الإعداد';
+
+  @override
+  String get sheetScan => 'امسح رمز الإعداد';
+
+  @override
+  String get sheetScanSub =>
+      'في الورقة: قائمة Boutique ← Afficher le code de configuration';
+
+  @override
+  String get sheetPaste => 'ألصق الرمز';
+
+  @override
+  String get sheetPasteSub =>
+      'بدون كاميرا (المحاكي): انسخ الرمز تحت QR في الورقة وألصقه هنا.';
+
+  @override
+  String get sheetPasteHint => 'ألصق الرمز هنا';
+
+  @override
+  String get sheetNotConfigCode =>
+      'هذا ليس رمز إعداد Google Sheet الخاص بالمحل.';
+
+  @override
+  String get sheetChecking => 'جارٍ التحقق مع Google…';
+
+  @override
+  String sheetConfigured(String name) {
+    return 'تم الاتصال بـ «$name». كل ما هو موجود في المحل يُرسل إلى الورقة.';
+  }
+
+  @override
+  String get sheetDisconnect => 'فصل Google Sheet';
+
+  @override
+  String get sheetDisconnectConfirm =>
+      'ستتوقف الهواتف عن الإرسال إلى الورقة (هواتف العمال بعد المزامنة القادمة). تحتفظ الورقة بما لديها.';
+
+  @override
+  String get sheetPrivacy =>
+      'هاتف صاحب المحل فقط يمكنه قراءة الأرقام (مفتاح القراءة). هواتف العمال تضيف أسطراً فقط (مفتاح الكتابة). لا تشارك الورقة.';
+
+  @override
+  String get liveSalesTitle => 'المبيعات المباشرة';
+
+  @override
+  String get liveSalesSub => 'مبيعات اليوم من كل الهواتف';
+
+  @override
+  String get liveNotifyLabel => 'إشعار لكل عملية بيع';
+
+  @override
+  String get liveNotifySub => 'رقم التذكرة والبائع والمجموع';
+
+  @override
+  String get liveSalesChannel => 'المبيعات المباشرة';
+
+  @override
+  String liveSaleTitle(String ticket) {
+    return 'بيع جديد رقم $ticket';
+  }
+
+  @override
+  String liveSaleBody(String seller, String total) {
+    return '$seller · $total';
+  }
+
+  @override
+  String liveSalesManyTitle(int count) {
+    return '$count مبيعات جديدة';
+  }
+
+  @override
+  String liveSalesManyBody(String total) {
+    return 'المجموع: $total';
+  }
+
+  @override
+  String get liveToday => 'اليوم (بعد المرتجعات)';
+
+  @override
+  String liveSalesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مبيعات',
+      one: 'بيع واحد',
+      zero: 'لا مبيعات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String liveCheckedAt(String time) {
+    return 'تم التحقق على $time';
+  }
+
+  @override
+  String get liveNote =>
+      'يتم التحديث كل 30 ثانية ما دامت هذه الشاشة مفتوحة. عند إغلاق التطبيق يتحقق أندرويد كل 15 دقيقة تقريباً، فتصل الإشعارات على دفعات.';
+
+  @override
+  String get liveEmpty => 'لا توجد مبيعات اليوم بعد.';
+
+  @override
+  String liveSaleTicket(String ticket) {
+    return 'بيع رقم $ticket';
+  }
+
+  @override
+  String liveReturn(String ticket) {
+    return 'إرجاع $ticket';
+  }
+
+  @override
+  String get dailyReportLabel => 'تقرير المساء';
+
+  @override
+  String get dailyReportSub =>
+      'كل مساء: مبيعات اليوم ورقم الأعمال والربح والنقود في الصندوق والمرتجعات';
+
+  @override
+  String get dailyReportTime => 'وقت التقرير';
+
+  @override
+  String get dailyReportOpen => 'عرض التقرير';
+
+  @override
+  String get dailyReportChannel => 'تقرير المساء';
+
+  @override
+  String dailyReportTitle(String date) {
+    return 'تقرير $date';
+  }
+
+  @override
+  String dailyReportBody(
+      int sales, String revenue, String profit, String cash, String returns) {
+    return '$sales مبيعات · رقم الأعمال $revenue · الربح $profit · الصندوق $cash · المرتجعات $returns';
+  }
+
+  @override
+  String get dailyReportNone =>
+      'لا يوجد تقرير بعد. يصل كل مساء في الوقت المختار.';
+
+  @override
+  String get dailyReportToday => 'احسب اليوم';
+
+  @override
+  String get reportSales => 'المبيعات';
+
+  @override
+  String get reportRevenue => 'رقم الأعمال';
+
+  @override
+  String get reportProfit => 'الربح';
+
+  @override
+  String get reportCash => 'النقود في الصندوق';
+
+  @override
+  String get reportReturns => 'المرتجعات';
+
+  @override
+  String get reportFromSheet =>
+      'حسب Google Sheet (كل الهواتف التي كان لديها إنترنت).';
+
+  @override
+  String get reportFromPhone =>
+      'حسب هذا الهاتف (المبيعات المستلمة عبر الواي فاي).';
+
+  @override
+  String get driveSection => 'النسخ الاحتياطي في Google Drive';
+
+  @override
+  String get driveNever => 'لا توجد نسخة احتياطية في Google Drive بعد.';
+
+  @override
+  String driveLast(String time) {
+    return 'آخر نسخة في Drive: $time';
+  }
+
+  @override
+  String get driveInfo =>
+      'مرة في اليوم، عند توفر الإنترنت (يفضل الواي فاي)، تُرسل نسخة احتياطية إلى مجلد «Sauvegardes Boutique» في Google Drive. يتم الاحتفاظ بآخر 30 نسخة.';
+
+  @override
+  String get driveBackupNow => 'احفظ الآن';
+
+  @override
+  String get driveDone => 'تم حفظ النسخة في Google Drive.';
+
+  @override
+  String get backupWarning =>
+      'لم تخرج أي نسخة احتياطية من الهاتف منذ أكثر من 7 أيام. إذا ضاع الهاتف ضاعت البيانات.';
+
+  @override
+  String get backupTitle => 'النسخ الاحتياطي والاستعادة';
+
+  @override
+  String get backupSub => 'الاحتفاظ بنسخة خارج الهاتف';
+
+  @override
+  String get backupIntro =>
+      'النسخة الاحتياطية ملف .zip فيه كل بيانات المحل. احتفظ بواحدة خارج الهاتف: Google Drive، واتساب، مفتاح USB…';
+
+  @override
+  String get backupNeverOff => 'لم تخرج أي نسخة احتياطية من الهاتف بعد.';
+
+  @override
+  String backupLastOff(String time) {
+    return 'آخر نسخة خارج الهاتف: $time';
+  }
+
+  @override
+  String get backupShare => 'إنشاء نسخة وإرسالها';
+
+  @override
+  String get backupShareSub => 'Drive، واتساب، بريد، بلوتوث…';
+
+  @override
+  String get backupShareSubject => 'نسخة احتياطية للمحل';
+
+  @override
+  String get backupDriveTile => 'نسخ تلقائي إلى Google Drive';
+
+  @override
+  String get backupDriveOn => 'مفعّل: مرة في اليوم';
+
+  @override
+  String get backupDriveOff => 'قم بإعداد Google Sheet لتفعيله';
+
+  @override
+  String get backupPrivate =>
+      'تحتوي النسخة على كل المحل (المبيعات، الزبائن، أسعار الشراء). أرسلها لنفسك فقط، وليس إلى مجموعة.';
+
+  @override
+  String get restoreTitle => 'استعادة نسخة احتياطية';
+
+  @override
+  String get restoreSub => 'تستبدل بيانات هذا الهاتف';
+
+  @override
+  String get restoreFromBackup => 'استعادة نسخة احتياطية (هاتف جديد)';
+
+  @override
+  String get restoreIntro =>
+      'اختر ملف نسخة احتياطية لهذا المحل (في التنزيلات، أو في Google Drive ← Sauvegardes Boutique).';
+
+  @override
+  String get restoreIntroNew =>
+      'هاتف جديد: اختر آخر نسخة احتياطية لمحلك (Google Drive ← Sauvegardes Boutique). ستكتب الرمز السري لصاحب المحل.';
+
+  @override
+  String get restorePick => 'اختر ملف النسخة الاحتياطية';
+
+  @override
+  String restoreMadeOn(String time) {
+    return 'نسخة بتاريخ $time';
+  }
+
+  @override
+  String get restoreWarning =>
+      'سيتم استبدال بيانات هذا الهاتف ببيانات النسخة. تُحفظ نسخة من البيانات الحالية قبل ذلك احتياطاً.';
+
+  @override
+  String get restoreButton => 'استعادة';
+
+  @override
+  String get restorePinTitle => 'الرمز السري لصاحب المحل';
+
+  @override
+  String get restoreReadyTitle => 'الاستعادة جاهزة';
+
+  @override
+  String get restoreReadyBody =>
+      'سيُغلق التطبيق. أعد فتحه: سيبدأ ببيانات النسخة. بعدها امسح رمز Google Sheet مرة أخرى إن كنت تستعمله.';
+
+  @override
+  String get restoreClose => 'أغلق التطبيق';
+
+  @override
+  String get restoreErrNotBackup =>
+      'هذا الملف ليس نسخة احتياطية لهذا التطبيق (أو أنه تالف).';
+
+  @override
+  String get restoreErrNewer =>
+      'هذه النسخة من إصدار أحدث للتطبيق. حدّث هذا الهاتف أولاً.';
+
+  @override
+  String get restoreErrOtherShop => 'هذه النسخة تخص محلاً آخر.';
+
+  @override
+  String get restoreErrPin => 'الرمز السري لصاحب المحل غير صحيح.';
+
+  @override
+  String get restoreErrWorker =>
+      'هاتف العامل يستلم بياناته من الهاتف الرئيسي: قم بالاستعادة على الهاتف الرئيسي.';
 }

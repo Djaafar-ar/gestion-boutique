@@ -75,4 +75,25 @@ void main() {
     expect(guardRoute(session, '/more/workers/w'), isNull);
     expect(guardRoute(session, '/payments'), isNull);
   });
+
+  // Phase 8: the figures and the backups stay with the owner; a new phone
+  // may restore a backup before any account exists.
+  test('Google Sheet: workers see the sending only', () {
+    const asWorker = SessionState(hasOwner: true, user: worker);
+    expect(guardRoute(asWorker, '/more/sheet'), isNull);
+    for (final path in [
+      '/more/sheet/live',
+      '/more/sheet/report',
+      '/more/backup',
+      '/restore',
+    ]) {
+      expect(guardRoute(asWorker, path), '/sell', reason: path);
+    }
+    const asOwner = SessionState(hasOwner: true, user: owner);
+    expect(guardRoute(asOwner, '/more/sheet/live'), isNull);
+    expect(guardRoute(asOwner, '/restore'), isNull);
+    const newPhone = SessionState(hasOwner: false);
+    expect(guardRoute(newPhone, '/restore'), isNull);
+    expect(guardRoute(newPhone, '/more/backup'), '/setup');
+  });
 }

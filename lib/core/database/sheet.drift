@@ -1,0 +1,119 @@
+import 'tables.dart';
+
+-- Phase 8: what this phone still has to send to the Google Sheet. Filled
+-- by the triggers below the moment a record is saved, emptied when the
+-- script confirms it. It lives in the database, so nothing is lost when
+-- the phone has no internet, the app is closed or the phone restarts.
+--
+-- Only when a sheet is set up. A worker phone queues only what was done
+-- on it (the hub queues what the worker phones send it too: the sheet
+-- keeps one copy of each record). 'credit' (what a customer owes) is
+-- sent by the owner's phone only.
+--
+-- A record changed again (a supplier payment validated...) moves to the
+-- end with a new number, so a confirmation of the old version does not
+-- take it out of the queue.
+CREATE TABLE sheet_queue (
+  seq INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  kind TEXT NOT NULL,
+  row_id TEXT NOT NULL,
+  UNIQUE (kind, row_id)
+) AS SheetQueueRow;
+
+CREATE TRIGGER sheet_sales_insert AFTER INSERT ON sales
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND (new.device_id = (SELECT value FROM app_settings WHERE "key" = 'device_id')
+    OR coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker')
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'sale' AND row_id = new.id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('sale', new.id);
+END;
+
+CREATE TRIGGER sheet_returns_insert AFTER INSERT ON returns
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND (new.device_id = (SELECT value FROM app_settings WHERE "key" = 'device_id')
+    OR coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker')
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'return' AND row_id = new.id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('return', new.id);
+END;
+
+CREATE TRIGGER sheet_deliveries_insert AFTER INSERT ON deliveries
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND (new.device_id = (SELECT value FROM app_settings WHERE "key" = 'device_id')
+    OR coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker')
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'delivery' AND row_id = new.id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('delivery', new.id);
+END;
+
+CREATE TRIGGER sheet_losses_insert AFTER INSERT ON losses
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND (new.device_id = (SELECT value FROM app_settings WHERE "key" = 'device_id')
+    OR coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker')
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'loss' AND row_id = new.id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('loss', new.id);
+END;
+
+CREATE TRIGGER sheet_supplier_payments_insert AFTER INSERT ON supplier_payments
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND (new.device_id = (SELECT value FROM app_settings WHERE "key" = 'device_id')
+    OR coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker')
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'supplierPayment' AND row_id = new.id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('supplierPayment', new.id);
+END;
+
+CREATE TRIGGER sheet_supplier_payments_update AFTER UPDATE ON supplier_payments
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND (new.device_id = (SELECT value FROM app_settings WHERE "key" = 'device_id')
+    OR coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker')
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'supplierPayment' AND row_id = new.id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('supplierPayment', new.id);
+END;
+
+CREATE TRIGGER sheet_customer_payments_insert AFTER INSERT ON customer_payments
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND (new.device_id = (SELECT value FROM app_settings WHERE "key" = 'device_id')
+    OR coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker')
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'customerPayment' AND row_id = new.id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('customerPayment', new.id);
+END;
+
+CREATE TRIGGER sheet_credit_sales AFTER INSERT ON sales
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker'
+    AND new.customer_id IS NOT NULL
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'credit' AND row_id = new.customer_id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('credit', new.customer_id);
+END;
+
+CREATE TRIGGER sheet_credit_payments AFTER INSERT ON customer_payments
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker'
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'credit' AND row_id = new.customer_id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('credit', new.customer_id);
+END;
+
+CREATE TRIGGER sheet_credit_returns AFTER INSERT ON returns
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker'
+    AND new.refund_mode = 'credit'
+    AND (SELECT customer_id FROM sales WHERE id = new.sale_id) IS NOT NULL
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'credit' AND row_id = (SELECT customer_id FROM sales WHERE id = new.sale_id);
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('credit', (SELECT customer_id FROM sales WHERE id = new.sale_id));
+END;
+
+CREATE TRIGGER sheet_credit_customers AFTER UPDATE ON customers
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker'
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'credit' AND row_id = new.id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('credit', new.id);
+END;
