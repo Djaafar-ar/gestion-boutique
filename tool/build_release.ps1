@@ -47,6 +47,7 @@ Write-Host '2/3 Signing with the old key -> release key rotation...'
     --ks-pass "pass:$($props.storePassword)" --key-pass "pass:$($props.keyPassword)" `
     --lineage $props.lineageFile `
     --rotation-min-sdk-version 28 `
+    --v4-signing-enabled false `
     --out $signed $apk
 if ($LASTEXITCODE -ne 0) { throw 'apksigner sign failed.' }
 

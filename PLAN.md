@@ -382,6 +382,7 @@ At the **end of every phase**:
   - **The key:** release APKs are signed with the app's own release key, kept outside the project in `C:\Users\Medvich\keys\` and set up in `android/key.properties` (never committed).
   - **Why rotation:** the phones already had the app signed with the old debug key, and Android only updates an app signed by the same key. Changing keys would have meant uninstalling and losing the data. So the old key is "rotated" to the new one: the APK carries the signed proof (`gestion-boutique-lineage.bin`), and `adb install -r` keeps working and keeps the data.
   - **How to build:** always with `.\tool\build_release.ps1`.
+  - **▶ Run is safe too (added after Phase 8b):** `flutter run` (the ▶ Run button) would uninstall the app, erasing its data, if the debug build had another key. Gradle now signs every APK (debug, profile, release) with the release key and the rotation proof, passwords passed to `apksigner` through the environment. Without `key.properties`, a debug build stops instead of using another key. Tested on the emulator: debug over release and release over debug both update in place (same install date, data kept).
   - **What to keep safe:** both keystores, the lineage file and the password, on a USB stick.
 
 ### Phase 8: Google Sheets and live sales (added after Phase 2)

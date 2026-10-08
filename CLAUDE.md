@@ -31,6 +31,12 @@ The owner is a Flutter beginner: explain in simple words and short sentences.
   `flutter build apk --release`). It signs the APK so it can update the
   apps already on the phones (key rotation from the old key to the
   release key). See "Release signing" in `PLAN.md`.
+- ▶ Run in Android Studio (`flutter run`) is safe on a phone that has the
+  app: every build (debug too) is signed with the release key and the
+  rotation proof by `android/app/build.gradle.kts`, so Flutter never has
+  to uninstall the app. Without `android/key.properties` a debug build
+  stops on purpose (`-PallowOtherKey=true` only for a phone without the
+  app).
 
 ## Tools
 - Keep Java 21.
