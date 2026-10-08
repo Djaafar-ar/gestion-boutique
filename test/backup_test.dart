@@ -33,8 +33,8 @@ void main() {
   late BackupService backups;
   var tick = 0;
 
-  const soda = Product(
-      id: 'soda', name: 'Hamoud 33cl', barcode: '613', sellPrice: 6000);
+  const soda =
+      Product(id: 'soda', name: 'Hamoud 33cl', barcode: '613', sellPrice: 6000);
 
   /// The shop database file, as on the phone.
   File dbFile() => File(p.join(dir.path, '${AppDatabase.fileName}.sqlite'));
@@ -66,8 +66,7 @@ void main() {
     await session.close();
   }
 
-  Future<int> salesCount() async =>
-      (await db.select(db.sales).get()).length;
+  Future<int> salesCount() async => (await db.select(db.sales).get()).length;
 
   setUp(() async {
     dir = await Directory.systemTemp.createTemp('backup_test');
@@ -79,8 +78,7 @@ void main() {
     await dir.delete(recursive: true);
   });
 
-  test('a backup says which shop and when; the read key stays here',
-      () async {
+  test('a backup says which shop and when; the read key stays here', () async {
     await makeShop('Épicerie El Baraka');
     await settings.setSheetReadKey('b' * 32);
     final file = await backups.create();
@@ -141,8 +139,7 @@ void main() {
     await makeShop('Superette Bab Ezzouar');
     (db, settings) = saved;
     final theirs = await (await BackupService(other, otherSettings,
-                folder: () async => otherDir)
-            .create())
+            folder: () async => otherDir).create())
         .readAsBytes();
     await other.close();
     await otherDir.delete(recursive: true);
@@ -151,8 +148,8 @@ void main() {
             {String pin = '1234'}) =>
         expectLater(
             backups.prepareRestore(Uint8List.fromList(zip), pin: pin),
-            throwsA(isA<BackupException>()
-                .having((e) => e.error, 'error', error)));
+            throwsA(
+                isA<BackupException>().having((e) => e.error, 'error', error)));
 
     await refused(theirs, BackupError.otherShop);
     await refused(mine, BackupError.wrongPin, pin: '0000');
@@ -206,8 +203,8 @@ Future<void> makeShopSales(
       .getOrElse((f) => fail(f.message))
       .firstWhere((u) => u.id == owner.id));
   final sales = SaleRepositoryImpl(db, settings, session, StockLedger(db));
-  const soda = Product(
-      id: 'soda', name: 'Hamoud 33cl', barcode: '613', sellPrice: 6000);
+  const soda =
+      Product(id: 'soda', name: 'Hamoud 33cl', barcode: '613', sellPrice: 6000);
   for (var i = 0; i < count; i++) {
     await sales.saveSale(const [CartItem(product: soda)]);
   }

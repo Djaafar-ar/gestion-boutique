@@ -423,7 +423,26 @@ At the **end of every phase**:
   - **Restored main phone:** after a restore the hub gets a new "epoch"; worker phones see it, send everything they have again, then download everything (nothing counted twice).
   - **Not done:** reading a backup straight from Drive inside the app (the Android file picker opens Drive instead); Customer credit is not split per worker.
 
+### Phase 8b: Bluetooth scanner, never lose data, everything to the sheet (requested after Phase 8)
+- **Bluetooth barcode scanner ("douchette"):**
+  - **Keyboard mode (HID):** after pairing in the Android Bluetooth settings, the scanner types the barcode and Enter. One app-wide listener catches those keys when no text field is being typed in, and gives the barcode to the screen on top (`ScanListener`): Caisse, Réception de stock, Déclarer une perte, Retour sans ticket and Échange (a switch says whether the scan is an item brought back or taken), product search, the product picker, and the barcode of a new product. When a text field has the focus, the scanner types into it (the search field accepts the barcode with Enter).
+  - **SPP mode:** Plus → Douchette lists the paired devices; the phone connects (Bluetooth serial, Kotlin `SppScanner.kt`), remembers it and reconnects every 15 seconds when it is lost.
+  - **Feedback:** a short beep and vibration when a scan is accepted (can be turned off); "Code-barres inconnu" with a "Créer le produit" button that opens the new product form with the barcode filled in.
+  - **Emulator:** click in the emulator window, type a barcode on the PC keyboard, then Enter. Plus → Douchette has a "Tester un scan" area.
+- **Never lose data:**
+  - The cart is saved in the database at every change and comes back after a crash or a power cut (with today's prices).
+  - Database: every sale is one transaction; SQLite keeps a rollback journal (half-written changes are undone at the next start); `synchronous = FULL` is set at every opening (the phone answers "saved" only once the data is on the storage).
+  - Tests: a crash in the middle of a sale (nothing half-saved), a power cut while a sale is written (the copy of the files taken at that moment opens fine, without the unfinished sale), a crash while receiving a sync (nothing half-applied), a lost answer while sending to the sheet (sent again, written once), the cart coming back.
+- **Everything to the Google Sheet (script version 2, database v11):** sales, sale items, returns ("Retour", "Retour sans ticket"), exchanges ("Échange", "Échange sans ticket"), discounts, stock deliveries, losses, supplier payments with their status, credit sales and customer payments (were already sent), plus:
+  - **Historique produits:** every change of a product (name, barcode, prices, category...), who and when.
+  - **Produits** (owner's phone only): name, barcode, category, sell price, buying price, current stock, nearest expiry. Updated when the product or its stock changes.
+  - "Customer credit" and "Produits" can only be written with the **read key** (owner's phone): a worker phone can never change them.
+  - Still one direction only (app → sheet). Updating the script keeps every row: `docs/google_sheet_setup.md`, "Updating to script version 2".
+- **Plus → Google Sheet** shows "Compte Google : ..." (asked to the script with the read key).
+- **License check:** `docs/license_check.md`. About 9 % of `lib/` (about 2 660 lines, mostly 15 files: Caisse, product pages, shop details, printer, checkout parts, product/billing/shop BLoCs) plus the platform templates, icons and README still come from the original repository, which has no license. Replacement plan added to Phase 9.
+
 ### Phase 9: Printer and final polish
+- **Replace the code from the original repository** (it has no license; see `docs/license_check.md`): fresh platform templates and our own icon, a new README, then rewrite the Caisse, product, shop details and printer screens and their BLoCs one by one, with the tests as a safety net; remove the Hive importer; check again with `git blame` and add our own LICENSE.
 - New receipt layout (§3.6): French always, DA, ticket number, worker name, wrapped names, accents/code page, "Remove accents" option, test print, reprint from the sales list.
 - New receipt lines for discount and credit, plus an optional "Ticket de retour".
 - **Backup & restore (owner only):** *done in Phase 8, except the automatic local backup kept 7 days on the phone.*
@@ -440,6 +459,7 @@ At the **end of every phase**:
   - **Way 2, from a worker phone:** make a worker phone the new main phone. It already holds every synced record; it gets the hub role, the old hub is marked as removed, and the other phones re-pair to it with a new QR code.
   - **Safety:** the owner PIN is required. The shop secret is renewed so the lost phone can no longer sync. Tickets keep their phone letters, so no number is reused.
   - **Tests:** a hub replaced by a backup or by a worker phone ends with the same sales, stock and debts as before, without duplicates.
+- **16 KB pages (seen after Phase 8b on the Android 16 emulator):** Android warns "This app isn't 16 KB compatible" because two libraries of the camera scanner package (`mobile_scanner` 5: `libbarhopper_v3.so`, `libimage_processing_util_jni.so`) are not 16 KB aligned. The app still runs (compatibility mode); the APK itself is aligned. Fix: upgrade `mobile_scanner` to a version with aligned libraries (its API changes), with the build tools upgrade.
 - **Build tools upgrade (requested after Phase 7):** move Gradle, the Android Gradle Plugin and Kotlin to the versions the current Flutter fully supports (today Flutter warns that 8.11.1 / 2.2.20 will soon be unsupported). Keep Java 21 working, keep the release key rotation, and check that a release APK still updates the phones with `adb install -r`.
 - Final pass: Arabic right-to-left check on every screen, dark mode check, empty states, small-screen overflow check.
 - Remove the old Hive code (the import stays one more version if you prefer).

@@ -45,8 +45,8 @@ class DriveBackupService {
   /// No backup today yet (and no failed try in the last hour).
   Future<bool> isDue() async {
     if (!enabled) return false;
-    await settings.reload(
-        [SheetSettings.driveLastName, SheetSettings.driveTryName]);
+    await settings
+        .reload([SheetSettings.driveLastName, SheetSettings.driveTryName]);
     final now = clock();
     final last = settings.driveBackupLast;
     if (last != null && sheetDayText(last) == sheetDayText(now)) return false;

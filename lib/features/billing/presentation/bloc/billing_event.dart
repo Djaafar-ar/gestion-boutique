@@ -6,6 +6,11 @@ abstract class BillingEvent extends Equatable {
   List<Object> get props => [];
 }
 
+/// The cart saved before the app stopped comes back.
+class RestoreCartEvent extends BillingEvent {
+  const RestoreCartEvent();
+}
+
 class ScanBarcodeEvent extends BillingEvent {
   final String barcode;
   const ScanBarcodeEvent(this.barcode);

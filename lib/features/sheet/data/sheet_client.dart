@@ -62,8 +62,8 @@ class SheetClient {
       final nonce = List.generate(
               16, (_) => _random.nextInt(256).toRadixString(16).padLeft(2, '0'))
           .join();
-      final message = sheetMessage(
-          op: op, ts: ts, nonce: nonce, keyId: keyId, body: text);
+      final message =
+          sheetMessage(op: op, ts: ts, nonce: nonce, keyId: keyId, body: text);
       final envelope = jsonEncode({
         'v': sheetProtocolVersion,
         'op': op,
@@ -78,14 +78,15 @@ class SheetClient {
       switch (answer['err']) {
         // This phone's clock is wrong: remember the difference, try again.
         case 'time' when attempt == 0 && answer['now'] is num:
-          final offset = (answer['now'] as num).toInt() -
-              clock().millisecondsSinceEpoch;
+          final offset =
+              (answer['now'] as num).toInt() - clock().millisecondsSinceEpoch;
           await settings.set(SheetSettings.clockOffsetName, '$offset');
           continue;
         case 'sig' || 'setup':
           throw const SheetException(SheetError.signature);
         default:
-          throw SheetException(SheetError.server, '${answer['msg'] ?? answer['err']}');
+          throw SheetException(
+              SheetError.server, '${answer['msg'] ?? answer['err']}');
       }
     }
   }

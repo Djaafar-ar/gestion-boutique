@@ -14,6 +14,7 @@ import '../../features/sheet/data/cloud_background.dart';
 import '../../features/sheet/data/cloud_jobs.dart';
 import '../../features/sheet/data/sheet_settings.dart';
 import '../../features/sheet/presentation/sheet_cubit.dart';
+import '../../features/billing/data/cart_store.dart';
 import '../../features/billing/data/receipt_printer.dart';
 import '../../features/billing/data/repositories/sale_repository_impl.dart';
 import '../../features/billing/domain/repositories/sale_repository.dart';
@@ -51,6 +52,8 @@ import '../../features/users/domain/repositories/user_repository.dart';
 import 'database/app_database.dart';
 import 'database/hive_importer.dart';
 import 'l10n/app_localizations.dart';
+import 'scanner/barcode_scan_service.dart';
+import 'scanner/spp_link.dart';
 import 'session/session_cubit.dart';
 import 'settings/settings_store.dart';
 
@@ -81,6 +84,9 @@ Future<void> init() async {
     // Never block the app; the import is tried again next launch.
     debugPrint('Hive import failed: $e\n$stack');
   }
+
+  // Core - The Bluetooth barcode scanner ("douchette")
+  sl.registerSingleton(BarcodeScanService(MethodChannelSppLink(), settings));
 
   // Core - Who is logged in
   final users = UserRepositoryImpl(db, settings);
@@ -119,7 +125,8 @@ Future<void> init() async {
       getProductByBarcodeUseCase: sl(),
       saleRepository: sl(),
       receiptPrinter: sl(),
-    ),
+      cartStore: CartStore(sl(), sl()),
+    )..add(const RestoreCartEvent()),
   );
 
   sl.registerFactory(() => AppPreferencesCubit(sl()));

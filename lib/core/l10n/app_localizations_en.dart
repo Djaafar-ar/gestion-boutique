@@ -2322,4 +2322,107 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get restoreErrWorker =>
       'A worker phone gets its data from the main phone: restore on the main phone.';
+
+  @override
+  String scanUnknown(String code) {
+    return 'Unknown barcode: $code';
+  }
+
+  @override
+  String get scanCreateProduct => 'Create the product';
+
+  @override
+  String scanNotOnTicket(String name) {
+    return '\"$name\" is not on this ticket (or already returned).';
+  }
+
+  @override
+  String get scanGoesTo => 'The scanner adds to:';
+
+  @override
+  String get scanToReturned => 'Items brought back';
+
+  @override
+  String get scanToTaken => 'Items taken';
+
+  @override
+  String get scannerTitle => 'Barcode scanner';
+
+  @override
+  String get scannerSub => 'Bluetooth scanner: pairing and test';
+
+  @override
+  String get scannerTestTitle => 'Try a scan';
+
+  @override
+  String get scannerTestWaiting =>
+      'Scan a barcode now (or, on the emulator, type digits then Enter).';
+
+  @override
+  String scannerTestGot(int count, String code) {
+    return 'Scan no. $count received: $code';
+  }
+
+  @override
+  String scannerTestKnown(String name) {
+    return 'Product: $name';
+  }
+
+  @override
+  String get scannerTestUnknown =>
+      'Unknown product (the scanner works anyway).';
+
+  @override
+  String get scannerHowTitle => 'Pair a Bluetooth scanner';
+
+  @override
+  String get scannerHowSteps =>
+      '1. Switch the scanner on.\n2. In its small manual, scan the \"Bluetooth HID\" (keyboard mode) code. This is the recommended mode.\n3. On the phone: Settings → Bluetooth → Pair new device → choose the scanner.\n4. That\'s all: it works in Sell, Stock delivery, Losses, Returns, search and the new product form. No need to tap a field.';
+
+  @override
+  String get scannerEmulatorTip =>
+      'On the emulator: click in the emulator window, type a barcode on the PC keyboard, then Enter.';
+
+  @override
+  String get scannerSppTitle => 'Scanner in SPP (serial) mode';
+
+  @override
+  String get scannerSppHelp =>
+      'Only if your scanner is in \"SPP\" mode: pair it in the Bluetooth settings first, then choose it here. The phone reconnects to it by itself.';
+
+  @override
+  String get scannerShowPaired => 'Show paired devices';
+
+  @override
+  String scannerConnected(String name) {
+    return 'Scanner connected: $name';
+  }
+
+  @override
+  String get scannerConnectFailed =>
+      'Cannot connect. Check that the scanner is on and in SPP mode.';
+
+  @override
+  String get scannerStateConnected => 'Connected';
+
+  @override
+  String get scannerStateConnecting => 'Connecting…';
+
+  @override
+  String get scannerStateRetrying =>
+      'Not connected: trying again every 15 seconds';
+
+  @override
+  String get scannerForget => 'Forget';
+
+  @override
+  String get scannerFeedback => 'Beep and vibration for each accepted scan';
+
+  @override
+  String sheetAccount(String email) {
+    return 'Google account: $email';
+  }
+
+  @override
+  String get sheetAccountUnknown => 'unknown (update the script)';
 }

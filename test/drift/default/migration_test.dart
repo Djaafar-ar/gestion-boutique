@@ -16,6 +16,7 @@ import 'generated/schema_v7.dart' as v7;
 import 'generated/schema_v8.dart' as v8;
 import 'generated/schema_v9.dart' as v9;
 import 'generated/schema_v10.dart' as v10;
+import 'generated/schema_v11.dart' as v11;
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -404,12 +405,61 @@ void main() {
       createItems: (batch, oldDb) => batch.insert(oldDb.shops, shop),
       validateItems: (newDb) async {
         final row = await newDb.select(newDb.shops).getSingle();
-        expect(
-            (row.name, row.workersSellWithoutStock, row.sheetUrl,
-                row.sheetWriteKey),
-            ('Épicerie El Baraka', 1, null, null));
+        expect((
+          row.name,
+          row.workersSellWithoutStock,
+          row.sheetUrl,
+          row.sheetWriteKey
+        ), (
+          'Épicerie El Baraka',
+          1,
+          null,
+          null
+        ));
         expect(await newDb.select(newDb.sheetQueue).get(), isEmpty);
         expect(await newDb.select(newDb.liveSales).get(), isEmpty);
+      },
+    );
+  });
+
+  // Phase 8b: new triggers only; the sheet set up and the records waiting
+  // to be sent are kept.
+  test('migration from v10 to v11 keeps the sheet and its queue', () async {
+    const at = '2026-10-08T09:00:00.000';
+    const shop = v10.ShopsData(
+        id: 'shop1',
+        createdAt: at,
+        updatedAt: at,
+        deviceId: 'phone-1',
+        deleted: 0,
+        name: 'Épicerie El Baraka',
+        address1: '',
+        address2: '',
+        phone: '',
+        footer: '',
+        shopSecret: 'secret',
+        expiryWarnDays: 3,
+        maxWorkerDiscountPct: 10,
+        workersSellWithoutStock: 0,
+        sheetUrl: 'https://script.google.com/macros/s/X/exec',
+        sheetWriteKey: 'abc');
+    const waiting = v10.SheetQueueData(seq: 1, kind: 'sale', rowId: 's1');
+
+    await verifier.testWithDataIntegrity(
+      oldVersion: 10,
+      newVersion: 11,
+      createOld: v10.DatabaseAtV10.new,
+      createNew: v11.DatabaseAtV11.new,
+      openTestedDatabase: AppDatabase.new,
+      createItems: (batch, oldDb) {
+        batch.insert(oldDb.shops, shop);
+        batch.insert(oldDb.sheetQueue, waiting);
+      },
+      validateItems: (newDb) async {
+        final row = await newDb.select(newDb.shops).getSingle();
+        expect(row.sheetUrl, 'https://script.google.com/macros/s/X/exec');
+        final queue = await newDb.select(newDb.sheetQueue).get();
+        expect(queue.map((q) => (q.kind, q.rowId)), [('sale', 's1')]);
       },
     );
   });

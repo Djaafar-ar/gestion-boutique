@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/scanner/scan_listener.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/service_locator.dart';
 import '../../../../core/session/session_cubit.dart';
@@ -45,11 +46,17 @@ class _LooseItem {
 }
 
 class _ReturnPageState extends State<ReturnPage> {
-  late final Future<Sale?> _sale = widget.saleId == null
-      ? Future.value(null)
-      : sl<SaleRepository>()
-          .getSale(widget.saleId!)
-          .then((r) => r.getOrElse((f) => throw f.message));
+  late final Future<Sale?> _sale = (widget.saleId == null
+          ? Future<Sale?>.value(null)
+          : sl<SaleRepository>()
+              .getSale(widget.saleId!)
+              .then<Sale?>((r) => r.getOrElse((f) => throw f.message)))
+      .then((sale) => _loadedSale = sale);
+  Sale? _loadedSale;
+
+  /// Exchange: the Bluetooth scanner adds to the items brought back
+  /// (false) or to the items taken (true).
+  bool _scanToTaken = false;
 
   /// From a ticket: per sale line, how many come back and whether to the
   /// shelf.
@@ -88,29 +95,66 @@ class _ReturnPageState extends State<ReturnPage> {
   Future<void> _addLoose() async {
     final product = await pickProduct(context);
     if (product == null || !mounted) return;
-    setState(() {
-      final existing =
-          _loose.where((l) => l.product.id == product.id).firstOrNull;
-      if (existing != null) {
-        existing.quantity++;
-      } else {
-        _loose.add(_LooseItem(product));
-      }
-    });
+    setState(() => _addLooseProduct(product));
+  }
+
+  void _addLooseProduct(Product product) {
+    final existing =
+        _loose.where((l) => l.product.id == product.id).firstOrNull;
+    if (existing != null) {
+      existing.quantity++;
+    } else {
+      _loose.add(_LooseItem(product));
+    }
   }
 
   Future<void> _addTaken() async {
     final product = await pickProduct(context);
     if (product == null || !mounted) return;
-    setState(() {
-      final index = _taken.indexWhere((t) => t.product.id == product.id);
-      if (index >= 0) {
-        _taken[index] =
-            _taken[index].copyWith(quantity: _taken[index].quantity + 1);
-      } else {
-        _taken.add(CartItem(product: product));
-      }
-    });
+    setState(() => _addTakenProduct(product));
+  }
+
+  void _addTakenProduct(Product product) {
+    final index = _taken.indexWhere((t) => t.product.id == product.id);
+    if (index >= 0) {
+      _taken[index] =
+          _taken[index].copyWith(quantity: _taken[index].quantity + 1);
+    } else {
+      _taken.add(CartItem(product: product));
+    }
+  }
+
+  /// A barcode from the Bluetooth scanner: an item brought back (on the
+  /// ticket, or without a ticket), or with an exchange an item taken.
+  bool _onDeviceScan(String code) {
+    final l10n = AppLocalizations.of(context);
+    final product = productByBarcode(context, code);
+    if (product == null) {
+      showUnknownBarcode(context, code);
+      return false;
+    }
+    if (_exchange && _scanToTaken) {
+      setState(() => _addTakenProduct(product));
+      return true;
+    }
+    final sale = _loadedSale;
+    if (sale == null) {
+      if (widget.saleId != null) return false; // still loading
+      setState(() => _addLooseProduct(product));
+      return true;
+    }
+    final line = sale.items
+        .where((l) =>
+            l.productId == product.id &&
+            (_quantities[l.id] ?? 0) < l.returnable)
+        .firstOrNull;
+    if (line == null) {
+      showAppSnack(context, l10n.scanNotOnTicket(product.name),
+          kind: SnackKind.error);
+      return false;
+    }
+    setState(() => _quantities[line.id] = (_quantities[line.id] ?? 0) + 1);
+    return true;
   }
 
   Future<void> _save(Sale? sale) async {
@@ -205,32 +249,36 @@ class _ReturnPageState extends State<ReturnPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return FutureBuilder<Sale?>(
-      future: _sale,
-      builder: (context, snapshot) {
-        final sale = snapshot.data;
-        final loading = widget.saleId != null && sale == null;
-        return Scaffold(
-          appBar: AppBar(title: Text(loading ? '' : _title(l10n, sale))),
-          body: snapshot.hasError
-              ? EmptyState(
-                  icon: Icons.error_outline,
-                  title: l10n.errorWithDetail('${snapshot.error}'))
-              : loading
-                  ? const Center(child: CircularProgressIndicator())
-                  : _form(context, l10n, sale),
-          bottomNavigationBar: loading
-              ? null
-              : PrimaryButton(
-                  onPressed: () => _save(sale),
-                  isLoading: _saving,
-                  icon: _exchange
-                      ? Icons.swap_horiz
-                      : Icons.assignment_return_outlined,
-                  label: _exchange ? l10n.confirmExchange : l10n.confirmReturn,
-                ),
-        );
-      },
+    return ScanListener(
+      onScan: _onDeviceScan,
+      child: FutureBuilder<Sale?>(
+        future: _sale,
+        builder: (context, snapshot) {
+          final sale = snapshot.data;
+          final loading = widget.saleId != null && sale == null;
+          return Scaffold(
+            appBar: AppBar(title: Text(loading ? '' : _title(l10n, sale))),
+            body: snapshot.hasError
+                ? EmptyState(
+                    icon: Icons.error_outline,
+                    title: l10n.errorWithDetail('${snapshot.error}'))
+                : loading
+                    ? const Center(child: CircularProgressIndicator())
+                    : _form(context, l10n, sale),
+            bottomNavigationBar: loading
+                ? null
+                : PrimaryButton(
+                    onPressed: () => _save(sale),
+                    isLoading: _saving,
+                    icon: _exchange
+                        ? Icons.swap_horiz
+                        : Icons.assignment_return_outlined,
+                    label:
+                        _exchange ? l10n.confirmExchange : l10n.confirmReturn,
+                  ),
+          );
+        },
+      ),
     );
   }
 
@@ -286,6 +334,22 @@ class _ReturnPageState extends State<ReturnPage> {
           onChanged: (on) => setState(() => _exchange = on),
         ),
         if (_exchange) ...[
+          // Where a scan from the Bluetooth scanner goes.
+          Row(children: [
+            const Icon(Icons.barcode_reader, size: 20),
+            const SizedBox(width: 8),
+            Expanded(child: Text(l10n.scanGoesTo)),
+          ]),
+          const SizedBox(height: 6),
+          SegmentedButton<bool>(
+            showSelectedIcon: false,
+            segments: [
+              ButtonSegment(value: false, label: Text(l10n.scanToReturned)),
+              ButtonSegment(value: true, label: Text(l10n.scanToTaken)),
+            ],
+            selected: {_scanToTaken},
+            onSelectionChanged: (v) => setState(() => _scanToTaken = v.first),
+          ),
           _Header(l10n.takenItemsSection),
           for (final (index, item) in _taken.indexed)
             _LineCard(

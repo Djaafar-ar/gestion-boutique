@@ -19,14 +19,24 @@ class FakeSheetScript {
   /// No internet: every request fails.
   bool offline = false;
 
+  /// The script does the work, then the answer is lost (the phone's
+  /// connection drops, or the app is killed at that moment). Once.
+  bool loseNextAnswer = false;
+
   /// Answers like Google: a redirect, then the answer with a GET.
   bool redirect = false;
 
   /// Tabs by code (S, I, D, L, P, C): their rows as sent.
   final Map<String, List<List<Object?>>> tabs = {
-    for (final code in ['S', 'I', 'D', 'L', 'P', 'C']) code: [],
+    for (final code in ['S', 'I', 'D', 'L', 'P', 'C', 'H', 'R']) code: [],
   };
   final Map<String, Uint8List> backups = {};
+
+  /// The owner's Gmail address.
+  String email = 'boutique.elbaraka@gmail.com';
+
+  /// Tabs only the read key may write.
+  static const ownerOnly = {'C', 'R'};
   final List<Map<String, Object?>> requests = [];
 
   final _seen = <String>{};
@@ -58,6 +68,10 @@ class FakeSheetScript {
     }
     final envelope = jsonDecode(request.body) as Map<String, Object?>;
     final answer = jsonEncode(handle(envelope));
+    if (loseNextAnswer) {
+      loseNextAnswer = false;
+      throw const SocketException('Connection lost');
+    }
     if (redirect) {
       final id = '${_redirected.length + 1}';
       _redirected[id] = answer;
@@ -74,8 +88,14 @@ class FakeSheetScript {
     final keyId = req['k'];
     final key = keyId == 'r' ? readKey : (keyId == 'w' ? writeKey : null);
     if (key == null) return {'ok': false, 'err': 'setup'};
-    final message =
-        [req['v'], req['op'], req['ts'], req['n'], req['k'], req['b']].join('\n');
+    final message = [
+      req['v'],
+      req['op'],
+      req['ts'],
+      req['n'],
+      req['k'],
+      req['b']
+    ].join('\n');
     final signature =
         Hmac(sha256, utf8.encode(key)).convert(utf8.encode(message)).toString();
     if (signature != req['s']) return {'ok': false, 'err': 'sig'};
@@ -92,7 +112,12 @@ class FakeSheetScript {
     }
     switch (op) {
       case 'ping':
-        return {'ok': true, 'name': 'Boutique test', 'v': 1};
+        return {
+          'ok': true,
+          'name': 'Boutique test',
+          'v': 2,
+          if (keyId == 'r') 'email': email,
+        };
       case 'push':
         for (final record in (body['r'] as List).cast<Map>()) {
           final upsert = record['u'] == 1;
@@ -101,6 +126,8 @@ class FakeSheetScript {
           }
           for (final MapEntry(key: code, value: rows)
               in (record['t'] as Map).entries) {
+            // Debts and products: the read key only.
+            if (ownerOnly.contains(code) && keyId != 'r') continue;
             for (final row in (rows as List).cast<List>()) {
               final tab = tabs[code]!;
               final at = upsert ? tab.indexWhere((r) => r[0] == row[0]) : -1;

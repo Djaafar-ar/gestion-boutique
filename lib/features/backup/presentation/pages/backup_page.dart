@@ -95,16 +95,15 @@ class _BackupPageState extends State<BackupPage> {
               ListTile(
                 leading: const Icon(Icons.add_to_drive),
                 title: Text(l10n.backupDriveTile),
-                subtitle: Text(state.canRead
-                    ? l10n.backupDriveOn
-                    : l10n.backupDriveOff),
+                subtitle: Text(
+                    state.canRead ? l10n.backupDriveOn : l10n.backupDriveOff),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => context.push('/more/sheet'),
               ),
               const Divider(height: 1),
               ListTile(
-                leading: Icon(Icons.settings_backup_restore,
-                    color: scheme.error),
+                leading:
+                    Icon(Icons.settings_backup_restore, color: scheme.error),
                 title: Text(l10n.restoreTitle),
                 subtitle: Text(l10n.restoreSub),
                 trailing: const Icon(Icons.chevron_right),

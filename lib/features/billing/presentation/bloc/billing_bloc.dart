@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import '../../data/cart_store.dart';
 import '../../data/receipt_printer.dart';
 import '../../domain/entities/cart_item.dart';
 import '../../domain/entities/sale.dart';
@@ -17,11 +18,16 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
   final SaleRepository saleRepository;
   final ReceiptPrinter receiptPrinter;
 
+  /// Saves the cart at every change (null in some tests).
+  final CartStore? cartStore;
+
   BillingBloc({
     required this.getProductByBarcodeUseCase,
     required this.saleRepository,
     required this.receiptPrinter,
+    this.cartStore,
   }) : super(const BillingState()) {
+    on<RestoreCartEvent>(_onRestoreCart);
     on<ScanBarcodeEvent>(_onScanBarcode);
     on<AddProductToCartEvent>(_onAddProductToCart);
     on<RemoveProductFromCartEvent>(_onRemoveProductFromCart);
@@ -38,6 +44,23 @@ class BillingBloc extends Bloc<BillingEvent, BillingState> {
     on<SetPaidNowEvent>(
         (event, emit) => emit(state.copyWith(paidNow: event.paidNow)));
     on<CheckoutEvent>(_onCheckout);
+  }
+
+  Future<void> _onRestoreCart(
+      RestoreCartEvent event, Emitter<BillingState> emit) async {
+    final saved = await cartStore?.load() ?? const <CartItem>[];
+    if (saved.isNotEmpty && state.cartItems.isEmpty) {
+      emit(state.copyWith(cartItems: saved));
+    }
+  }
+
+  /// Every change of the cart is saved at once.
+  @override
+  void onChange(Change<BillingState> change) {
+    super.onChange(change);
+    if (change.currentState.cartItems != change.nextState.cartItems) {
+      cartStore?.save(change.nextState.cartItems);
+    }
   }
 
   Future<void> _onScanBarcode(

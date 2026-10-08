@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'config/routes/app_routes.dart';
 import 'core/l10n/app_localizations.dart';
 import 'core/service_locator.dart' as di;
+import 'core/scanner/barcode_scan_service.dart';
 import 'core/session/session_cubit.dart';
 import 'core/theme/app_theme.dart';
 import 'dart:async';
@@ -22,6 +23,8 @@ import 'features/settings/presentation/cubit/app_preferences_cubit.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
+  // The Bluetooth scanner works on every screen that scans.
+  di.sl<BarcodeScanService>().start();
   // Alerts are checked from the start, even on the PIN screen.
   di.sl<AlertsCubit>().start();
   // The hub (owner's phone) or the automatic syncs (worker's phone).

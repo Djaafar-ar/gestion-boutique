@@ -21,10 +21,14 @@ extension SheetSettings on SettingsStore {
   static const driveTryName = 'drive_backup_try';
   static const _driveError = 'drive_backup_error';
   static const offPhoneName = 'backup_off_phone_last';
+  static const accountName = 'sheet_account';
 
   /// Owner's phone only.
   String? get sheetReadKey => get(readKeyName);
   Future<void> setSheetReadKey(String? key) => set(readKeyName, key);
+
+  /// The Gmail address the sheet belongs to (owner's phone).
+  String? get sheetAccount => get(accountName);
 
   /// When the queue was last emptied, and why the last try failed.
   DateTime? get sheetLastSend => DateTime.tryParse(get(_lastSend) ?? '');

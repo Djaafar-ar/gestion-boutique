@@ -111,9 +111,8 @@ class _MorePageState extends State<MorePage> {
                       color: Theme.of(context).colorScheme.onErrorContainer),
                   title: Text(l10n.backupWarning,
                       style: TextStyle(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onErrorContainer)),
+                          color:
+                              Theme.of(context).colorScheme.onErrorContainer)),
                   trailing: Icon(Icons.chevron_right,
                       color: Theme.of(context).colorScheme.onErrorContainer),
                   onTap: () => context.push('/more/backup'),
@@ -294,6 +293,16 @@ class _MorePageState extends State<MorePage> {
           ]),
           _SectionHeader(l10n.sectionPrinter),
           _buildPrinterGroup(l10n),
+          const SizedBox(height: 8),
+          _Group(children: [
+            ListTile(
+              leading: const _TileIcon(Icons.barcode_reader),
+              title: Text(l10n.scannerTitle),
+              subtitle: Text(l10n.scannerSub),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push('/more/scanner'),
+            ),
+          ]),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             child: Text(

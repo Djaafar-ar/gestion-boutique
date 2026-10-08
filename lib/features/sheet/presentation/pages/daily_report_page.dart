@@ -101,8 +101,7 @@ class _ReportCard extends StatelessWidget {
                 report.source == 'sheet'
                     ? l10n.reportFromSheet
                     : l10n.reportFromPhone,
-                style:
-                    TextStyle(fontSize: 12, color: scheme.onSurfaceVariant)),
+                style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant)),
           ],
         ),
       ),

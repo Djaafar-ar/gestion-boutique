@@ -53,10 +53,19 @@ class AppDatabase extends _$AppDatabase {
   // 2. run: dart run drift_dev make-migrations
   // 3. add the new step below (the generated tests check it).
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+        // A sudden power cut must never lose or break a saved sale:
+        // - every sale is one transaction (all of it, or nothing);
+        // - SQLite keeps a rollback journal: after a crash, a half-written
+        //   transaction is undone when the file is opened again;
+        // - synchronous FULL: "saved" is only answered once the data is
+        //   really on the phone's storage.
+        beforeOpen: (details) async {
+          await customStatement('PRAGMA synchronous = FULL');
+        },
         onCreate: (m) => m.createAll(),
         onUpgrade: stepByStep(
           // Phase 2: owner/workers and the change history.
@@ -119,6 +128,17 @@ class AppDatabase extends _$AppDatabase {
           from8To9: (m, schema) async {
             await m.addColumn(
                 schema.shops, schema.shops.workersSellWithoutStock);
+          },
+          // Phase 8b: the product history and the "Produits" tab go to the
+          // Google Sheet too.
+          from10To11: (m, schema) async {
+            await m.create(schema.sheetChangesInsert);
+            await m.create(schema.sheetProductsInsert);
+            await m.create(schema.sheetProductsUpdate);
+            await m.create(schema.sheetProductDeliveriesInsert);
+            await m.create(schema.sheetProductDeliveriesUpdate);
+            await m.create(schema.sheetProductAllocationsInsert);
+            await m.create(schema.sheetProductAllocationsUpdate);
           },
           // Phase 8: Google Sheet. The script address and write key on the
           // shop (synced), the queue of records to send, and the sales

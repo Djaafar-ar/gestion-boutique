@@ -4024,6 +4024,174 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Un téléphone d\'employé reçoit ses données du téléphone principal : restaurez sur le téléphone principal.'**
   String get restoreErrWorker;
+
+  /// No description provided for @scanUnknown.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code-barres inconnu : {code}'**
+  String scanUnknown(String code);
+
+  /// No description provided for @scanCreateProduct.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer le produit'**
+  String get scanCreateProduct;
+
+  /// No description provided for @scanNotOnTicket.
+  ///
+  /// In fr, this message translates to:
+  /// **'« {name} » n\'est pas sur ce ticket (ou déjà rendu).'**
+  String scanNotOnTicket(String name);
+
+  /// No description provided for @scanGoesTo.
+  ///
+  /// In fr, this message translates to:
+  /// **'La douchette ajoute aux :'**
+  String get scanGoesTo;
+
+  /// No description provided for @scanToReturned.
+  ///
+  /// In fr, this message translates to:
+  /// **'Articles rapportés'**
+  String get scanToReturned;
+
+  /// No description provided for @scanToTaken.
+  ///
+  /// In fr, this message translates to:
+  /// **'Articles pris'**
+  String get scanToTaken;
+
+  /// No description provided for @scannerTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Douchette (lecteur de codes-barres)'**
+  String get scannerTitle;
+
+  /// No description provided for @scannerSub.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lecteur Bluetooth : appairage et test'**
+  String get scannerSub;
+
+  /// No description provided for @scannerTestTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tester un scan'**
+  String get scannerTestTitle;
+
+  /// No description provided for @scannerTestWaiting.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scannez un code-barres maintenant (ou, sur l\'émulateur, tapez des chiffres puis Entrée).'**
+  String get scannerTestWaiting;
+
+  /// No description provided for @scannerTestGot.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scan n°{count} reçu : {code}'**
+  String scannerTestGot(int count, String code);
+
+  /// No description provided for @scannerTestKnown.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit : {name}'**
+  String scannerTestKnown(String name);
+
+  /// No description provided for @scannerTestUnknown.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit inconnu (la douchette marche quand même).'**
+  String get scannerTestUnknown;
+
+  /// No description provided for @scannerHowTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Associer une douchette Bluetooth'**
+  String get scannerHowTitle;
+
+  /// No description provided for @scannerHowSteps.
+  ///
+  /// In fr, this message translates to:
+  /// **'1. Allumez la douchette.\n2. Dans son petit manuel, scannez le code « Bluetooth HID » (mode clavier). C\'est le mode conseillé.\n3. Sur le téléphone : Paramètres → Bluetooth → Associer un nouvel appareil → choisissez la douchette.\n4. C\'est tout : elle marche dans la Caisse, la Réception de stock, les Pertes, les Retours, la recherche et la fiche d\'un nouveau produit. Pas besoin de toucher un champ.'**
+  String get scannerHowSteps;
+
+  /// No description provided for @scannerEmulatorTip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur l\'émulateur : cliquez dans la fenêtre de l\'émulateur, tapez un code-barres au clavier du PC, puis Entrée.'**
+  String get scannerEmulatorTip;
+
+  /// No description provided for @scannerSppTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Douchette en mode SPP (série)'**
+  String get scannerSppTitle;
+
+  /// No description provided for @scannerSppHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Seulement si votre douchette est en mode « SPP » : associez-la d\'abord dans les Paramètres Bluetooth, puis choisissez-la ici. Le téléphone s\'y reconnecte tout seul.'**
+  String get scannerSppHelp;
+
+  /// No description provided for @scannerShowPaired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir les appareils associés'**
+  String get scannerShowPaired;
+
+  /// No description provided for @scannerConnected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Douchette connectée : {name}'**
+  String scannerConnected(String name);
+
+  /// No description provided for @scannerConnectFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion impossible. Vérifiez que la douchette est allumée et en mode SPP.'**
+  String get scannerConnectFailed;
+
+  /// No description provided for @scannerStateConnected.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connectée'**
+  String get scannerStateConnected;
+
+  /// No description provided for @scannerStateConnecting.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion…'**
+  String get scannerStateConnecting;
+
+  /// No description provided for @scannerStateRetrying.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas connectée : nouvel essai toutes les 15 secondes'**
+  String get scannerStateRetrying;
+
+  /// No description provided for @scannerForget.
+  ///
+  /// In fr, this message translates to:
+  /// **'Oublier'**
+  String get scannerForget;
+
+  /// No description provided for @scannerFeedback.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bip et vibration à chaque scan accepté'**
+  String get scannerFeedback;
+
+  /// No description provided for @sheetAccount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte Google : {email}'**
+  String sheetAccount(String email);
+
+  /// No description provided for @sheetAccountUnknown.
+  ///
+  /// In fr, this message translates to:
+  /// **'inconnu (mettez le script à jour)'**
+  String get sheetAccountUnknown;
 }
 
 class _AppLocalizationsDelegate

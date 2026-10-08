@@ -1,0 +1,5180 @@
+{
+  "_meta": {
+    "description": "This file contains a serialized version of schema entities for drift.",
+    "version": "1.3.0"
+  },
+  "options": {
+    "store_date_time_values_as_text": true
+  },
+  "entities": [
+    {
+      "id": 0,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "sheet_queue",
+        "was_declared_in_moor": true,
+        "columns": [
+          {
+            "name": "seq",
+            "getter_name": "seq",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL PRIMARY KEY AUTOINCREMENT",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              "auto-increment"
+            ]
+          },
+          {
+            "name": "kind",
+            "getter_name": "kind",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "row_id",
+            "getter_name": "rowId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [
+          "UNIQUE(kind, row_id)"
+        ],
+        "unique_keys": [
+          [
+            "kind",
+            "row_id"
+          ]
+        ]
+      }
+    },
+    {
+      "id": 1,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "sales",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "number",
+            "getter_name": "number",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "subtotal",
+            "getter_name": "subtotal",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "discount",
+            "getter_name": "discount",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "total",
+            "getter_name": "total",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "paid_now",
+            "getter_name": "paidNow",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "customer_id",
+            "getter_name": "customerId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "shops",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "address1",
+            "getter_name": "address1",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('\\'\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "address2",
+            "getter_name": "address2",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('\\'\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "phone",
+            "getter_name": "phone",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('\\'\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "footer",
+            "getter_name": "footer",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('\\'\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "shop_secret",
+            "getter_name": "shopSecret",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "expiry_warn_days",
+            "getter_name": "expiryWarnDays",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('3')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "max_worker_discount_pct",
+            "getter_name": "maxWorkerDiscountPct",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('10')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "workers_sell_without_stock",
+            "getter_name": "workersSellWithoutStock",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"workers_sell_without_stock\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"workers_sell_without_stock\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "sheet_url",
+            "getter_name": "sheetUrl",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "sheet_write_key",
+            "getter_name": "sheetWriteKey",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "app_settings",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "key",
+            "getter_name": "key",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "value",
+            "getter_name": "value",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "key"
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "references": [
+        1,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 1,
+        "references_in_body": [
+          1,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_sales_insert",
+        "sql": "CREATE TRIGGER sheet_sales_insert AFTER INSERT ON sales\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND (new.device_id = (SELECT value FROM app_settings WHERE \"key\" = 'device_id')\n    OR coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker')\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'sale' AND row_id = new.id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('sale', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 5,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "returns",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "sale_id",
+            "getter_name": "saleId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "total",
+            "getter_name": "total",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "refund_mode",
+            "getter_name": "refundMode",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('\\'cash\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "reason",
+            "getter_name": "reason",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "exchange_sale_id",
+            "getter_name": "exchangeSaleId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "approved_by",
+            "getter_name": "approvedBy",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "references": [
+        5,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 5,
+        "references_in_body": [
+          5,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_returns_insert",
+        "sql": "CREATE TRIGGER sheet_returns_insert AFTER INSERT ON returns\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND (new.device_id = (SELECT value FROM app_settings WHERE \"key\" = 'device_id')\n    OR coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker')\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'return' AND row_id = new.id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('return', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 7,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "deliveries",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "product_id",
+            "getter_name": "productId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "quantity",
+            "getter_name": "quantity",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "buy_price",
+            "getter_name": "buyPrice",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "expiry_date",
+            "getter_name": "expiryDate",
+            "moor_type": "dateTime",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "supplier_id",
+            "getter_name": "supplierId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "received_at",
+            "getter_name": "receivedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "note",
+            "getter_name": "note",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "references": [
+        7,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 7,
+        "references_in_body": [
+          7,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_deliveries_insert",
+        "sql": "CREATE TRIGGER sheet_deliveries_insert AFTER INSERT ON deliveries\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND (new.device_id = (SELECT value FROM app_settings WHERE \"key\" = 'device_id')\n    OR coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker')\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'delivery' AND row_id = new.id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('delivery', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 9,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "losses",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "product_id",
+            "getter_name": "productId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "quantity",
+            "getter_name": "quantity",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "reason",
+            "getter_name": "reason",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "note",
+            "getter_name": "note",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "unit_cost",
+            "getter_name": "unitCost",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "delivery_id",
+            "getter_name": "deliveryId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "return_item_id",
+            "getter_name": "returnItemId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "references": [
+        9,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 9,
+        "references_in_body": [
+          9,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_losses_insert",
+        "sql": "CREATE TRIGGER sheet_losses_insert AFTER INSERT ON losses\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND (new.device_id = (SELECT value FROM app_settings WHERE \"key\" = 'device_id')\n    OR coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker')\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'loss' AND row_id = new.id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('loss', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 11,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "supplier_payments",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "supplier_id",
+            "getter_name": "supplierId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "amount",
+            "getter_name": "amount",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "note",
+            "getter_name": "note",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "status",
+            "getter_name": "status",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "validated_by",
+            "getter_name": "validatedBy",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "validated_at",
+            "getter_name": "validatedAt",
+            "moor_type": "dateTime",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "references": [
+        11,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 11,
+        "references_in_body": [
+          11,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_supplier_payments_insert",
+        "sql": "CREATE TRIGGER sheet_supplier_payments_insert AFTER INSERT ON supplier_payments\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND (new.device_id = (SELECT value FROM app_settings WHERE \"key\" = 'device_id')\n    OR coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker')\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'supplierPayment' AND row_id = new.id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('supplierPayment', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 13,
+      "references": [
+        11,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 11,
+        "references_in_body": [
+          11,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_supplier_payments_update",
+        "sql": "CREATE TRIGGER sheet_supplier_payments_update AFTER UPDATE ON supplier_payments\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND (new.device_id = (SELECT value FROM app_settings WHERE \"key\" = 'device_id')\n    OR coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker')\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'supplierPayment' AND row_id = new.id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('supplierPayment', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 14,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "customer_payments",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "customer_id",
+            "getter_name": "customerId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "amount",
+            "getter_name": "amount",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "note",
+            "getter_name": "note",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 15,
+      "references": [
+        14,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 14,
+        "references_in_body": [
+          14,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_customer_payments_insert",
+        "sql": "CREATE TRIGGER sheet_customer_payments_insert AFTER INSERT ON customer_payments\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND (new.device_id = (SELECT value FROM app_settings WHERE \"key\" = 'device_id')\n    OR coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker')\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'customerPayment' AND row_id = new.id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('customerPayment', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 16,
+      "references": [
+        1,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 1,
+        "references_in_body": [
+          1,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_credit_sales",
+        "sql": "CREATE TRIGGER sheet_credit_sales AFTER INSERT ON sales\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker'\n    AND new.customer_id IS NOT NULL\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'credit' AND row_id = new.customer_id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('credit', new.customer_id);\nEND;"
+      }
+    },
+    {
+      "id": 17,
+      "references": [
+        14,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 14,
+        "references_in_body": [
+          14,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_credit_payments",
+        "sql": "CREATE TRIGGER sheet_credit_payments AFTER INSERT ON customer_payments\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker'\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'credit' AND row_id = new.customer_id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('credit', new.customer_id);\nEND;"
+      }
+    },
+    {
+      "id": 18,
+      "references": [
+        5,
+        2,
+        3,
+        1,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 5,
+        "references_in_body": [
+          5,
+          2,
+          3,
+          1,
+          0
+        ],
+        "name": "sheet_credit_returns",
+        "sql": "CREATE TRIGGER sheet_credit_returns AFTER INSERT ON returns\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker'\n    AND new.refund_mode = 'credit'\n    AND (SELECT customer_id FROM sales WHERE id = new.sale_id) IS NOT NULL\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'credit' AND row_id = (SELECT customer_id FROM sales WHERE id = new.sale_id);\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('credit', (SELECT customer_id FROM sales WHERE id = new.sale_id));\nEND;"
+      }
+    },
+    {
+      "id": 19,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "customers",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "phone",
+            "getter_name": "phone",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('\\'\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "note",
+            "getter_name": "note",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "credit_limit",
+            "getter_name": "creditLimit",
+            "moor_type": "int",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "active",
+            "getter_name": "active",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"active\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"active\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('1')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 20,
+      "references": [
+        19,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 19,
+        "references_in_body": [
+          19,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_credit_customers",
+        "sql": "CREATE TRIGGER sheet_credit_customers AFTER UPDATE ON customers\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker'\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'credit' AND row_id = new.id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('credit', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 21,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "change_logs",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "entity",
+            "getter_name": "entity",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "entity_id",
+            "getter_name": "entityId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "field",
+            "getter_name": "field",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "old_value",
+            "getter_name": "oldValue",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "new_value",
+            "getter_name": "newValue",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 22,
+      "references": [
+        21,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 21,
+        "references_in_body": [
+          21,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_changes_insert",
+        "sql": "CREATE TRIGGER sheet_changes_insert AFTER INSERT ON change_logs\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND new.entity = 'product'\n    AND (new.device_id = (SELECT value FROM app_settings WHERE \"key\" = 'device_id')\n    OR coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker')\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'change' AND row_id = new.id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('change', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 23,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "products",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "barcode",
+            "getter_name": "barcode",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "sell_price",
+            "getter_name": "sellPrice",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "buy_price",
+            "getter_name": "buyPrice",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "category_id",
+            "getter_name": "categoryId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "low_stock_threshold",
+            "getter_name": "lowStockThreshold",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "archived",
+            "getter_name": "archived",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"archived\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"archived\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 24,
+      "references": [
+        23,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 23,
+        "references_in_body": [
+          23,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_products_insert",
+        "sql": "CREATE TRIGGER sheet_products_insert AFTER INSERT ON products\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker'\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 25,
+      "references": [
+        23,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 23,
+        "references_in_body": [
+          23,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_products_update",
+        "sql": "CREATE TRIGGER sheet_products_update AFTER UPDATE ON products\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker'\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 26,
+      "references": [
+        7,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 7,
+        "references_in_body": [
+          7,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_product_deliveries_insert",
+        "sql": "CREATE TRIGGER sheet_product_deliveries_insert AFTER INSERT ON deliveries\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker'\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.product_id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.product_id);\nEND;"
+      }
+    },
+    {
+      "id": 27,
+      "references": [
+        7,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 7,
+        "references_in_body": [
+          7,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_product_deliveries_update",
+        "sql": "CREATE TRIGGER sheet_product_deliveries_update AFTER UPDATE ON deliveries\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker'\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.product_id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.product_id);\nEND;"
+      }
+    },
+    {
+      "id": 28,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "stock_allocations",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "product_id",
+            "getter_name": "productId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "delivery_id",
+            "getter_name": "deliveryId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "quantity",
+            "getter_name": "quantity",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "source",
+            "getter_name": "source",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "source_id",
+            "getter_name": "sourceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 29,
+      "references": [
+        28,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 28,
+        "references_in_body": [
+          28,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_product_allocations_insert",
+        "sql": "CREATE TRIGGER sheet_product_allocations_insert AFTER INSERT ON stock_allocations\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker'\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.product_id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.product_id);\nEND;"
+      }
+    },
+    {
+      "id": 30,
+      "references": [
+        28,
+        2,
+        3,
+        0
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 28,
+        "references_in_body": [
+          28,
+          2,
+          3,
+          0
+        ],
+        "name": "sheet_product_allocations_update",
+        "sql": "CREATE TRIGGER sheet_product_allocations_update AFTER UPDATE ON stock_allocations\n  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL\n    AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker'\nBEGIN\n  DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.product_id;\n  INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.product_id);\nEND;"
+      }
+    },
+    {
+      "id": 31,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "categories",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 32,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "sale_items",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "sale_id",
+            "getter_name": "saleId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "product_id",
+            "getter_name": "productId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "product_name",
+            "getter_name": "productName",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "sell_price",
+            "getter_name": "sellPrice",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "unit_cost",
+            "getter_name": "unitCost",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "quantity",
+            "getter_name": "quantity",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 33,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "return_items",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "return_id",
+            "getter_name": "returnId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "sale_item_id",
+            "getter_name": "saleItemId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "product_id",
+            "getter_name": "productId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "quantity",
+            "getter_name": "quantity",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "back_to_stock",
+            "getter_name": "backToStock",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"back_to_stock\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"back_to_stock\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "refund",
+            "getter_name": "refund",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "unit_cost",
+            "getter_name": "unitCost",
+            "moor_type": "int",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 34,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "suppliers",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "phone",
+            "getter_name": "phone",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('\\'\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "note",
+            "getter_name": "note",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "active",
+            "getter_name": "active",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"active\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"active\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('1')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 35,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "users",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "phone",
+            "getter_name": "phone",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('\\'\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "role",
+            "getter_name": "role",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "pin_hash",
+            "getter_name": "pinHash",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "pin_salt",
+            "getter_name": "pinSalt",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "active",
+            "getter_name": "active",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"active\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"active\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('1')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "pin_length",
+            "getter_name": "pinLength",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('4')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "locked_out",
+            "getter_name": "lockedOut",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"locked_out\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"locked_out\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "recovery_hash",
+            "getter_name": "recoveryHash",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "recovery_salt",
+            "getter_name": "recoverySalt",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 36,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "failed_logins",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "account_id",
+            "getter_name": "accountId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "kind",
+            "getter_name": "kind",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "seen",
+            "getter_name": "seen",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"seen\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"seen\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 37,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "devices",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "device_id",
+            "getter_name": "deviceId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": true,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "deleted",
+            "getter_name": "deleted",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"deleted\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"deleted\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "code",
+            "getter_name": "code",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "name",
+            "getter_name": "name",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "role",
+            "getter_name": "role",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 38,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "alerts",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "type",
+            "getter_name": "type",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "ref_id",
+            "getter_name": "refId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "data",
+            "getter_name": "data",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('\\'{}\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "owner_only",
+            "getter_name": "ownerOnly",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"owner_only\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"owner_only\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "active",
+            "getter_name": "active",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"active\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"active\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('1')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "created_at",
+            "getter_name": "createdAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "updated_at",
+            "getter_name": "updatedAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 39,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "alert_reads",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "alert_id",
+            "getter_name": "alertId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "user_id",
+            "getter_name": "userId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "read_at",
+            "getter_name": "readAt",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "alert_id",
+          "user_id"
+        ]
+      }
+    },
+    {
+      "id": 40,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "live_sales",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "at",
+            "getter_name": "at",
+            "moor_type": "dateTime",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "ticket",
+            "getter_name": "ticket",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "seller",
+            "getter_name": "seller",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "kind",
+            "getter_name": "kind",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "total",
+            "getter_name": "total",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "mine",
+            "getter_name": "mine",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"mine\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"mine\" IN (0, 1))"
+            },
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "notified",
+            "getter_name": "notified",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"notified\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"notified\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": 41,
+      "references": [
+        23
+      ],
+      "type": "index",
+      "data": {
+        "on": 23,
+        "name": "products_barcode",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "barcode",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 42,
+      "references": [
+        7
+      ],
+      "type": "index",
+      "data": {
+        "on": 7,
+        "name": "deliveries_product",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "product_id",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 43,
+      "references": [
+        7
+      ],
+      "type": "index",
+      "data": {
+        "on": 7,
+        "name": "deliveries_supplier",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "supplier_id",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 44,
+      "references": [
+        28
+      ],
+      "type": "index",
+      "data": {
+        "on": 28,
+        "name": "stock_allocations_product",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "product_id",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 45,
+      "references": [
+        28
+      ],
+      "type": "index",
+      "data": {
+        "on": 28,
+        "name": "stock_allocations_source",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "source_id",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 46,
+      "references": [
+        9
+      ],
+      "type": "index",
+      "data": {
+        "on": 9,
+        "name": "losses_product",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "product_id",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 47,
+      "references": [
+        5
+      ],
+      "type": "index",
+      "data": {
+        "on": 5,
+        "name": "returns_sale",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "sale_id",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 48,
+      "references": [
+        5
+      ],
+      "type": "index",
+      "data": {
+        "on": 5,
+        "name": "returns_exchange_sale",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "exchange_sale_id",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 49,
+      "references": [
+        33
+      ],
+      "type": "index",
+      "data": {
+        "on": 33,
+        "name": "return_items_sale_item",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "sale_item_id",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 50,
+      "references": [
+        11
+      ],
+      "type": "index",
+      "data": {
+        "on": 11,
+        "name": "supplier_payments_supplier",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "supplier_id",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 51,
+      "references": [
+        11
+      ],
+      "type": "index",
+      "data": {
+        "on": 11,
+        "name": "supplier_payments_status",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "status",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 52,
+      "references": [
+        14
+      ],
+      "type": "index",
+      "data": {
+        "on": 14,
+        "name": "customer_payments_customer",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "customer_id",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 53,
+      "references": [
+        1
+      ],
+      "type": "index",
+      "data": {
+        "on": 1,
+        "name": "sales_created",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "created_at",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 54,
+      "references": [
+        1
+      ],
+      "type": "index",
+      "data": {
+        "on": 1,
+        "name": "sales_customer",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "customer_id",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 55,
+      "references": [
+        32
+      ],
+      "type": "index",
+      "data": {
+        "on": 32,
+        "name": "sale_items_sale",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "sale_id",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 56,
+      "references": [
+        32
+      ],
+      "type": "index",
+      "data": {
+        "on": 32,
+        "name": "sale_items_product",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "product_id",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 57,
+      "references": [
+        36
+      ],
+      "type": "index",
+      "data": {
+        "on": 36,
+        "name": "failed_logins_seen",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "seen",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 58,
+      "references": [
+        21
+      ],
+      "type": "index",
+      "data": {
+        "on": 21,
+        "name": "change_logs_entity",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "entity_id",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 59,
+      "references": [
+        38
+      ],
+      "type": "index",
+      "data": {
+        "on": 38,
+        "name": "alerts_active",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "active",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 60,
+      "references": [
+        40
+      ],
+      "type": "index",
+      "data": {
+        "on": 40,
+        "name": "live_sales_at",
+        "sql": null,
+        "unique": false,
+        "columns": [
+          {
+            "column": "at",
+            "order_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": 61,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "sync_log",
+        "was_declared_in_moor": true,
+        "columns": [
+          {
+            "name": "seq",
+            "getter_name": "seq",
+            "moor_type": "int",
+            "nullable": false,
+            "customConstraints": "NOT NULL PRIMARY KEY AUTOINCREMENT",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": [
+              "auto-increment"
+            ]
+          },
+          {
+            "name": "entity",
+            "getter_name": "entity",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "row_id",
+            "getter_name": "rowId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": "NOT NULL",
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": false,
+        "constraints": [
+          "UNIQUE(entity, row_id)"
+        ],
+        "unique_keys": [
+          [
+            "entity",
+            "row_id"
+          ]
+        ]
+      }
+    },
+    {
+      "id": 62,
+      "references": [
+        2,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 2,
+        "references_in_body": [
+          2,
+          61
+        ],
+        "name": "sync_log_shops_insert",
+        "sql": "CREATE TRIGGER sync_log_shops_insert AFTER INSERT ON shops BEGIN\n  DELETE FROM sync_log WHERE entity = 'shops' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('shops', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 63,
+      "references": [
+        2,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 2,
+        "references_in_body": [
+          2,
+          61
+        ],
+        "name": "sync_log_shops_update",
+        "sql": "CREATE TRIGGER sync_log_shops_update AFTER UPDATE ON shops BEGIN\n  DELETE FROM sync_log WHERE entity = 'shops' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('shops', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 64,
+      "references": [
+        31,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 31,
+        "references_in_body": [
+          31,
+          61
+        ],
+        "name": "sync_log_categories_insert",
+        "sql": "CREATE TRIGGER sync_log_categories_insert AFTER INSERT ON categories BEGIN\n  DELETE FROM sync_log WHERE entity = 'categories' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('categories', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 65,
+      "references": [
+        31,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 31,
+        "references_in_body": [
+          31,
+          61
+        ],
+        "name": "sync_log_categories_update",
+        "sql": "CREATE TRIGGER sync_log_categories_update AFTER UPDATE ON categories BEGIN\n  DELETE FROM sync_log WHERE entity = 'categories' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('categories', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 66,
+      "references": [
+        23,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 23,
+        "references_in_body": [
+          23,
+          61
+        ],
+        "name": "sync_log_products_insert",
+        "sql": "CREATE TRIGGER sync_log_products_insert AFTER INSERT ON products BEGIN\n  DELETE FROM sync_log WHERE entity = 'products' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('products', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 67,
+      "references": [
+        23,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 23,
+        "references_in_body": [
+          23,
+          61
+        ],
+        "name": "sync_log_products_update",
+        "sql": "CREATE TRIGGER sync_log_products_update AFTER UPDATE ON products BEGIN\n  DELETE FROM sync_log WHERE entity = 'products' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('products', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 68,
+      "references": [
+        7,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 7,
+        "references_in_body": [
+          7,
+          61
+        ],
+        "name": "sync_log_deliveries_insert",
+        "sql": "CREATE TRIGGER sync_log_deliveries_insert AFTER INSERT ON deliveries BEGIN\n  DELETE FROM sync_log WHERE entity = 'deliveries' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('deliveries', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 69,
+      "references": [
+        7,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 7,
+        "references_in_body": [
+          7,
+          61
+        ],
+        "name": "sync_log_deliveries_update",
+        "sql": "CREATE TRIGGER sync_log_deliveries_update AFTER UPDATE ON deliveries BEGIN\n  DELETE FROM sync_log WHERE entity = 'deliveries' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('deliveries', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 70,
+      "references": [
+        28,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 28,
+        "references_in_body": [
+          28,
+          61
+        ],
+        "name": "sync_log_stock_allocations_insert",
+        "sql": "CREATE TRIGGER sync_log_stock_allocations_insert AFTER INSERT ON stock_allocations BEGIN\n  DELETE FROM sync_log WHERE entity = 'stock_allocations' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('stock_allocations', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 71,
+      "references": [
+        28,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 28,
+        "references_in_body": [
+          28,
+          61
+        ],
+        "name": "sync_log_stock_allocations_update",
+        "sql": "CREATE TRIGGER sync_log_stock_allocations_update AFTER UPDATE ON stock_allocations BEGIN\n  DELETE FROM sync_log WHERE entity = 'stock_allocations' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('stock_allocations', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 72,
+      "references": [
+        9,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 9,
+        "references_in_body": [
+          9,
+          61
+        ],
+        "name": "sync_log_losses_insert",
+        "sql": "CREATE TRIGGER sync_log_losses_insert AFTER INSERT ON losses BEGIN\n  DELETE FROM sync_log WHERE entity = 'losses' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('losses', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 73,
+      "references": [
+        9,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 9,
+        "references_in_body": [
+          9,
+          61
+        ],
+        "name": "sync_log_losses_update",
+        "sql": "CREATE TRIGGER sync_log_losses_update AFTER UPDATE ON losses BEGIN\n  DELETE FROM sync_log WHERE entity = 'losses' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('losses', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 74,
+      "references": [
+        5,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 5,
+        "references_in_body": [
+          5,
+          61
+        ],
+        "name": "sync_log_returns_insert",
+        "sql": "CREATE TRIGGER sync_log_returns_insert AFTER INSERT ON returns BEGIN\n  DELETE FROM sync_log WHERE entity = 'returns' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('returns', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 75,
+      "references": [
+        5,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 5,
+        "references_in_body": [
+          5,
+          61
+        ],
+        "name": "sync_log_returns_update",
+        "sql": "CREATE TRIGGER sync_log_returns_update AFTER UPDATE ON returns BEGIN\n  DELETE FROM sync_log WHERE entity = 'returns' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('returns', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 76,
+      "references": [
+        33,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 33,
+        "references_in_body": [
+          33,
+          61
+        ],
+        "name": "sync_log_return_items_insert",
+        "sql": "CREATE TRIGGER sync_log_return_items_insert AFTER INSERT ON return_items BEGIN\n  DELETE FROM sync_log WHERE entity = 'return_items' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('return_items', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 77,
+      "references": [
+        33,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 33,
+        "references_in_body": [
+          33,
+          61
+        ],
+        "name": "sync_log_return_items_update",
+        "sql": "CREATE TRIGGER sync_log_return_items_update AFTER UPDATE ON return_items BEGIN\n  DELETE FROM sync_log WHERE entity = 'return_items' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('return_items', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 78,
+      "references": [
+        34,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 34,
+        "references_in_body": [
+          34,
+          61
+        ],
+        "name": "sync_log_suppliers_insert",
+        "sql": "CREATE TRIGGER sync_log_suppliers_insert AFTER INSERT ON suppliers BEGIN\n  DELETE FROM sync_log WHERE entity = 'suppliers' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('suppliers', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 79,
+      "references": [
+        34,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 34,
+        "references_in_body": [
+          34,
+          61
+        ],
+        "name": "sync_log_suppliers_update",
+        "sql": "CREATE TRIGGER sync_log_suppliers_update AFTER UPDATE ON suppliers BEGIN\n  DELETE FROM sync_log WHERE entity = 'suppliers' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('suppliers', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 80,
+      "references": [
+        11,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 11,
+        "references_in_body": [
+          11,
+          61
+        ],
+        "name": "sync_log_supplier_payments_insert",
+        "sql": "CREATE TRIGGER sync_log_supplier_payments_insert AFTER INSERT ON supplier_payments BEGIN\n  DELETE FROM sync_log WHERE entity = 'supplier_payments' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('supplier_payments', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 81,
+      "references": [
+        11,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 11,
+        "references_in_body": [
+          11,
+          61
+        ],
+        "name": "sync_log_supplier_payments_update",
+        "sql": "CREATE TRIGGER sync_log_supplier_payments_update AFTER UPDATE ON supplier_payments BEGIN\n  DELETE FROM sync_log WHERE entity = 'supplier_payments' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('supplier_payments', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 82,
+      "references": [
+        19,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 19,
+        "references_in_body": [
+          19,
+          61
+        ],
+        "name": "sync_log_customers_insert",
+        "sql": "CREATE TRIGGER sync_log_customers_insert AFTER INSERT ON customers BEGIN\n  DELETE FROM sync_log WHERE entity = 'customers' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('customers', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 83,
+      "references": [
+        19,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 19,
+        "references_in_body": [
+          19,
+          61
+        ],
+        "name": "sync_log_customers_update",
+        "sql": "CREATE TRIGGER sync_log_customers_update AFTER UPDATE ON customers BEGIN\n  DELETE FROM sync_log WHERE entity = 'customers' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('customers', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 84,
+      "references": [
+        14,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 14,
+        "references_in_body": [
+          14,
+          61
+        ],
+        "name": "sync_log_customer_payments_insert",
+        "sql": "CREATE TRIGGER sync_log_customer_payments_insert AFTER INSERT ON customer_payments BEGIN\n  DELETE FROM sync_log WHERE entity = 'customer_payments' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('customer_payments', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 85,
+      "references": [
+        14,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 14,
+        "references_in_body": [
+          14,
+          61
+        ],
+        "name": "sync_log_customer_payments_update",
+        "sql": "CREATE TRIGGER sync_log_customer_payments_update AFTER UPDATE ON customer_payments BEGIN\n  DELETE FROM sync_log WHERE entity = 'customer_payments' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('customer_payments', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 86,
+      "references": [
+        1,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 1,
+        "references_in_body": [
+          1,
+          61
+        ],
+        "name": "sync_log_sales_insert",
+        "sql": "CREATE TRIGGER sync_log_sales_insert AFTER INSERT ON sales BEGIN\n  DELETE FROM sync_log WHERE entity = 'sales' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('sales', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 87,
+      "references": [
+        1,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 1,
+        "references_in_body": [
+          1,
+          61
+        ],
+        "name": "sync_log_sales_update",
+        "sql": "CREATE TRIGGER sync_log_sales_update AFTER UPDATE ON sales BEGIN\n  DELETE FROM sync_log WHERE entity = 'sales' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('sales', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 88,
+      "references": [
+        32,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 32,
+        "references_in_body": [
+          32,
+          61
+        ],
+        "name": "sync_log_sale_items_insert",
+        "sql": "CREATE TRIGGER sync_log_sale_items_insert AFTER INSERT ON sale_items BEGIN\n  DELETE FROM sync_log WHERE entity = 'sale_items' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('sale_items', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 89,
+      "references": [
+        32,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 32,
+        "references_in_body": [
+          32,
+          61
+        ],
+        "name": "sync_log_sale_items_update",
+        "sql": "CREATE TRIGGER sync_log_sale_items_update AFTER UPDATE ON sale_items BEGIN\n  DELETE FROM sync_log WHERE entity = 'sale_items' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('sale_items', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 90,
+      "references": [
+        35,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 35,
+        "references_in_body": [
+          35,
+          61
+        ],
+        "name": "sync_log_users_insert",
+        "sql": "CREATE TRIGGER sync_log_users_insert AFTER INSERT ON users BEGIN\n  DELETE FROM sync_log WHERE entity = 'users' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('users', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 91,
+      "references": [
+        35,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 35,
+        "references_in_body": [
+          35,
+          61
+        ],
+        "name": "sync_log_users_update",
+        "sql": "CREATE TRIGGER sync_log_users_update AFTER UPDATE ON users BEGIN\n  DELETE FROM sync_log WHERE entity = 'users' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('users', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 92,
+      "references": [
+        36,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 36,
+        "references_in_body": [
+          36,
+          61
+        ],
+        "name": "sync_log_failed_logins_insert",
+        "sql": "CREATE TRIGGER sync_log_failed_logins_insert AFTER INSERT ON failed_logins BEGIN\n  DELETE FROM sync_log WHERE entity = 'failed_logins' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('failed_logins', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 93,
+      "references": [
+        36,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 36,
+        "references_in_body": [
+          36,
+          61
+        ],
+        "name": "sync_log_failed_logins_update",
+        "sql": "CREATE TRIGGER sync_log_failed_logins_update AFTER UPDATE ON failed_logins BEGIN\n  DELETE FROM sync_log WHERE entity = 'failed_logins' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('failed_logins', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 94,
+      "references": [
+        21,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 21,
+        "references_in_body": [
+          21,
+          61
+        ],
+        "name": "sync_log_change_logs_insert",
+        "sql": "CREATE TRIGGER sync_log_change_logs_insert AFTER INSERT ON change_logs BEGIN\n  DELETE FROM sync_log WHERE entity = 'change_logs' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('change_logs', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 95,
+      "references": [
+        21,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 21,
+        "references_in_body": [
+          21,
+          61
+        ],
+        "name": "sync_log_change_logs_update",
+        "sql": "CREATE TRIGGER sync_log_change_logs_update AFTER UPDATE ON change_logs BEGIN\n  DELETE FROM sync_log WHERE entity = 'change_logs' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('change_logs', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 96,
+      "references": [
+        37,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 37,
+        "references_in_body": [
+          37,
+          61
+        ],
+        "name": "sync_log_devices_insert",
+        "sql": "CREATE TRIGGER sync_log_devices_insert AFTER INSERT ON devices BEGIN\n  DELETE FROM sync_log WHERE entity = 'devices' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('devices', new.id);\nEND;"
+      }
+    },
+    {
+      "id": 97,
+      "references": [
+        37,
+        61
+      ],
+      "type": "trigger",
+      "data": {
+        "on": 37,
+        "references_in_body": [
+          37,
+          61
+        ],
+        "name": "sync_log_devices_update",
+        "sql": "CREATE TRIGGER sync_log_devices_update AFTER UPDATE ON devices BEGIN\n  DELETE FROM sync_log WHERE entity = 'devices' AND row_id = new.id;\n  INSERT INTO sync_log (entity, row_id) VALUES ('devices', new.id);\nEND;"
+      }
+    }
+  ],
+  "fixed_sql": [
+    {
+      "name": "sheet_queue",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"sheet_queue\" (\"seq\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"kind\" TEXT NOT NULL, \"row_id\" TEXT NOT NULL, UNIQUE(kind, row_id));"
+        }
+      ]
+    },
+    {
+      "name": "sales",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"sales\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"number\" INTEGER NOT NULL, \"subtotal\" INTEGER NOT NULL, \"discount\" INTEGER NOT NULL DEFAULT 0, \"total\" INTEGER NOT NULL, \"paid_now\" INTEGER NOT NULL, \"customer_id\" TEXT NULL, PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "shops",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"shops\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"name\" TEXT NOT NULL, \"address1\" TEXT NOT NULL DEFAULT '', \"address2\" TEXT NOT NULL DEFAULT '', \"phone\" TEXT NOT NULL DEFAULT '', \"footer\" TEXT NOT NULL DEFAULT '', \"shop_secret\" TEXT NOT NULL, \"expiry_warn_days\" INTEGER NOT NULL DEFAULT 3, \"max_worker_discount_pct\" INTEGER NOT NULL DEFAULT 10, \"workers_sell_without_stock\" INTEGER NOT NULL DEFAULT 0 CHECK (\"workers_sell_without_stock\" IN (0, 1)), \"sheet_url\" TEXT NULL, \"sheet_write_key\" TEXT NULL, PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "app_settings",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"app_settings\" (\"key\" TEXT NOT NULL, \"value\" TEXT NOT NULL, PRIMARY KEY (\"key\"));"
+        }
+      ]
+    },
+    {
+      "name": "sheet_sales_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_sales_insert AFTER INSERT ON sales WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND(new.device_id = (SELECT value FROM app_settings WHERE \"key\" = 'device_id') OR coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker')BEGIN DELETE FROM sheet_queue WHERE kind = 'sale' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES ('sale', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "returns",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"returns\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"sale_id\" TEXT NULL, \"total\" INTEGER NOT NULL, \"refund_mode\" TEXT NOT NULL DEFAULT 'cash', \"reason\" TEXT NULL, \"exchange_sale_id\" TEXT NULL, \"approved_by\" TEXT NULL, PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "sheet_returns_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_returns_insert AFTER INSERT ON returns WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND(new.device_id = (SELECT value FROM app_settings WHERE \"key\" = 'device_id') OR coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker')BEGIN DELETE FROM sheet_queue WHERE kind = 'return' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES ('return', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "deliveries",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"deliveries\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"product_id\" TEXT NOT NULL, \"quantity\" INTEGER NOT NULL, \"buy_price\" INTEGER NOT NULL, \"expiry_date\" TEXT NULL, \"supplier_id\" TEXT NULL, \"received_at\" TEXT NOT NULL, \"note\" TEXT NULL, PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "sheet_deliveries_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_deliveries_insert AFTER INSERT ON deliveries WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND(new.device_id = (SELECT value FROM app_settings WHERE \"key\" = 'device_id') OR coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker')BEGIN DELETE FROM sheet_queue WHERE kind = 'delivery' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES ('delivery', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "losses",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"losses\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"product_id\" TEXT NOT NULL, \"quantity\" INTEGER NOT NULL, \"reason\" TEXT NOT NULL, \"note\" TEXT NULL, \"unit_cost\" INTEGER NOT NULL, \"delivery_id\" TEXT NULL, \"return_item_id\" TEXT NULL, PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "sheet_losses_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_losses_insert AFTER INSERT ON losses WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND(new.device_id = (SELECT value FROM app_settings WHERE \"key\" = 'device_id') OR coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker')BEGIN DELETE FROM sheet_queue WHERE kind = 'loss' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES ('loss', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "supplier_payments",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"supplier_payments\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"supplier_id\" TEXT NOT NULL, \"amount\" INTEGER NOT NULL, \"note\" TEXT NULL, \"status\" TEXT NOT NULL, \"validated_by\" TEXT NULL, \"validated_at\" TEXT NULL, PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "sheet_supplier_payments_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_supplier_payments_insert AFTER INSERT ON supplier_payments WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND(new.device_id = (SELECT value FROM app_settings WHERE \"key\" = 'device_id') OR coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker')BEGIN DELETE FROM sheet_queue WHERE kind = 'supplierPayment' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES ('supplierPayment', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sheet_supplier_payments_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_supplier_payments_update AFTER UPDATE ON supplier_payments WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND(new.device_id = (SELECT value FROM app_settings WHERE \"key\" = 'device_id') OR coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker')BEGIN DELETE FROM sheet_queue WHERE kind = 'supplierPayment' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES ('supplierPayment', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "customer_payments",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"customer_payments\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"customer_id\" TEXT NOT NULL, \"amount\" INTEGER NOT NULL, \"note\" TEXT NULL, PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "sheet_customer_payments_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_customer_payments_insert AFTER INSERT ON customer_payments WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND(new.device_id = (SELECT value FROM app_settings WHERE \"key\" = 'device_id') OR coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker')BEGIN DELETE FROM sheet_queue WHERE kind = 'customerPayment' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES ('customerPayment', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sheet_credit_sales",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_credit_sales AFTER INSERT ON sales WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker' AND new.customer_id IS NOT NULL BEGIN DELETE FROM sheet_queue WHERE kind = 'credit' AND row_id = new.customer_id;INSERT INTO sheet_queue (kind, row_id) VALUES ('credit', new.customer_id);END"
+        }
+      ]
+    },
+    {
+      "name": "sheet_credit_payments",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_credit_payments AFTER INSERT ON customer_payments WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker' BEGIN DELETE FROM sheet_queue WHERE kind = 'credit' AND row_id = new.customer_id;INSERT INTO sheet_queue (kind, row_id) VALUES ('credit', new.customer_id);END"
+        }
+      ]
+    },
+    {
+      "name": "sheet_credit_returns",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_credit_returns AFTER INSERT ON returns WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker' AND new.refund_mode = 'credit' AND (SELECT customer_id FROM sales WHERE id = new.sale_id) IS NOT NULL BEGIN DELETE FROM sheet_queue WHERE kind = 'credit' AND row_id = (SELECT customer_id FROM sales WHERE id = new.sale_id);INSERT INTO sheet_queue (kind, row_id) VALUES ('credit', (SELECT customer_id FROM sales WHERE id = new.sale_id));END"
+        }
+      ]
+    },
+    {
+      "name": "customers",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"customers\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"name\" TEXT NOT NULL, \"phone\" TEXT NOT NULL DEFAULT '', \"note\" TEXT NULL, \"credit_limit\" INTEGER NULL, \"active\" INTEGER NOT NULL DEFAULT 1 CHECK (\"active\" IN (0, 1)), PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "sheet_credit_customers",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_credit_customers AFTER UPDATE ON customers WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker' BEGIN DELETE FROM sheet_queue WHERE kind = 'credit' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES ('credit', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "change_logs",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"change_logs\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"entity\" TEXT NOT NULL, \"entity_id\" TEXT NOT NULL, \"field\" TEXT NOT NULL, \"old_value\" TEXT NULL, \"new_value\" TEXT NULL, PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "sheet_changes_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_changes_insert AFTER INSERT ON change_logs WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND new.entity = 'product' AND(new.device_id = (SELECT value FROM app_settings WHERE \"key\" = 'device_id') OR coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker')BEGIN DELETE FROM sheet_queue WHERE kind = 'change' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES ('change', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "products",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"products\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"name\" TEXT NOT NULL, \"barcode\" TEXT NOT NULL, \"sell_price\" INTEGER NOT NULL, \"buy_price\" INTEGER NOT NULL DEFAULT 0, \"category_id\" TEXT NULL, \"low_stock_threshold\" INTEGER NOT NULL DEFAULT 0, \"archived\" INTEGER NOT NULL DEFAULT 0 CHECK (\"archived\" IN (0, 1)), PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "sheet_products_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_products_insert AFTER INSERT ON products WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker' BEGIN DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sheet_products_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_products_update AFTER UPDATE ON products WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker' BEGIN DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.id;INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sheet_product_deliveries_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_product_deliveries_insert AFTER INSERT ON deliveries WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker' BEGIN DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.product_id;INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.product_id);END"
+        }
+      ]
+    },
+    {
+      "name": "sheet_product_deliveries_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_product_deliveries_update AFTER UPDATE ON deliveries WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker' BEGIN DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.product_id;INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.product_id);END"
+        }
+      ]
+    },
+    {
+      "name": "stock_allocations",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"stock_allocations\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"product_id\" TEXT NOT NULL, \"delivery_id\" TEXT NULL, \"quantity\" INTEGER NOT NULL, \"source\" TEXT NOT NULL, \"source_id\" TEXT NOT NULL, PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "sheet_product_allocations_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_product_allocations_insert AFTER INSERT ON stock_allocations WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker' BEGIN DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.product_id;INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.product_id);END"
+        }
+      ]
+    },
+    {
+      "name": "sheet_product_allocations_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sheet_product_allocations_update AFTER UPDATE ON stock_allocations WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL AND coalesce((SELECT value FROM app_settings WHERE \"key\" = 'sync_role'), '') <> 'worker' BEGIN DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.product_id;INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.product_id);END"
+        }
+      ]
+    },
+    {
+      "name": "categories",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"categories\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"name\" TEXT NOT NULL, PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "sale_items",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"sale_items\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"sale_id\" TEXT NOT NULL, \"product_id\" TEXT NOT NULL, \"product_name\" TEXT NOT NULL, \"sell_price\" INTEGER NOT NULL, \"unit_cost\" INTEGER NOT NULL, \"quantity\" INTEGER NOT NULL, PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "return_items",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"return_items\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"return_id\" TEXT NOT NULL, \"sale_item_id\" TEXT NULL, \"product_id\" TEXT NOT NULL, \"quantity\" INTEGER NOT NULL, \"back_to_stock\" INTEGER NOT NULL CHECK (\"back_to_stock\" IN (0, 1)), \"refund\" INTEGER NOT NULL, \"unit_cost\" INTEGER NULL, PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "suppliers",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"suppliers\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"name\" TEXT NOT NULL, \"phone\" TEXT NOT NULL DEFAULT '', \"note\" TEXT NULL, \"active\" INTEGER NOT NULL DEFAULT 1 CHECK (\"active\" IN (0, 1)), PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "users",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"users\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"name\" TEXT NOT NULL, \"phone\" TEXT NOT NULL DEFAULT '', \"role\" TEXT NOT NULL, \"pin_hash\" TEXT NOT NULL, \"pin_salt\" TEXT NOT NULL, \"active\" INTEGER NOT NULL DEFAULT 1 CHECK (\"active\" IN (0, 1)), \"pin_length\" INTEGER NOT NULL DEFAULT 4, \"locked_out\" INTEGER NOT NULL DEFAULT 0 CHECK (\"locked_out\" IN (0, 1)), \"recovery_hash\" TEXT NULL, \"recovery_salt\" TEXT NULL, PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "failed_logins",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"failed_logins\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"account_id\" TEXT NOT NULL, \"kind\" TEXT NOT NULL, \"seen\" INTEGER NOT NULL DEFAULT 0 CHECK (\"seen\" IN (0, 1)), PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "devices",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"devices\" (\"id\" TEXT NOT NULL, \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, \"device_id\" TEXT NOT NULL, \"user_id\" TEXT NULL, \"deleted\" INTEGER NOT NULL DEFAULT 0 CHECK (\"deleted\" IN (0, 1)), \"code\" TEXT NOT NULL, \"name\" TEXT NOT NULL, \"role\" TEXT NOT NULL, PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "alerts",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"alerts\" (\"id\" TEXT NOT NULL, \"type\" TEXT NOT NULL, \"ref_id\" TEXT NOT NULL, \"data\" TEXT NOT NULL DEFAULT '{}', \"owner_only\" INTEGER NOT NULL CHECK (\"owner_only\" IN (0, 1)), \"active\" INTEGER NOT NULL DEFAULT 1 CHECK (\"active\" IN (0, 1)), \"created_at\" TEXT NOT NULL, \"updated_at\" TEXT NOT NULL, PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "alert_reads",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"alert_reads\" (\"alert_id\" TEXT NOT NULL, \"user_id\" TEXT NOT NULL, \"read_at\" TEXT NOT NULL, PRIMARY KEY (\"alert_id\", \"user_id\"));"
+        }
+      ]
+    },
+    {
+      "name": "live_sales",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"live_sales\" (\"id\" TEXT NOT NULL, \"at\" TEXT NOT NULL, \"ticket\" TEXT NOT NULL, \"seller\" TEXT NOT NULL, \"kind\" TEXT NOT NULL, \"total\" INTEGER NOT NULL, \"mine\" INTEGER NOT NULL CHECK (\"mine\" IN (0, 1)), \"notified\" INTEGER NOT NULL DEFAULT 0 CHECK (\"notified\" IN (0, 1)), PRIMARY KEY (\"id\"));"
+        }
+      ]
+    },
+    {
+      "name": "products_barcode",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX products_barcode ON products (barcode)"
+        }
+      ]
+    },
+    {
+      "name": "deliveries_product",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX deliveries_product ON deliveries (product_id)"
+        }
+      ]
+    },
+    {
+      "name": "deliveries_supplier",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX deliveries_supplier ON deliveries (supplier_id)"
+        }
+      ]
+    },
+    {
+      "name": "stock_allocations_product",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX stock_allocations_product ON stock_allocations (product_id)"
+        }
+      ]
+    },
+    {
+      "name": "stock_allocations_source",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX stock_allocations_source ON stock_allocations (source_id)"
+        }
+      ]
+    },
+    {
+      "name": "losses_product",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX losses_product ON losses (product_id)"
+        }
+      ]
+    },
+    {
+      "name": "returns_sale",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX returns_sale ON returns (sale_id)"
+        }
+      ]
+    },
+    {
+      "name": "returns_exchange_sale",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX returns_exchange_sale ON returns (exchange_sale_id)"
+        }
+      ]
+    },
+    {
+      "name": "return_items_sale_item",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX return_items_sale_item ON return_items (sale_item_id)"
+        }
+      ]
+    },
+    {
+      "name": "supplier_payments_supplier",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX supplier_payments_supplier ON supplier_payments (supplier_id)"
+        }
+      ]
+    },
+    {
+      "name": "supplier_payments_status",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX supplier_payments_status ON supplier_payments (status)"
+        }
+      ]
+    },
+    {
+      "name": "customer_payments_customer",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX customer_payments_customer ON customer_payments (customer_id)"
+        }
+      ]
+    },
+    {
+      "name": "sales_created",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX sales_created ON sales (created_at)"
+        }
+      ]
+    },
+    {
+      "name": "sales_customer",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX sales_customer ON sales (customer_id)"
+        }
+      ]
+    },
+    {
+      "name": "sale_items_sale",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX sale_items_sale ON sale_items (sale_id)"
+        }
+      ]
+    },
+    {
+      "name": "sale_items_product",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX sale_items_product ON sale_items (product_id)"
+        }
+      ]
+    },
+    {
+      "name": "failed_logins_seen",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX failed_logins_seen ON failed_logins (seen)"
+        }
+      ]
+    },
+    {
+      "name": "change_logs_entity",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX change_logs_entity ON change_logs (entity_id)"
+        }
+      ]
+    },
+    {
+      "name": "alerts_active",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX alerts_active ON alerts (active)"
+        }
+      ]
+    },
+    {
+      "name": "live_sales_at",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE INDEX live_sales_at ON live_sales (at)"
+        }
+      ]
+    },
+    {
+      "name": "sync_log",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TABLE IF NOT EXISTS \"sync_log\" (\"seq\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"entity\" TEXT NOT NULL, \"row_id\" TEXT NOT NULL, UNIQUE(entity, row_id));"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_shops_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_shops_insert AFTER INSERT ON shops BEGIN DELETE FROM sync_log WHERE entity = 'shops' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('shops', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_shops_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_shops_update AFTER UPDATE ON shops BEGIN DELETE FROM sync_log WHERE entity = 'shops' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('shops', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_categories_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_categories_insert AFTER INSERT ON categories BEGIN DELETE FROM sync_log WHERE entity = 'categories' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('categories', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_categories_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_categories_update AFTER UPDATE ON categories BEGIN DELETE FROM sync_log WHERE entity = 'categories' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('categories', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_products_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_products_insert AFTER INSERT ON products BEGIN DELETE FROM sync_log WHERE entity = 'products' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('products', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_products_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_products_update AFTER UPDATE ON products BEGIN DELETE FROM sync_log WHERE entity = 'products' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('products', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_deliveries_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_deliveries_insert AFTER INSERT ON deliveries BEGIN DELETE FROM sync_log WHERE entity = 'deliveries' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('deliveries', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_deliveries_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_deliveries_update AFTER UPDATE ON deliveries BEGIN DELETE FROM sync_log WHERE entity = 'deliveries' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('deliveries', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_stock_allocations_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_stock_allocations_insert AFTER INSERT ON stock_allocations BEGIN DELETE FROM sync_log WHERE entity = 'stock_allocations' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('stock_allocations', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_stock_allocations_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_stock_allocations_update AFTER UPDATE ON stock_allocations BEGIN DELETE FROM sync_log WHERE entity = 'stock_allocations' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('stock_allocations', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_losses_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_losses_insert AFTER INSERT ON losses BEGIN DELETE FROM sync_log WHERE entity = 'losses' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('losses', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_losses_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_losses_update AFTER UPDATE ON losses BEGIN DELETE FROM sync_log WHERE entity = 'losses' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('losses', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_returns_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_returns_insert AFTER INSERT ON returns BEGIN DELETE FROM sync_log WHERE entity = 'returns' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('returns', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_returns_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_returns_update AFTER UPDATE ON returns BEGIN DELETE FROM sync_log WHERE entity = 'returns' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('returns', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_return_items_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_return_items_insert AFTER INSERT ON return_items BEGIN DELETE FROM sync_log WHERE entity = 'return_items' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('return_items', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_return_items_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_return_items_update AFTER UPDATE ON return_items BEGIN DELETE FROM sync_log WHERE entity = 'return_items' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('return_items', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_suppliers_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_suppliers_insert AFTER INSERT ON suppliers BEGIN DELETE FROM sync_log WHERE entity = 'suppliers' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('suppliers', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_suppliers_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_suppliers_update AFTER UPDATE ON suppliers BEGIN DELETE FROM sync_log WHERE entity = 'suppliers' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('suppliers', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_supplier_payments_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_supplier_payments_insert AFTER INSERT ON supplier_payments BEGIN DELETE FROM sync_log WHERE entity = 'supplier_payments' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('supplier_payments', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_supplier_payments_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_supplier_payments_update AFTER UPDATE ON supplier_payments BEGIN DELETE FROM sync_log WHERE entity = 'supplier_payments' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('supplier_payments', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_customers_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_customers_insert AFTER INSERT ON customers BEGIN DELETE FROM sync_log WHERE entity = 'customers' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('customers', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_customers_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_customers_update AFTER UPDATE ON customers BEGIN DELETE FROM sync_log WHERE entity = 'customers' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('customers', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_customer_payments_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_customer_payments_insert AFTER INSERT ON customer_payments BEGIN DELETE FROM sync_log WHERE entity = 'customer_payments' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('customer_payments', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_customer_payments_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_customer_payments_update AFTER UPDATE ON customer_payments BEGIN DELETE FROM sync_log WHERE entity = 'customer_payments' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('customer_payments', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_sales_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_sales_insert AFTER INSERT ON sales BEGIN DELETE FROM sync_log WHERE entity = 'sales' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('sales', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_sales_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_sales_update AFTER UPDATE ON sales BEGIN DELETE FROM sync_log WHERE entity = 'sales' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('sales', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_sale_items_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_sale_items_insert AFTER INSERT ON sale_items BEGIN DELETE FROM sync_log WHERE entity = 'sale_items' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('sale_items', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_sale_items_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_sale_items_update AFTER UPDATE ON sale_items BEGIN DELETE FROM sync_log WHERE entity = 'sale_items' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('sale_items', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_users_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_users_insert AFTER INSERT ON users BEGIN DELETE FROM sync_log WHERE entity = 'users' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('users', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_users_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_users_update AFTER UPDATE ON users BEGIN DELETE FROM sync_log WHERE entity = 'users' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('users', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_failed_logins_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_failed_logins_insert AFTER INSERT ON failed_logins BEGIN DELETE FROM sync_log WHERE entity = 'failed_logins' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('failed_logins', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_failed_logins_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_failed_logins_update AFTER UPDATE ON failed_logins BEGIN DELETE FROM sync_log WHERE entity = 'failed_logins' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('failed_logins', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_change_logs_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_change_logs_insert AFTER INSERT ON change_logs BEGIN DELETE FROM sync_log WHERE entity = 'change_logs' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('change_logs', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_change_logs_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_change_logs_update AFTER UPDATE ON change_logs BEGIN DELETE FROM sync_log WHERE entity = 'change_logs' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('change_logs', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_devices_insert",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_devices_insert AFTER INSERT ON devices BEGIN DELETE FROM sync_log WHERE entity = 'devices' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('devices', new.id);END"
+        }
+      ]
+    },
+    {
+      "name": "sync_log_devices_update",
+      "sql": [
+        {
+          "dialect": "sqlite",
+          "sql": "CREATE TRIGGER sync_log_devices_update AFTER UPDATE ON devices BEGIN DELETE FROM sync_log WHERE entity = 'devices' AND row_id = new.id;INSERT INTO sync_log (entity, row_id) VALUES ('devices', new.id);END"
+        }
+      ]
+    }
+  ]
+}

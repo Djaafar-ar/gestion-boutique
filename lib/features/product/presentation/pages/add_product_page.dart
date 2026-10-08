@@ -1,3 +1,4 @@
+import 'package:billing_app/core/scanner/scan_listener.dart';
 import 'package:billing_app/core/widgets/input_label.dart';
 import 'package:billing_app/core/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,10 @@ import '../../../../core/utils/app_validators.dart';
 import '../../../../core/widgets/app_snack.dart';
 
 class AddProductPage extends StatefulWidget {
-  const AddProductPage({super.key});
+  /// A barcode scanned elsewhere ("Créer le produit").
+  final String? initialBarcode;
+
+  const AddProductPage({super.key, this.initialBarcode});
 
   @override
   State<AddProductPage> createState() => _AddProductPageState();
@@ -21,7 +25,8 @@ class AddProductPage extends StatefulWidget {
 
 class _AddProductPageState extends State<AddProductPage> {
   final _formKey = GlobalKey<FormState>();
-  final _barcodeController = TextEditingController();
+  late final _barcodeController =
+      TextEditingController(text: widget.initialBarcode);
   final _values = ProductFormValues();
 
   @override
@@ -68,50 +73,59 @@ class _AddProductPageState extends State<AddProductPage> {
     }
   }
 
+  /// A barcode from the Bluetooth scanner fills the barcode field.
+  bool _onDeviceScan(String code) {
+    _barcodeController.text = code;
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
 
-    return Scaffold(
-        appBar: AppBar(title: Text(l10n.addProduct)),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  InputLabel(text: l10n.barcodeLabel),
-                  TextFormField(
-                    controller: _barcodeController,
-                    decoration: InputDecoration(
-                      hintText: l10n.barcodeHint,
-                      suffixIcon: IconButton(
-                        icon:
-                            Icon(Icons.qr_code_scanner, color: scheme.primary),
-                        tooltip: l10n.scanBarcodeTitle,
-                        onPressed: _scanBarcode,
+    return ScanListener(
+      onScan: _onDeviceScan,
+      child: Scaffold(
+          appBar: AppBar(title: Text(l10n.addProduct)),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InputLabel(text: l10n.barcodeLabel),
+                    TextFormField(
+                      controller: _barcodeController,
+                      decoration: InputDecoration(
+                        hintText: l10n.barcodeHint,
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.qr_code_scanner,
+                              color: scheme.primary),
+                          tooltip: l10n.scanBarcodeTitle,
+                          onPressed: _scanBarcode,
+                        ),
                       ),
+                      validator: AppValidators.required(l10n.barcodeRequired),
                     ),
-                    validator: AppValidators.required(l10n.barcodeRequired),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(l10n.scanHelp,
-                      style: TextStyle(
-                          fontSize: 12, color: scheme.onSurfaceVariant)),
-                  const SizedBox(height: 20),
-                  ProductFormFields(values: _values),
-                ],
+                    const SizedBox(height: 6),
+                    Text(l10n.scanHelp,
+                        style: TextStyle(
+                            fontSize: 12, color: scheme.onSurfaceVariant)),
+                    const SizedBox(height: 20),
+                    ProductFormFields(values: _values),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        bottomNavigationBar: PrimaryButton(
-          onPressed: _submit,
-          icon: Icons.add_circle,
-          label: l10n.addProduct,
-        ));
+          bottomNavigationBar: PrimaryButton(
+            onPressed: _submit,
+            icon: Icons.add_circle,
+            label: l10n.addProduct,
+          )),
+    );
   }
 }

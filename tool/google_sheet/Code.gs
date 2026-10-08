@@ -12,12 +12,17 @@
  * Requests without the right signature, too old, or sent twice are refused.
  *
  * Installation: see docs/google_sheet_setup.md (menu "Boutique" →
- * "1. Installer").
+ * "1. Installer"). Updating: paste the new code, save, then "Déployer →
+ * Gérer les déploiements → Modifier → Nouvelle version", then run
+ * "1. Installer" again: it adds the new tabs and keeps every row.
+ *
+ * The tabs "Customer credit" and "Produits" (debts, buying prices) can
+ * only be written with the READ key, so only by the owner's phone.
  *
  * @OnlyCurrentDoc
  */
 
-var VERSION = 1;
+var VERSION = 2; // 2: Produits, Historique produits, Google account
 
 // The tabs that receive rows from the phones. The phones send the short
 // code (S, I...) to keep mobile data small. Columns: see the app
@@ -57,9 +62,22 @@ var TABS = {
     dates: ['B'], texts: ['C'], money: ['E']
   },
   C: {
-    name: 'Customer credit', upsert: true,
+    name: 'Customer credit', upsert: true, ownerOnly: true,
     headers: ['ID', 'Client', 'Dette actuelle', 'Dernier paiement'],
     dates: ['D'], texts: [], money: ['C']
+  },
+  // Version 2.
+  H: {
+    name: 'Historique produits',
+    headers: ['ID', 'Date', 'Heure', 'Produit', 'Changement', 'Avant',
+      'Après', 'Par', 'Téléphone'],
+    dates: ['B'], texts: ['C'], money: []
+  },
+  R: {
+    name: 'Produits', upsert: true, ownerOnly: true,
+    headers: ['ID', 'Produit', 'Code-barres', 'Catégorie', 'Prix de vente',
+      "Prix d'achat", 'Stock', 'Expiration la plus proche', 'Archivé'],
+    dates: ['H'], texts: ['C'], money: ['E', 'F']
   }
 };
 
@@ -302,9 +320,12 @@ function doPost(e) {
     }
     switch (req.op) {
       case 'ping':
-        return reply_({ ok: true, name: SpreadsheetApp.getActive().getName(), v: VERSION });
+        var info = { ok: true, name: SpreadsheetApp.getActive().getName(), v: VERSION };
+        // The owner's phone shows "Compte Google : ...".
+        if (req.k === 'r') info.email = Session.getEffectiveUser().getEmail();
+        return reply_(info);
       case 'push':
-        return reply_(push_(body));
+        return reply_(push_(body, req.k === 'r'));
       case 'live':
         return reply_(live_(body));
       case 'summary':
@@ -371,7 +392,7 @@ function tab_(ss, code) {
  * the same sale sent by a worker phone and by the owner's phone appears
  * once. Supplier payments and customer credit are updated in place.
  */
-function push_(body) {
+function push_(body, owner) {
   var records = (body.r || []).slice(0, 500);
   var lock = LockService.getScriptLock();
   lock.waitLock(30000);
@@ -399,6 +420,7 @@ function push_(body) {
       Object.keys(tabs).forEach(function (code) {
         var tab = TABS[code];
         if (!tab || !!tab.upsert !== !!record.u) return;
+        if (tab.ownerOnly && !owner) return; // needs the read key
         var target = tab.upsert ? upserts : append;
         (tabs[code] || []).forEach(function (row) {
           (target[code] = target[code] || []).push(clean_(row, tab));

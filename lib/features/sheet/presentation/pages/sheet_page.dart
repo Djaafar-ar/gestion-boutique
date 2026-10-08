@@ -23,8 +23,19 @@ String sheetErrorText(AppLocalizations l10n, SheetError error) =>
 /// Plus → Google Sheet: the state of the sending on every phone; on the
 /// owner's phone also the setup, live sales, the evening report and the
 /// Google Drive backup.
-class SheetPage extends StatelessWidget {
+class SheetPage extends StatefulWidget {
   const SheetPage({super.key});
+
+  @override
+  State<SheetPage> createState() => _SheetPageState();
+}
+
+class _SheetPageState extends State<SheetPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<SheetCubit>().refreshAccount();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -263,6 +274,11 @@ class _StatusCard extends StatelessWidget {
               ),
             ]),
             const SizedBox(height: 12),
+            if (state.canRead) ...[
+              Text(l10n.sheetAccount(state.account ?? l10n.sheetAccountUnknown),
+                  style: const TextStyle(fontWeight: FontWeight.w500)),
+              const SizedBox(height: 4),
+            ],
             Text(state.pending == 0
                 ? l10n.sheetAllSent
                 : l10n.sheetPending(state.pending)),
@@ -355,8 +371,7 @@ class _DriveCard extends StatelessWidget {
             ],
             const SizedBox(height: 8),
             Text(l10n.driveInfo,
-                style:
-                    TextStyle(fontSize: 12, color: scheme.onSurfaceVariant)),
+                style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant)),
             const SizedBox(height: 12),
             Align(
               alignment: AlignmentDirectional.centerEnd,

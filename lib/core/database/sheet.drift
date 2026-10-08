@@ -117,3 +117,66 @@ BEGIN
   DELETE FROM sheet_queue WHERE kind = 'credit' AND row_id = new.id;
   INSERT INTO sheet_queue (kind, row_id) VALUES ('credit', new.id);
 END;
+
+-- Phase 8b: the history of product changes (names, prices...), and the
+-- "Produits" tab (owner's phone only: it has the buying prices). A
+-- product goes to the queue again when it changes or when its stock
+-- moves (delivery, sale, loss, return).
+
+CREATE TRIGGER sheet_changes_insert AFTER INSERT ON change_logs
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND new.entity = 'product'
+    AND (new.device_id = (SELECT value FROM app_settings WHERE "key" = 'device_id')
+    OR coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker')
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'change' AND row_id = new.id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('change', new.id);
+END;
+
+CREATE TRIGGER sheet_products_insert AFTER INSERT ON products
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker'
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.id);
+END;
+
+CREATE TRIGGER sheet_products_update AFTER UPDATE ON products
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker'
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.id);
+END;
+
+CREATE TRIGGER sheet_product_deliveries_insert AFTER INSERT ON deliveries
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker'
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.product_id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.product_id);
+END;
+
+CREATE TRIGGER sheet_product_deliveries_update AFTER UPDATE ON deliveries
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker'
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.product_id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.product_id);
+END;
+
+CREATE TRIGGER sheet_product_allocations_insert AFTER INSERT ON stock_allocations
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker'
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.product_id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.product_id);
+END;
+
+CREATE TRIGGER sheet_product_allocations_update AFTER UPDATE ON stock_allocations
+  WHEN (SELECT sheet_url FROM shops WHERE deleted = 0 LIMIT 1) IS NOT NULL
+    AND coalesce((SELECT value FROM app_settings WHERE "key" = 'sync_role'), '') <> 'worker'
+BEGIN
+  DELETE FROM sheet_queue WHERE kind = 'product' AND row_id = new.product_id;
+  INSERT INTO sheet_queue (kind, row_id) VALUES ('product', new.product_id);
+END;

@@ -1631,5 +1631,78 @@
   "restoreErrNewer": "Cette sauvegarde vient d'une version plus récente de l'application. Mettez d'abord ce téléphone à jour.",
   "restoreErrOtherShop": "Cette sauvegarde est celle d'une autre boutique.",
   "restoreErrPin": "Code PIN du patron incorrect.",
-  "restoreErrWorker": "Un téléphone d'employé reçoit ses données du téléphone principal : restaurez sur le téléphone principal."
+  "restoreErrWorker": "Un téléphone d'employé reçoit ses données du téléphone principal : restaurez sur le téléphone principal.",
+  "scanUnknown": "Code-barres inconnu : {code}",
+  "@scanUnknown": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "scanCreateProduct": "Créer le produit",
+  "scanNotOnTicket": "« {name} » n'est pas sur ce ticket (ou déjà rendu).",
+  "@scanNotOnTicket": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "scanGoesTo": "La douchette ajoute aux :",
+  "scanToReturned": "Articles rapportés",
+  "scanToTaken": "Articles pris",
+  "scannerTitle": "Douchette (lecteur de codes-barres)",
+  "scannerSub": "Lecteur Bluetooth : appairage et test",
+  "scannerTestTitle": "Tester un scan",
+  "scannerTestWaiting": "Scannez un code-barres maintenant (ou, sur l'émulateur, tapez des chiffres puis Entrée).",
+  "scannerTestGot": "Scan n°{count} reçu : {code}",
+  "@scannerTestGot": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "scannerTestKnown": "Produit : {name}",
+  "@scannerTestKnown": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "scannerTestUnknown": "Produit inconnu (la douchette marche quand même).",
+  "scannerHowTitle": "Associer une douchette Bluetooth",
+  "scannerHowSteps": "1. Allumez la douchette.\n2. Dans son petit manuel, scannez le code « Bluetooth HID » (mode clavier). C'est le mode conseillé.\n3. Sur le téléphone : Paramètres → Bluetooth → Associer un nouvel appareil → choisissez la douchette.\n4. C'est tout : elle marche dans la Caisse, la Réception de stock, les Pertes, les Retours, la recherche et la fiche d'un nouveau produit. Pas besoin de toucher un champ.",
+  "scannerEmulatorTip": "Sur l'émulateur : cliquez dans la fenêtre de l'émulateur, tapez un code-barres au clavier du PC, puis Entrée.",
+  "scannerSppTitle": "Douchette en mode SPP (série)",
+  "scannerSppHelp": "Seulement si votre douchette est en mode « SPP » : associez-la d'abord dans les Paramètres Bluetooth, puis choisissez-la ici. Le téléphone s'y reconnecte tout seul.",
+  "scannerShowPaired": "Voir les appareils associés",
+  "scannerConnected": "Douchette connectée : {name}",
+  "@scannerConnected": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "scannerConnectFailed": "Connexion impossible. Vérifiez que la douchette est allumée et en mode SPP.",
+  "scannerStateConnected": "Connectée",
+  "scannerStateConnecting": "Connexion…",
+  "scannerStateRetrying": "Pas connectée : nouvel essai toutes les 15 secondes",
+  "scannerForget": "Oublier",
+  "scannerFeedback": "Bip et vibration à chaque scan accepté",
+  "sheetAccount": "Compte Google : {email}",
+  "@sheetAccount": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "sheetAccountUnknown": "inconnu (mettez le script à jour)"
 }

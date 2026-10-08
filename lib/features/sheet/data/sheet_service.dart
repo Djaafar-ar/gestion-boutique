@@ -51,9 +51,11 @@ class SheetService {
     final answer = await client.call(config.url,
         key: config.writeKey, keyId: 'w', op: 'ping', body: const {});
     final readKey = config.readKey;
+    String? account;
     if (readKey != null) {
-      await client.call(config.url,
+      final owner = await client.call(config.url,
           key: readKey, keyId: 'r', op: 'ping', body: const {});
+      account = owner['email'] as String?;
     }
     final shop = await currentShopRow(db);
     if (shop == null) {
@@ -66,9 +68,23 @@ class SheetService {
             sheetWriteKey: Value(config.writeKey),
             updatedAt: Value(clock())));
     await settings.setSheetReadKey(readKey);
+    await settings.set(SheetSettings.accountName, account);
     await settings.setSheetLastError(null);
     if (newSheet) await queueEverything();
     return '${answer['name'] ?? ''}';
+  }
+
+  /// Owner's phone: asks the script which Google account the sheet
+  /// belongs to ("Compte Google : ..."). Returns it, or null.
+  Future<String?> refreshAccount() async {
+    final to = await target();
+    final readKey = settings.sheetReadKey;
+    if (to == null || readKey == null || !canRead) return null;
+    final answer = await client
+        .call(to.url, key: readKey, keyId: 'r', op: 'ping', body: const {});
+    final email = answer['email'] as String?;
+    await settings.set(SheetSettings.accountName, email);
+    return email;
   }
 
   /// Owner: stops sending to the sheet (on every phone, after Wi-Fi sync).
@@ -82,6 +98,7 @@ class SheetService {
               updatedAt: Value(clock())));
     }
     await settings.setSheetReadKey(null);
+    await settings.set(SheetSettings.accountName, null);
     await db.delete(db.sheetQueue).go();
   }
 
@@ -97,6 +114,9 @@ SELECT kind, id FROM (
   UNION ALL SELECT 'loss', id, created_at FROM losses WHERE deleted = 0
   UNION ALL SELECT 'supplierPayment', id, created_at FROM supplier_payments
     WHERE deleted = 0
+  UNION ALL SELECT 'change', id, created_at FROM change_logs
+    WHERE deleted = 0 AND entity = 'product'
+  UNION ALL SELECT 'product', id, '9' FROM products WHERE deleted = 0
   UNION ALL SELECT 'credit', id, '9' FROM customers WHERE deleted = 0
     AND (id IN (SELECT customer_id FROM sales WHERE customer_id IS NOT NULL)
       OR id IN (SELECT customer_id FROM customer_payments))
@@ -128,11 +148,25 @@ SELECT kind, id FROM (
             .get();
         if (entries.isEmpty) break;
         final batch = await records.build(entries,
-            onlyDevice: worker ? settings.deviceId : null,
-            withCredit: !worker);
-        if (batch.isNotEmpty) {
+            onlyDevice: worker ? settings.deviceId : null, withCredit: !worker);
+        // Debts and products (buying prices) are signed with the read
+        // key: a worker phone can never write them.
+        final shared = [
+          for (final r in batch)
+            if (!ownerOnlyKinds.contains(r['k'])) r,
+        ];
+        final owners = [
+          for (final r in batch)
+            if (ownerOnlyKinds.contains(r['k'])) r,
+        ];
+        if (shared.isNotEmpty) {
           await client.call(to.url,
-              key: to.writeKey, keyId: 'w', op: 'push', body: {'r': batch});
+              key: to.writeKey, keyId: 'w', op: 'push', body: {'r': shared});
+        }
+        final readKey = settings.sheetReadKey;
+        if (owners.isNotEmpty && readKey != null && canRead) {
+          await client.call(to.url,
+              key: readKey, keyId: 'r', op: 'push', body: {'r': owners});
         }
         // A record changed again meanwhile got a new number: it stays.
         await (db.delete(db.sheetQueue)

@@ -214,7 +214,10 @@ class LiveSalesService {
     final date = DateTime.tryParse(day);
     if (date == null) return null;
     final parts = time.split(':');
-    return DateTime(date.year, date.month, date.day,
+    return DateTime(
+        date.year,
+        date.month,
+        date.day,
         int.tryParse(parts.first) ?? 0,
         parts.length > 1 ? int.tryParse(parts[1]) ?? 0 : 0);
   }
@@ -277,8 +280,8 @@ class LiveSalesService {
 
   /// Forgets what is older than a few days.
   Future<void> prune() => (db.delete(db.liveSales)
-        ..where((l) => l.at.isSmallerThanValue(
-            clock().subtract(const Duration(days: 3)))))
+        ..where((l) =>
+            l.at.isSmallerThanValue(clock().subtract(const Duration(days: 3)))))
       .go();
 
   /// Today's sales and returns, newest first.

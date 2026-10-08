@@ -120,7 +120,8 @@ void main() {
       (tester) async {
     await tester.runAsync(() => settings.setSyncRole(SyncRole.worker));
     await show(tester);
-    expect(find.textContaining('reçoit la configuration par la synchronisation'),
+    expect(
+        find.textContaining('reçoit la configuration par la synchronisation'),
         findsOneWidget);
     expect(find.text('Scanner le code de configuration'), findsNothing);
     expect(find.text('Ventes en direct'), findsNothing);

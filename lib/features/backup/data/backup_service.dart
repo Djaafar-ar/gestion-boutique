@@ -90,7 +90,8 @@ class BackupService {
   Future<File> create() async {
     final dir = await _backupFolder();
     final now = clock();
-    final copy = File(p.join(dir.path, 'copy_${now.microsecondsSinceEpoch}.sqlite'));
+    final copy =
+        File(p.join(dir.path, 'copy_${now.microsecondsSinceEpoch}.sqlite'));
     if (await copy.exists()) await copy.delete();
     await db.customStatement('VACUUM INTO ?', [copy.path]);
     try {
@@ -187,7 +188,8 @@ class BackupService {
   /// Then makes a backup of the current data ("just in case") and leaves
   /// the backup's database ready: it replaces the current one when the
   /// app starts again ([applyPendingRestore]).
-  Future<BackupInfo> prepareRestore(Uint8List zip, {required String pin}) async {
+  Future<BackupInfo> prepareRestore(Uint8List zip,
+      {required String pin}) async {
     final (info, data) = read(zip);
     if (info.schema > db.schemaVersion) {
       throw const BackupException(BackupError.newerVersion);

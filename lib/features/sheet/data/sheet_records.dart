@@ -5,6 +5,7 @@ import '../../../core/database/user_names.dart';
 import '../../../core/utils/date_format.dart';
 import '../../billing/domain/entities/sale.dart';
 import '../../customers/data/customer_debts.dart';
+import '../../stock/data/stock_ledger.dart';
 import 'sheet_protocol.dart';
 
 /// One record as the script receives it: its kind and id, and its rows
@@ -21,6 +22,21 @@ const _lossReasons = {
   'other': 'Autre',
 };
 
+/// The product fields of the history, as the sheet shows them.
+const _productFields = {
+  'name': 'Nom',
+  'barcode': 'Code-barres',
+  'sellPrice': 'Prix de vente',
+  'buyPrice': "Prix d'achat",
+  'category': 'Catégorie',
+  'lowStockThreshold': 'Seuil de stock bas',
+  'archived': 'Archivé',
+};
+
+/// Records only the owner's phone sends, signed with the read key: they
+/// hold the buying prices and the customers' debts.
+const ownerOnlyKinds = {'credit', 'product'};
+
 const _paymentStatus = {
   'pending': 'En attente',
   'validated': 'Validé',
@@ -36,6 +52,8 @@ const _paymentStatus = {
 ///   stock" is what left the shelf (negative when put back).
 /// - D "Stock deliveries", L "Losses", P "Supplier payments",
 ///   C "Customer credit" (what each customer owes now).
+/// - H "Historique produits": every change of a product (name, prices...).
+/// - R "Produits": each product now, with its stock and nearest expiry.
 class SheetRecords {
   final AppDatabase db;
 
@@ -46,6 +64,7 @@ class SheetRecords {
   /// customers' debts (the owner's phone sends them).
   Future<List<SheetRecord>> build(List<SheetQueueRow> entries,
       {String? onlyDevice, bool withCredit = true}) async {
+    // [withCredit] false: none of the owner's records (debts, products).
     final ids = <String, Set<String>>{};
     for (final entry in entries) {
       ids.putIfAbsent(entry.kind, () => {}).add(entry.rowId);
@@ -56,8 +75,8 @@ class SheetRecords {
 
     final records = <String, SheetRecord>{};
     if (ids['sale'] case final wanted?) {
-      final sales = await (db.select(db.sales)..where((s) => s.id.isIn(wanted)))
-          .get();
+      final sales =
+          await (db.select(db.sales)..where((s) => s.id.isIn(wanted))).get();
       final items = await (db.select(db.saleItems)
             ..where((i) => i.saleId.isIn(wanted) & i.deleted.equals(false))
             ..orderBy([(i) => OrderingTerm.asc(i.createdAt)]))
@@ -70,9 +89,8 @@ class SheetRecords {
       }
     }
     if (ids['return'] case final wanted?) {
-      final returns = await (db.select(db.returns)
-            ..where((r) => r.id.isIn(wanted)))
-          .get();
+      final returns =
+          await (db.select(db.returns)..where((r) => r.id.isIn(wanted))).get();
       final items = await (db.select(db.returnItems)
             ..where((i) => i.returnId.isIn(wanted) & i.deleted.equals(false))
             ..orderBy([(i) => OrderingTerm.asc(i.createdAt)]))
@@ -152,9 +170,8 @@ class SheetRecords {
       }
     }
     if (ids['loss'] case final wanted?) {
-      final losses = await (db.select(db.losses)
-            ..where((l) => l.id.isIn(wanted)))
-          .get();
+      final losses =
+          await (db.select(db.losses)..where((l) => l.id.isIn(wanted))).get();
       await ctx.loadProducts(db, losses.map((l) => l.productId));
       for (final l in losses) {
         if (!keep(l.deviceId, l.deleted)) continue;
@@ -231,6 +248,70 @@ class SheetRecords {
               [
                 c.id, c.name, sheetMoney(debts[c.id] ?? 0), //
                 last == null ? '' : sheetDay(last),
+              ],
+            ],
+          },
+        };
+      }
+    }
+    if (ids['change'] case final wanted?) {
+      final changes = await (db.select(db.changeLogs)
+            ..where((c) => c.id.isIn(wanted)))
+          .get();
+      await ctx.loadProducts(db, changes.map((c) => c.entityId));
+      for (final c in changes) {
+        if (!keep(c.deviceId, c.deleted) || c.entity != 'product') continue;
+        final at = c.createdAt.toLocal();
+        final money = c.field == 'sellPrice' || c.field == 'buyPrice';
+        Object? value(String? v) {
+          if (v == null) return '';
+          if (money) return sheetMoney(int.tryParse(v) ?? 0);
+          if (c.field == 'archived') return v == 'true' ? 'Oui' : 'Non';
+          return v;
+        }
+
+        records['change:${c.id}'] = {
+          'k': 'change',
+          'id': c.id,
+          't': {
+            'H': [
+              [
+                c.id, sheetDay(at), formatTime(at), //
+                ctx.products[c.entityId] ?? '',
+                _productFields[c.field] ?? c.field, value(c.oldValue),
+                value(c.newValue), ctx.name(c.userId), ctx.code(c.deviceId),
+              ],
+            ],
+          },
+        };
+      }
+    }
+    if (ids['product'] case final wanted? when withCredit) {
+      final products =
+          await (db.select(db.products)..where((p) => p.id.isIn(wanted))).get();
+      final categories = {
+        for (final c in await db.select(db.categories).get()) c.id: c.name,
+      };
+      final ledger = StockLedger(db);
+      for (final p in products) {
+        if (p.deleted) continue;
+        final batches = await ledger.batchesOf(p.id);
+        final expiries = [
+          for (final b in batches.onShelf)
+            if (b.expiryDate case final date?) date.toLocal(),
+        ]..sort();
+        records['product:${p.id}'] = {
+          'k': 'product',
+          'id': p.id,
+          'u': 1,
+          't': {
+            'R': [
+              [
+                p.id, p.name, p.barcode, categories[p.categoryId] ?? '', //
+                sheetMoney(p.sellPrice), sheetMoney(p.buyPrice),
+                batches.stock,
+                expiries.isEmpty ? '' : sheetDay(expiries.first),
+                p.archived ? 'Oui' : 'Non',
               ],
             ],
           },
@@ -315,7 +396,12 @@ class SheetRecords {
           [
             ret.id, day, formatTime(at), ticket, seller, //
             ctx.code(ret.deviceId),
-            ret.exchangeSaleId == null ? 'Retour' : 'Échange',
+            switch ((ret.exchangeSaleId == null, sale == null)) {
+              (true, false) => 'Retour',
+              (true, true) => 'Retour sans ticket',
+              (false, false) => 'Échange',
+              (false, true) => 'Échange sans ticket',
+            },
             toCredit ? 'Crédit' : 'Comptant',
             ctx.customers[sale?.customerId] ?? '', 0, 0, 0,
             sheetMoney(-ret.total), sheetMoney(costBack - ret.total),

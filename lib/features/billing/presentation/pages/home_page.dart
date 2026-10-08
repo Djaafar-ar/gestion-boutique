@@ -6,8 +6,8 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../../../config/routes/app_shell.dart';
 import '../../../../core/l10n/app_localizations.dart';
+import '../../../../core/scanner/scan_listener.dart';
 import '../../../../core/utils/money.dart';
-import '../../../../core/widgets/app_snack.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/primary_button.dart';
 import '../../../billing/presentation/bloc/billing_bloc.dart';
@@ -97,6 +97,17 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  /// A barcode from the Bluetooth scanner: into the cart if known.
+  bool _onDeviceScan(String code) {
+    final product = productByBarcode(context, code);
+    if (product == null) {
+      showUnknownBarcode(context, code);
+      return false;
+    }
+    context.read<BillingBloc>().add(AddProductToCartEvent(product));
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -107,27 +118,29 @@ class _HomePageState extends State<HomePage> {
         listenWhen: (previous, current) =>
             current.error == BillingError.productNotFound &&
             previous.error != current.error,
-        listener: (context, state) {
-          showAppSnack(context, l10n.productNotFound(state.errorDetail ?? ''),
-              kind: SnackKind.error);
-        },
-        child: Stack(
-          children: [
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              height: scannerHeight,
-              child: _buildScannerSection(l10n),
-            ),
-            Positioned(
-              top: scannerHeight - 24, // overlap
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: _buildBottomPanel(l10n),
-            ),
-          ],
+        listener: (context, state) =>
+            showUnknownBarcode(context, state.errorDetail ?? ''),
+        // The Bluetooth scanner ("douchette") adds to the cart too.
+        child: ScanListener(
+          onScan: _onDeviceScan,
+          child: Stack(
+            children: [
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                height: scannerHeight,
+                child: _buildScannerSection(l10n),
+              ),
+              Positioned(
+                top: scannerHeight - 24, // overlap
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: _buildBottomPanel(l10n),
+              ),
+            ],
+          ),
         ),
       ),
       bottomSheet:

@@ -80,8 +80,7 @@ void main() {
         .updateShop(const Shop(name: 'Épicerie El Baraka'));
     final products = ProductRepositoryImpl(db, settings, session);
     await products.addProduct(soda);
-    await StockRepositoryImpl(
-            db, settings, session, StockLedger(db), products)
+    await StockRepositoryImpl(db, settings, session, StockLedger(db), products)
         .addDelivery(productId: 'soda', quantity: 100, buyPrice: 4000);
     sales = SaleRepositoryImpl(db, settings, session, StockLedger(db));
     script = FakeSheetScript(now: () => now);
@@ -164,8 +163,12 @@ void main() {
           ['Nouvelle vente n°B-2', 'Nouvelle vente n°C-1']);
 
       final today = await live.watchToday().first;
-      expect(today.map((r) => r.id).toSet(),
-          {'old', 's-b2', 's-c1', ...today.where((r) => r.mine).map((r) => r.id)});
+      expect(today.map((r) => r.id).toSet(), {
+        'old',
+        's-b2',
+        's-c1',
+        ...today.where((r) => r.mine).map((r) => r.id)
+      });
       expect(today.where((r) => r.mine), hasLength(1));
     });
 
@@ -219,8 +222,7 @@ void main() {
             saleItemId: sale.items.single.id, quantity: 1, backToStock: true),
       ]);
       final day = await report.build(now);
-      expect(
-          (day.sales, day.revenue, day.profit, day.cash, day.returns),
+      expect((day.sales, day.revenue, day.profit, day.cash, day.returns),
           (1, 12000, 4000, 12000, 6000));
     });
 
@@ -234,8 +236,7 @@ void main() {
       expect((await report.build(now)).source, 'phone');
     });
 
-    test('sent once, at the chosen time, as a private notification',
-        () async {
+    test('sent once, at the chosen time, as a private notification', () async {
       await settings.setDailyReportTime(21, 0);
       now = DateTime(now.year, now.month, now.day, 20, 59);
       expect(await report.runIfDue(), isNull);
@@ -247,8 +248,8 @@ void main() {
       expect(notifier.channels.single, dailyReportChannelId);
       expect(await report.runIfDue(), isNull, reason: 'once a day');
       expect(report.last, sent);
-      expect(report.nextRun(now),
-          DateTime(now.year, now.month, now.day + 1, 21));
+      expect(
+          report.nextRun(now), DateTime(now.year, now.month, now.day + 1, 21));
     });
 
     test('never on a worker phone, and the owner can turn it off', () async {
@@ -313,8 +314,7 @@ void main() {
       expect(await drive.isDue(), isTrue);
     });
 
-    test('the warning after 7 days without a backup off the phone',
-        () async {
+    test('the warning after 7 days without a backup off the phone', () async {
       await drive.uploadNow();
       now = now.add(const Duration(days: 6));
       expect(drive.needsWarning, isFalse);

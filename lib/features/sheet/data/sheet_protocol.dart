@@ -75,10 +75,9 @@ String sheetSignature(String key, String message) =>
 
 /// Google Sheets counts days from 30/12/1899. Sending the day as this
 /// number (not as a date and time) keeps it right whatever the time zone.
-int sheetDay(DateTime date) =>
-    DateTime.utc(date.year, date.month, date.day)
-        .difference(DateTime.utc(1899, 12, 30))
-        .inDays;
+int sheetDay(DateTime date) => DateTime.utc(date.year, date.month, date.day)
+    .difference(DateTime.utc(1899, 12, 30))
+    .inDays;
 
 /// "2026-10-07": how the script names a day.
 String sheetDayText(DateTime date) => '${date.year.toString().padLeft(4, '0')}-'

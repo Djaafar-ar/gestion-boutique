@@ -2326,4 +2326,105 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get restoreErrWorker =>
       'هاتف العامل يستلم بياناته من الهاتف الرئيسي: قم بالاستعادة على الهاتف الرئيسي.';
+
+  @override
+  String scanUnknown(String code) {
+    return 'رمز شريطي غير معروف: $code';
+  }
+
+  @override
+  String get scanCreateProduct => 'إنشاء المنتج';
+
+  @override
+  String scanNotOnTicket(String name) {
+    return '«$name» ليس في هذه التذكرة (أو تم إرجاعه).';
+  }
+
+  @override
+  String get scanGoesTo => 'الماسح يضيف إلى:';
+
+  @override
+  String get scanToReturned => 'المواد المرجعة';
+
+  @override
+  String get scanToTaken => 'المواد المأخوذة';
+
+  @override
+  String get scannerTitle => 'ماسح الرموز الشريطية';
+
+  @override
+  String get scannerSub => 'ماسح بلوتوث: الاقتران والتجربة';
+
+  @override
+  String get scannerTestTitle => 'جرّب مسحاً';
+
+  @override
+  String get scannerTestWaiting =>
+      'امسح رمزاً شريطياً الآن (أو في المحاكي اكتب أرقاماً ثم Enter).';
+
+  @override
+  String scannerTestGot(int count, String code) {
+    return 'تم استلام المسح رقم $count: $code';
+  }
+
+  @override
+  String scannerTestKnown(String name) {
+    return 'المنتج: $name';
+  }
+
+  @override
+  String get scannerTestUnknown => 'منتج غير معروف (الماسح يعمل رغم ذلك).';
+
+  @override
+  String get scannerHowTitle => 'ربط ماسح بلوتوث';
+
+  @override
+  String get scannerHowSteps =>
+      '1. شغّل الماسح.\n2. في دليله الصغير، امسح رمز «Bluetooth HID» (وضع لوحة المفاتيح). هذا هو الوضع المنصوح به.\n3. على الهاتف: الإعدادات ← بلوتوث ← إقران جهاز جديد ← اختر الماسح.\n4. هذا كل شيء: يعمل في البيع واستلام المخزون والخسائر والمرتجعات والبحث وبطاقة المنتج الجديد، دون لمس أي خانة.';
+
+  @override
+  String get scannerEmulatorTip =>
+      'في المحاكي: انقر داخل نافذة المحاكي، اكتب رمزاً شريطياً بلوحة مفاتيح الحاسوب، ثم Enter.';
+
+  @override
+  String get scannerSppTitle => 'ماسح في وضع SPP (تسلسلي)';
+
+  @override
+  String get scannerSppHelp =>
+      'فقط إذا كان الماسح في وضع «SPP»: اقرنه أولاً في إعدادات البلوتوث ثم اختره هنا. يعيد الهاتف الاتصال به تلقائياً.';
+
+  @override
+  String get scannerShowPaired => 'عرض الأجهزة المقترنة';
+
+  @override
+  String scannerConnected(String name) {
+    return 'الماسح متصل: $name';
+  }
+
+  @override
+  String get scannerConnectFailed =>
+      'تعذر الاتصال. تحقق أن الماسح مشغّل وفي وضع SPP.';
+
+  @override
+  String get scannerStateConnected => 'متصل';
+
+  @override
+  String get scannerStateConnecting => 'جارٍ الاتصال…';
+
+  @override
+  String get scannerStateRetrying => 'غير متصل: محاولة جديدة كل 15 ثانية';
+
+  @override
+  String get scannerForget => 'إلغاء';
+
+  @override
+  String get scannerFeedback => 'صوت واهتزاز عند كل مسح مقبول';
+
+  @override
+  String sheetAccount(String email) {
+    return 'حساب Google: $email';
+  }
+
+  @override
+  String get sheetAccountUnknown => 'غير معروف (حدّث السكريبت)';
 }

@@ -109,6 +109,35 @@ To see the code again later: **Boutique → Afficher le code de configuration**.
 
 ---
 
+## Updating to script version 2 (Phase 8b): keeps every row
+
+Version 2 adds the tabs **Produits** and **Historique produits**, and the
+Google account shown in the app. Your rows stay: the columns of the old
+tabs do not change, and "Installer" never deletes data.
+
+1. On the computer, open your sheet → **Extensions → Apps Script**.
+2. Click in the code, press **Ctrl+A**, then **Delete**.
+3. Open `tool\google_sheet\Code.gs` (new version) with Notepad,
+   **Ctrl+A**, **Ctrl+C**, go back to Apps Script, **Ctrl+V**.
+   The first lines must show `var VERSION = 2;`.
+4. Press **Ctrl+S** (save).
+5. Click **Deploy → Manage deployments**.
+6. Click the **pencil** (Edit) next to your deployment.
+7. Under **Version**, choose **New version**. Click **Deploy**.
+   **Do not** use "New deployment": that would change the address.
+8. Google asks for permission again, because the script can now read
+   your email address (to show "Compte Google : ..."):
+   **Authorize access** → your account → **Advanced** →
+   **Go to Boutique (unsafe)** → **Allow**.
+9. Click **Done**. Go back to the sheet tab and **reload** it (F5).
+10. Click **Boutique → 1. Installer**. It adds the two new tabs and
+    rebuilds the formula tabs (Current stock, Daily summary, Stats per
+    worker). The data tabs and your keys are kept. The QR code appears:
+    close it. Nothing to scan, the keys did not change.
+11. In the app on the owner's phone: **Plus → Google Sheet**. The line
+    "Compte Google : ..." shows your Gmail. Products and their history
+    are sent within a few minutes (or tap **Envoyer maintenant**).
+
 ## Updating the script later
 
 If a new version of `Code.gs` comes with the app:

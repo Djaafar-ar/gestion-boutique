@@ -113,8 +113,7 @@ class _RestorePageState extends State<RestorePage> {
       appBar: AppBar(
         title: Text(l10n.restoreTitle),
         leading: BackButton(
-            onPressed: () =>
-                _newPhone ? context.go('/setup') : context.pop()),
+            onPressed: () => _newPhone ? context.go('/setup') : context.pop()),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
@@ -191,9 +190,7 @@ class _BackupPinDialogState extends State<_BackupPinDialog> {
       content: Form(
         key: _formKey,
         child: PinField(
-            controller: _pin,
-            label: l10n.loginEnterPin,
-            anyOwnerLength: true),
+            controller: _pin, label: l10n.loginEnterPin, anyOwnerLength: true),
       ),
       actions: [
         TextButton(

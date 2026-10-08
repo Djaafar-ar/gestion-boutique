@@ -115,6 +115,7 @@ extension SyncSettings on SettingsStore {
       'drive_backup_try',
       'drive_backup_error',
       'backup_off_phone_last',
+      'sheet_account',
     ]) {
       await set(key, null);
     }

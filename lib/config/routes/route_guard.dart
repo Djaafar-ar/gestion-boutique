@@ -22,8 +22,7 @@ String? guardRoute(SessionState session, String location) {
   // Before an owner exists: create the shop, join one (scanning the
   // owner's code), or restore a backup (new phone).
   if (!session.hasOwner) {
-    return const ['/setup', '/join', '/scanner', '/restore']
-            .contains(location)
+    return const ['/setup', '/join', '/scanner', '/restore'].contains(location)
         ? null
         : '/setup';
   }

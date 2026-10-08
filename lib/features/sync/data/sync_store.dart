@@ -103,9 +103,9 @@ class SyncStore {
   Future<void> queueEverything() async {
     await db.transaction(() async {
       for (final table in syncedTables) {
-        await db.customStatement(
-            'INSERT OR IGNORE INTO sync_log (entity, row_id) '
-            "SELECT '$table', id FROM $table");
+        await db
+            .customStatement('INSERT OR IGNORE INTO sync_log (entity, row_id) '
+                "SELECT '$table', id FROM $table");
       }
     });
   }

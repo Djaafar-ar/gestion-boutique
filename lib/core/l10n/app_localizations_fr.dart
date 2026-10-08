@@ -2346,4 +2346,107 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get restoreErrWorker =>
       'Un téléphone d\'employé reçoit ses données du téléphone principal : restaurez sur le téléphone principal.';
+
+  @override
+  String scanUnknown(String code) {
+    return 'Code-barres inconnu : $code';
+  }
+
+  @override
+  String get scanCreateProduct => 'Créer le produit';
+
+  @override
+  String scanNotOnTicket(String name) {
+    return '« $name » n\'est pas sur ce ticket (ou déjà rendu).';
+  }
+
+  @override
+  String get scanGoesTo => 'La douchette ajoute aux :';
+
+  @override
+  String get scanToReturned => 'Articles rapportés';
+
+  @override
+  String get scanToTaken => 'Articles pris';
+
+  @override
+  String get scannerTitle => 'Douchette (lecteur de codes-barres)';
+
+  @override
+  String get scannerSub => 'Lecteur Bluetooth : appairage et test';
+
+  @override
+  String get scannerTestTitle => 'Tester un scan';
+
+  @override
+  String get scannerTestWaiting =>
+      'Scannez un code-barres maintenant (ou, sur l\'émulateur, tapez des chiffres puis Entrée).';
+
+  @override
+  String scannerTestGot(int count, String code) {
+    return 'Scan n°$count reçu : $code';
+  }
+
+  @override
+  String scannerTestKnown(String name) {
+    return 'Produit : $name';
+  }
+
+  @override
+  String get scannerTestUnknown =>
+      'Produit inconnu (la douchette marche quand même).';
+
+  @override
+  String get scannerHowTitle => 'Associer une douchette Bluetooth';
+
+  @override
+  String get scannerHowSteps =>
+      '1. Allumez la douchette.\n2. Dans son petit manuel, scannez le code « Bluetooth HID » (mode clavier). C\'est le mode conseillé.\n3. Sur le téléphone : Paramètres → Bluetooth → Associer un nouvel appareil → choisissez la douchette.\n4. C\'est tout : elle marche dans la Caisse, la Réception de stock, les Pertes, les Retours, la recherche et la fiche d\'un nouveau produit. Pas besoin de toucher un champ.';
+
+  @override
+  String get scannerEmulatorTip =>
+      'Sur l\'émulateur : cliquez dans la fenêtre de l\'émulateur, tapez un code-barres au clavier du PC, puis Entrée.';
+
+  @override
+  String get scannerSppTitle => 'Douchette en mode SPP (série)';
+
+  @override
+  String get scannerSppHelp =>
+      'Seulement si votre douchette est en mode « SPP » : associez-la d\'abord dans les Paramètres Bluetooth, puis choisissez-la ici. Le téléphone s\'y reconnecte tout seul.';
+
+  @override
+  String get scannerShowPaired => 'Voir les appareils associés';
+
+  @override
+  String scannerConnected(String name) {
+    return 'Douchette connectée : $name';
+  }
+
+  @override
+  String get scannerConnectFailed =>
+      'Connexion impossible. Vérifiez que la douchette est allumée et en mode SPP.';
+
+  @override
+  String get scannerStateConnected => 'Connectée';
+
+  @override
+  String get scannerStateConnecting => 'Connexion…';
+
+  @override
+  String get scannerStateRetrying =>
+      'Pas connectée : nouvel essai toutes les 15 secondes';
+
+  @override
+  String get scannerForget => 'Oublier';
+
+  @override
+  String get scannerFeedback => 'Bip et vibration à chaque scan accepté';
+
+  @override
+  String sheetAccount(String email) {
+    return 'Compte Google : $email';
+  }
+
+  @override
+  String get sheetAccountUnknown => 'inconnu (mettez le script à jour)';
 }

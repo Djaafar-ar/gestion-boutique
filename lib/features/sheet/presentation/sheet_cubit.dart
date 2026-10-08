@@ -24,6 +24,9 @@ class SheetState extends Equatable {
 
   /// The read key is here: live sales, report and Drive backups.
   final bool canRead;
+
+  /// The Gmail address of the sheet (owner's phone).
+  final String? account;
   final int pending;
   final DateTime? lastSend;
   final SheetError? lastError;
@@ -46,6 +49,7 @@ class SheetState extends Equatable {
     this.configured = false,
     this.ownerPhone = false,
     this.canRead = false,
+    this.account,
     this.pending = 0,
     this.lastSend,
     this.lastError,
@@ -65,6 +69,7 @@ class SheetState extends Equatable {
         configured: configured,
         ownerPhone: ownerPhone,
         canRead: canRead,
+        account: account,
         pending: pending,
         lastSend: lastSend,
         lastError: lastError,
@@ -85,6 +90,7 @@ class SheetState extends Equatable {
         configured,
         ownerPhone,
         canRead,
+        account,
         pending,
         lastSend,
         lastError,
@@ -194,6 +200,7 @@ class SheetCubit extends Cubit<SheetState> {
       configured: target != null,
       ownerPhone: settings.syncRole != SyncRole.worker,
       canRead: jobs.sheet.canRead,
+      account: jobs.sheet.canRead ? settings.sheetAccount : null,
       pending: pending,
       lastSend: settings.sheetLastSend,
       lastError: SheetError.values.asNameMap()[settings.sheetLastError],
@@ -206,8 +213,8 @@ class SheetCubit extends Cubit<SheetState> {
       lastDriveBackup: settings.driveBackupLast,
       driveError: SheetError.values.asNameMap()[settings.driveBackupError],
       backingUp: state.backingUp,
-      backupWarning: settings.syncRole != SyncRole.worker &&
-          jobs.drive.needsWarning,
+      backupWarning:
+          settings.syncRole != SyncRole.worker && jobs.drive.needsWarning,
     ));
   }
 
@@ -233,6 +240,17 @@ class SheetCubit extends Cubit<SheetState> {
     _scheduleSend();
     unawaited(runJobs());
     return name;
+  }
+
+  /// The page opens: which Google account? (quietly, without internet
+  /// the last one known is shown).
+  Future<void> refreshAccount() async {
+    try {
+      await jobs.sheet.refreshAccount();
+    } on SheetException {
+      return;
+    }
+    await refresh();
   }
 
   Future<void> disconnect() async {

@@ -40,6 +40,7 @@ import '../../features/product/presentation/pages/add_product_page.dart';
 import '../../features/product/presentation/pages/edit_product_page.dart';
 import '../../features/shop/presentation/pages/shop_details_page.dart';
 import '../../features/settings/presentation/pages/more_page.dart';
+import '../../features/settings/presentation/pages/scanner_device_page.dart';
 import '../../features/billing/presentation/pages/scanner_page.dart';
 import '../../features/billing/presentation/pages/checkout_page.dart';
 import '../../features/product/domain/entities/product.dart';
@@ -139,7 +140,8 @@ final router = GoRouter(
               GoRoute(
                 path: 'add',
                 parentNavigatorKey: rootNavigatorKey,
-                builder: (context, state) => const AddProductPage(),
+                builder: (context, state) =>
+                    AddProductPage(initialBarcode: state.extra as String?),
               ),
               GoRoute(
                 path: 'product/:id',
@@ -236,6 +238,11 @@ final router = GoRouter(
                     builder: (context, state) => const DailyReportPage(),
                   ),
                 ],
+              ),
+              GoRoute(
+                path: 'scanner',
+                parentNavigatorKey: rootNavigatorKey,
+                builder: (context, state) => const ScannerDevicePage(),
               ),
               GoRoute(
                 path: 'backup',

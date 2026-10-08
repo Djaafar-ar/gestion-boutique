@@ -1,3 +1,4 @@
+import '../../../../core/scanner/scan_listener.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -56,59 +57,74 @@ class _ProductListPageState extends State<ProductListPage> {
         ProductAction.archived => l10n.productArchived,
       };
 
+  /// A barcode from the Bluetooth scanner finds the product.
+  bool _onDeviceScan(String code) {
+    final product = productByBarcode(context, code);
+    if (product == null) {
+      _searchController.text = code;
+      showUnknownBarcode(context, code);
+      return false;
+    }
+    _searchController.text = product.name;
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.productsTitle),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.trending_down),
-            tooltip: l10n.lossesTitle,
-            onPressed: () => context.push('/stock/losses'),
-          ),
-        ],
-      ),
-      body: BlocConsumer<ProductBloc, ProductState>(
-        listener: (context, state) {
-          if (state.status == ProductStatus.success && state.action != null) {
-            showAppSnack(context, _actionMessage(l10n, state.action!),
-                kind: SnackKind.success);
-          } else if (state.status == ProductStatus.error &&
-              state.message != null) {
-            showAppSnack(context, l10n.errorWithDetail(state.message!),
-                kind: SnackKind.error);
-          }
-        },
-        builder: (context, state) {
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: l10n.productSearchHint,
-                    prefixIcon: const Icon(Icons.search),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.qr_code_scanner),
-                      tooltip: l10n.scanBarcodeTitle,
-                      onPressed: () => _scanQR(state.products),
+    return ScanListener(
+      onScan: _onDeviceScan,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.productsTitle),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.trending_down),
+              tooltip: l10n.lossesTitle,
+              onPressed: () => context.push('/stock/losses'),
+            ),
+          ],
+        ),
+        body: BlocConsumer<ProductBloc, ProductState>(
+          listener: (context, state) {
+            if (state.status == ProductStatus.success && state.action != null) {
+              showAppSnack(context, _actionMessage(l10n, state.action!),
+                  kind: SnackKind.success);
+            } else if (state.status == ProductStatus.error &&
+                state.message != null) {
+              showAppSnack(context, l10n.errorWithDetail(state.message!),
+                  kind: SnackKind.error);
+            }
+          },
+          builder: (context, state) {
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: l10n.productSearchHint,
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.qr_code_scanner),
+                        tooltip: l10n.scanBarcodeTitle,
+                        onPressed: () => _scanQR(state.products),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(child: _buildList(context, l10n, state)),
-            ],
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showActions(context, l10n),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.addDelivery),
+                Expanded(child: _buildList(context, l10n, state)),
+              ],
+            );
+          },
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => _showActions(context, l10n),
+          icon: const Icon(Icons.add),
+          label: Text(l10n.addDelivery),
+        ),
       ),
     );
   }
