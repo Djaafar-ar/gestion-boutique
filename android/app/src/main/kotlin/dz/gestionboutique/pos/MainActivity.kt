@@ -1,4 +1,4 @@
-package com.example.billing_app
+package dz.gestionboutique.pos
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine

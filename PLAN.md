@@ -441,8 +441,14 @@ At the **end of every phase**:
 - **Plus → Google Sheet** shows "Compte Google : ..." (asked to the script with the read key).
 - **License check:** `docs/license_check.md`. About 9 % of `lib/` (about 2 660 lines, mostly 15 files: Caisse, product pages, shop details, printer, checkout parts, product/billing/shop BLoCs) plus the platform templates, icons and README still come from the original repository, which has no license. Replacement plan added to Phase 9.
 
+### After Phase 8b: no GitHub, code backups, app ID
+- **No GitHub:** the code is never pushed anywhere (no remote).
+- **Code backup:** `.\tool\backup_code.ps1` makes `gestion-boutique-code_<date>.zip` (project files and git history, no build folders) and copies it to the folder chosen once (USB stick or Google Drive folder; `-Choose` to change it). It refuses to copy if a key file or a signing password is found inside. Run after every commit.
+- **App ID:** `dz.gestionboutique.pos` (was `com.example.billing_app`), name on the phone "Gestion Boutique", same release key. Android sees it as a new app: the old one stays installed with its data; data moves with a backup restored on the new app's first screen.
+- **Credits:** `CREDITS.md` thanks Dinesh Sowndar, the author of the original app.
+
 ### Phase 9: Printer and final polish
-- **Replace the code from the original repository** (it has no license; see `docs/license_check.md`): fresh platform templates and our own icon, a new README, then rewrite the Caisse, product, shop details and printer screens and their BLoCs one by one, with the tests as a safety net; remove the Hive importer; check again with `git blame` and add our own LICENSE.
+- **Replace the code from the original repository** (the author allowed free use, thanked in `CREDITS.md`; it is still rewritten because the owner wants to sell the app and own all the code; see `docs/license_check.md`): fresh platform templates and our own icon, a new README, then rewrite the Caisse, product, shop details and printer screens and their BLoCs one by one, with the tests as a safety net; remove the Hive importer; check again with `git blame` and add our own LICENSE.
 - New receipt layout (§3.6): French always, DA, ticket number, worker name, wrapped names, accents/code page, "Remove accents" option, test print, reprint from the sales list.
 - New receipt lines for discount and credit, plus an optional "Ticket de retour".
 - **Backup & restore (owner only):** *done in Phase 8, except the automatic local backup kept 7 days on the phone.*

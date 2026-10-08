@@ -54,3 +54,6 @@ key.properties
 *-lineage.bin
 PASSWORD.txt
 .env
+
+# Code backup: where this PC copies it (tool/backup_code.ps1)
+tool/backup_destination.txt

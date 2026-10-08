@@ -6,6 +6,10 @@ Without a license, the author keeps all rights: we may not legally copy,
 change or share their code. To be free to use, sell or publish the app,
 every part written by that author must be rewritten by us.
 
+**Update 2026-10-08:** the author told the owner that the code may be used
+freely; he is thanked in `CREDITS.md`. The rewrite below is kept anyway:
+the owner wants to sell the app and own all of its code.
+
 Measured on 2026-10-08 with `git blame -w -M -C` (it follows lines that
 were moved or copied), not counting generated files and translations.
 
