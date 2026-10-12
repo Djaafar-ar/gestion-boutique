@@ -6,10 +6,10 @@ The owner is a Flutter beginner: explain in simple words and short sentences.
 - Work phase by phase, following `PLAN.md`.
 - After each phase:
   1. run `flutter analyze` (0 issues) and `flutter test` (all pass), and fix every error;
-  2. commit with a clear message, then remind the owner to back up the
-     code: `.\tool\backup_code.ps1` (a dated .zip copied to the USB stick
-     or Google Drive folder they chose; it never contains keys or
-     passwords);
+  2. commit with a clear message, then run `git push` (GitHub), then
+     remind the owner to also back up the code: `.\tool\backup_code.ps1`
+     (a dated .zip copied to the USB stick or Google Drive folder they
+     chose; it never contains keys or passwords);
   3. explain in simple words what to test on the phones or the emulator;
   4. **stop and wait** for the owner's OK before the next phase.
 
@@ -50,8 +50,12 @@ The owner is a Flutter beginner: explain in simple words and short sentences.
   workers.
 
 ## Code and GitHub
-- No GitHub and no remote: never push the code anywhere. The code is
-  backed up with `.\tool\backup_code.ps1` only.
+- The code is on GitHub in a **private** repository:
+  https://github.com/Djaafar-ar/gestion-boutique (remote `origin`,
+  branch `master`).
+- After every commit, run `git push`.
+- Second backup: `.\tool\backup_code.ps1` (keep using it too).
+- Before pushing, make sure no secret is in the commit (see below).
 
 ## Secrets
 - Never commit keystores (`*.jks`, `*.keystore`), `key.properties`,

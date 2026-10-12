@@ -443,7 +443,7 @@ At the **end of every phase**:
 - **License check:** `docs/license_check.md`. About 9 % of `lib/` (about 2 660 lines, mostly 15 files: Caisse, product pages, shop details, printer, checkout parts, product/billing/shop BLoCs) plus the platform templates, icons and README still come from the original repository, which has no license. Replacement plan added to Phase 9.
 
 ### After Phase 8b: no GitHub, code backups, app ID
-- **No GitHub:** the code is never pushed anywhere (no remote).
+- **GitHub (changed later, 2026-10-12):** the code is now pushed after every commit to the private repository https://github.com/Djaafar-ar/gestion-boutique (all 19 earlier commits were checked first: no keys, passwords or Sheet links). The zip backup below stays as a second copy.
 - **Code backup:** `.\tool\backup_code.ps1` makes `gestion-boutique-code_<date>.zip` (project files and git history, no build folders) and copies it to the folder chosen once (USB stick or Google Drive folder; `-Choose` to change it). It refuses to copy if a key file or a signing password is found inside. Run after every commit.
 - **App ID:** `dz.gestionboutique.pos` (was `com.example.billing_app`), name on the phone "Gestion Boutique", same release key. Android sees it as a new app: the old one stays installed with its data; data moves with a backup restored on the new app's first screen.
 - **Credits:** `CREDITS.md` thanks Dinesh Sowndar, the author of the original app.
